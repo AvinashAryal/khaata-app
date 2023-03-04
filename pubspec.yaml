@@ -44,6 +44,7 @@ dependencies:
   # Firebase dependencies -------------- (Here's where Diwas started !)---------------------
   firebase_core: ^2.7.0
   firebase_auth: ^4.2.9
+  cloud_firestore: ^4.4.3
   pinput: ^2.2.0
 
 dev_dependencies:

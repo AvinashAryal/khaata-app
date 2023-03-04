@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:khaata_app/backend/authentication.dart';
 
 import '../utils/themes.dart';
 
 class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
+  MyDrawer({super.key});
+
+  final String? name = Authentication().CurrentUser!.displayName ;
+  final String? mail = Authentication().CurrentUser!.email ;
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +23,11 @@ class MyDrawer extends StatelessWidget {
             child: UserAccountsDrawerHeader(
               margin: EdgeInsets.all(0),
               accountName: Text(
-                "Avinash Aryal",
+                "${name}",
                 style: TextStyle(color: Colors.white),
               ),
               accountEmail: Text(
-                "avinasharyal1234@gmail.com",
+                "${mail}",
                 style: TextStyle(color: Colors.white),
               ),
               currentAccountPicture: Icon(

@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:khaata_app/backend/authentication.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../models/structure.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,20 +16,34 @@ class _LoginPageState extends State<LoginPage> {
   String name = "";
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
+  TextEditingController emailer = TextEditingController() ;
+  TextEditingController passer = TextEditingController() ;
 
-  moveToHome(BuildContext context) async {
+  /*
+  UserData getMailFromUsername(String name){
+    final reference = FirebaseFirestore.instance.collection('user-data') ;
+    reference.doc(name).get().then((DocumentSnapshot doc) => {
+      UserData logger = UserData.fromJSON(doc.data()) ;
+      return logger ;
+    }) ;
+  }
+  */
+
+  moveToHome(BuildContext context, Future<bool> givePass) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     setState(() {
       changeButton = true;
     });
-    await Future.delayed(const Duration(milliseconds: 500));
-    await Navigator.pushNamed(context, "/");
-    Navigator.pop(context, "/login");
-    setState(() {
-      changeButton = false;
-    });
+    if(await givePass) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      await Navigator.pushNamed(context, "/");
+      Navigator.pop(context, "/login");
+      setState(() {
+        changeButton = false;
+      });
+    }
   }
 
   @override
@@ -53,19 +71,21 @@ class _LoginPageState extends State<LoginPage> {
                       vertical: 16.0, horizontal: 32.0),
                   child: Column(children: [
                     TextFormField(
+                      controller: emailer,
                       decoration: const InputDecoration(
-                        labelText: "Username",
-                        hintText: "Enter username",
+                        labelText: "Email",
+                        hintText: "Enter email address",
                       ),
                       onChanged: (value) => {name = value, setState(() {})},
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return ("Username cannot be empty.");
+                          return ("Email address cannot be empty.");
                         }
                         return null;
                       },
                     ),
                     TextFormField(
+                      controller: passer,
                       decoration: const InputDecoration(
                         labelText: "Password",
                         hintText: "Enter password",
@@ -84,7 +104,11 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20.0,
                     ),
                     InkWell(
-                      onTap: () => moveToHome(context),
+                      onTap: (){
+                          String mail = emailer.text.trim() ;
+                          String pass = passer.text.trim() ;
+                          moveToHome(context, Authentication().signInUser(email: mail, password: pass)) ;
+                      },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 500),
                         width: changeButton ? 50 : 100,
