@@ -91,13 +91,15 @@ class _LoginPageState extends State<LoginPage> {
                         height: 50,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color:
-                              changeButton ? Colors.deepPurple : Colors.purple,
+                          color: Colors.purple,
                           borderRadius:
                               BorderRadius.circular(changeButton ? 50 : 16),
                         ),
                         child: changeButton
-                            ? Icon(Icons.done, color: Colors.blue)
+                            ? Icon(
+                                Icons.done,
+                                color: Colors.white,
+                              )
                             : Text(
                                 "Login",
                                 style: TextStyle(
@@ -108,6 +110,11 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                       ),
                     ),
+                    TextButton(
+                        onPressed: (() {
+                          Navigator.pushNamed(context, "/register");
+                        }),
+                        child: Text("Not registered? Register"))
                     //   ElevatedButton(
                     //     child: Text("Login"),
                     //     style: TextButton.styleFrom(minimumSize: const Size(150, 40)),
