@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       decoration: const InputDecoration(
                         labelText: "Username",
-                        hintText: "Enter Username",
+                        hintText: "Enter username",
                       ),
                       onChanged: (value) => {name = value, setState(() {})},
                       validator: (value) {
@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextFormField(
                       decoration: const InputDecoration(
                         labelText: "Password",
-                        hintText: "Enter Username",
+                        hintText: "Enter password",
                       ),
                       obscureText: true,
                       validator: (value) {

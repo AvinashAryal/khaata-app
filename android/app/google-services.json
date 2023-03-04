@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "800158423272",
+    "project_id": "khaata-3bs",
+    "storage_bucket": "khaata-3bs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800158423272:android:56c2d440ccd3ebfa0ad15d",
+        "android_client_info": {
+          "package_name": "com.diwas.khaata_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800158423272-sel4toh87d26h62hqqglobm9hr8nqlii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQpiMuk5ELTQDxRl-bGzI65EtkDwPwe2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800158423272-sel4toh87d26h62hqqglobm9hr8nqlii.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
