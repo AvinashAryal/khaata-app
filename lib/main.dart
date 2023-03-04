@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khaata_app/pages/login_page.dart';
 import 'package:khaata_app/pages/home_page.dart';
+import 'package:khaata_app/pages/notification_page.dart';
 import 'package:khaata_app/pages/register_page.dart';
 import 'package:khaata_app/utils/themes.dart';
 
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         "/": (context) => HomePage(),
         "/login": (context) => LoginPage(),
         "/register": (context) => RegisterPage(),
+        "/notifications": (context) => NotificationPage(),
       },
     );
   }

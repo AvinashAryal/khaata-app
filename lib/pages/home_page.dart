@@ -22,12 +22,19 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: ButtonBar(
-        alignment: MainAxisAlignment.spaceBetween,
-        children: currentPage == 0
-            ? [Text("Khaata"), Icon(CupertinoIcons.bell_fill)]
-            : [Text("Your Friends"), FriendSerachBar()],
-      )),
+        title: currentPage == 0
+            ? "Khaata".text.make()
+            : "Your Friends".text.make(),
+        actions: currentPage == 0
+            ? [
+                IconButton(
+                    onPressed: (() {
+                      Navigator.pushNamed(context, "/notifications");
+                    }),
+                    icon: Icon(CupertinoIcons.bell))
+              ]
+            : [FriendSerachBar()],
+      ),
       drawer: MyDrawer(),
       bottomNavigationBar: NavigationBar(
         destinations: [

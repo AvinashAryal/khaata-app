@@ -62,7 +62,7 @@ class _FriendDetailState extends State<FriendDetail> {
               builder: ((context) {
                 return AlertDialog(
                   title: Text("Enter the Details of new Transaction"),
-                  content: Text("Use minus(-) sign to decrease this khaata"),
+                  content: Text("Use minus(-) sign for received amount"),
                   actions: [
                     TextFormField(
                       keyboardType: TextInputType.number,
