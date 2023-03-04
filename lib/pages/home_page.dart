@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/widgets/friends_page.dart';
+import 'package:khaata_app/widgets/search_bar.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -23,7 +24,9 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
           title: ButtonBar(
         alignment: MainAxisAlignment.spaceBetween,
-        children: [Text("Khaata"), Icon(CupertinoIcons.bell_fill)],
+        children: currentPage == 0
+            ? [Text("Khaata"), Icon(CupertinoIcons.bell_fill)]
+            : [Text("Your Friends"), FriendSerachBar()],
       )),
       drawer: MyDrawer(),
       bottomNavigationBar: NavigationBar(
