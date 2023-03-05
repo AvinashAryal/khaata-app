@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/widgets/friends_page.dart';
+import 'package:khaata_app/widgets/search_bar.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -21,10 +22,19 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: ButtonBar(
-        alignment: MainAxisAlignment.spaceBetween,
-        children: [Text("Khaata"), Icon(CupertinoIcons.bell_fill)],
-      )),
+        title: currentPage == 0
+            ? "Khaata".text.make()
+            : "Your Friends".text.make(),
+        actions: currentPage == 0
+            ? [
+                IconButton(
+                    onPressed: (() {
+                      Navigator.pushNamed(context, "/notifications");
+                    }),
+                    icon: Icon(CupertinoIcons.bell))
+              ]
+            : [FriendSerachBar()],
+      ),
       drawer: MyDrawer(),
       bottomNavigationBar: NavigationBar(
         destinations: [

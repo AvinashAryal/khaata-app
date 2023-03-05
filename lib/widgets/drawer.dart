@@ -7,8 +7,8 @@ import '../utils/themes.dart';
 class MyDrawer extends StatelessWidget {
   MyDrawer({super.key});
 
-  final String? name = Authentication().CurrentUser!.displayName ;
-  final String? mail = Authentication().CurrentUser!.email ;
+  final String? name = Authentication().CurrentUser?.displayName;
+  final String? mail = Authentication().CurrentUser?.email;
 
   @override
   Widget build(BuildContext context) {

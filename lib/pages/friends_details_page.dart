@@ -1,6 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:ffi';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:khaata_app/models/history_data_model.dart';
@@ -52,6 +55,28 @@ class _FriendDetailState extends State<FriendDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: ((context) {
+                return AlertDialog(
+                  title: Text("Enter the Details of new Transaction"),
+                  content: Text("Use minus(-) sign for received amount"),
+                  actions: [
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          labelText: "Amount",
+                          hintText: "Enter Amount here"),
+                    ).p32()
+                  ],
+                );
+              }));
+        },
+        child: Icon(CupertinoIcons.add),
+      ),
       appBar: AppBar(title: "Details of friend no ${id + 1}".text.make()),
       body: HistoryModel.entry.data.isEmpty
           ? "No Transactions for Friend ${id + 1}".text.bold.make().centered()
