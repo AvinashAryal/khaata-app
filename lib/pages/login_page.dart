@@ -1,14 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:khaata_app/backend/authentication.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../models/structure.dart';
+// Back-end imports
 import 'package:khaata_app/backend/userbaseUtility.dart';
+import 'package:khaata_app/backend/authentication.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
+  
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -116,10 +115,11 @@ class _LoginPageState extends State<LoginPage> {
                       onTap: (){
                           name = namer.text.trim() ;
                           String pass = passer.text.trim() ;
-                          getMailFromUsername(name).then((value) {
+                          getMailFromUsername(name).then((value) async{
                             print("$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
-                            setState(() {
-                              Authentication().setDisplayName(name) ;
+                            await Authentication().setDisplayName(name) ;
+                            setState((){
+                              // just in case I forget ...
                             });
                             moveToHome(context, Authentication().signInUser(email: loggerMail, password: pass));
                           }) ;
