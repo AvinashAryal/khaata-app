@@ -1,0 +1,39 @@
+
+// Author: Diwas Adhikari
+// Firebase Access and CRUD Stuff - Userbase Utility
+
+import "package:cloud_firestore/cloud_firestore.dart" ;
+
+import '../models/structure.dart';
+
+class Userbase{
+  final _database = FirebaseFirestore.instance ;
+  String collectionPath = "user-data" ; // Don't mess with this as well - HAHAHA !
+
+  // Create a new user and store it in the cloud (C)
+  createNewUser(UserData user) async {
+      await _database.collection(collectionPath).add(user.toJSON())
+          .whenComplete((){
+              // do smth
+          })
+          .catchError((error){
+              print("Error: + $error") ;
+          }) ;
+  }
+
+  // Get a list of users from the cloud whose certain field value is certain - HAHAHA ! (R)
+  Future<UserData> getUserDetails(String fieldType, String value) async{
+    final snapShot = await _database.collection(collectionPath).where(fieldType, isEqualTo: value).get() ;
+    final data = snapShot.docs.map((e) => UserData.fromSnapshot(e)).single ;
+    return data ;
+  }
+
+  // Get a bunch of user from the cloud that satisfy the where clause - HAHAHA ! (R)
+  Future<List<UserData>> getBunchOfUsers(String fieldType, String value) async{
+    final snapShot = await _database.collection(collectionPath).where(fieldType, isEqualTo: value).get() ;
+    final data = snapShot.docs.map((e) => UserData.fromSnapshot(e)).toList() ;
+    return data ;
+  }
+
+}
+

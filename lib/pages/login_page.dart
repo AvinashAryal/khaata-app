@@ -4,6 +4,7 @@ import 'package:khaata_app/backend/authentication.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../models/structure.dart';
+import 'package:khaata_app/backend/userbaseUtility.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,20 +15,21 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String name = "";
+  String loggerMail = "0xFF" ;
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController emailer = TextEditingController() ;
+  TextEditingController namer = TextEditingController() ;
   TextEditingController passer = TextEditingController() ;
 
-  /*
-  UserData getMailFromUsername(String name){
-    final reference = FirebaseFirestore.instance.collection('user-data') ;
-    reference.doc(name).get().then((DocumentSnapshot doc) => {
-      UserData logger = UserData.fromJSON(doc.data()) ;
-      return logger ;
+  // Backend utilities {Diwas - Don't mess with field names !}
+  Future<void> getMailFromUsername (String name) async{
+    await Userbase().getUserDetails("name", name).then((specified) {
+      // Forget setState and I lost my shit - hahahaha !
+      setState(() {
+        loggerMail = specified.email ;
+      });
     }) ;
   }
-  */
 
   moveToHome(BuildContext context, Future<bool> givePass) async {
     if (!_formKey.currentState!.validate()) {
@@ -37,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
       changeButton = true;
     });
     if(await givePass) {
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 50));
       await Navigator.pushNamed(context, "/");
       Navigator.pop(context, "/login");
       setState(() {
@@ -71,15 +73,18 @@ class _LoginPageState extends State<LoginPage> {
                       vertical: 16.0, horizontal: 32.0),
                   child: Column(children: [
                     TextFormField(
-                      controller: emailer,
+                      controller: namer,
                       decoration: const InputDecoration(
-                        labelText: "Email",
-                        hintText: "Enter email address",
+                        labelText: "Username",
+                        hintText: "Enter username",
                       ),
                       onChanged: (value) => {name = value, setState(() {})},
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return ("Email address cannot be empty.");
+                          return ("Username cannot be empty.");
+                        }
+                        else if (value == "0xFF"){
+                          return ("Username is not found.") ;
                         }
                         return null;
                       },
@@ -105,9 +110,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     InkWell(
                       onTap: (){
-                          String mail = emailer.text.trim() ;
+                          String name = namer.text.trim() ;
                           String pass = passer.text.trim() ;
-                          moveToHome(context, Authentication().signInUser(email: mail, password: pass)) ;
+                          getMailFromUsername(name).then((value) {
+                            print("$name\n$pass\n$loggerMail"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                            moveToHome(context, Authentication().signInUser(email: loggerMail, password: pass));
+                          }) ;
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 500),
