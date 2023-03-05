@@ -54,6 +54,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.12.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -61,6 +62,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
+#splash screen config
 flutter_native_splash:
   color: '#f7f7f7'
   color_dark: '272727'
@@ -72,6 +74,13 @@ flutter_native_splash:
     icon_background_color_dark: '272727'
     image: assets/images/khaata-logo.png
     image_dark: assets/images/khaata-logo.png
+
+
+#app icon config
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: assets/images/khaata-icon.png
 
 
 # For information on the generic Dart part of this file, see the
