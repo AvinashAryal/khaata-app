@@ -78,12 +78,16 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: "Username",
                         hintText: "Enter username",
                       ),
-                      onChanged: (value) => {name = value, setState(() {})},
+                      onChanged: (value) => {
+                        setState(() {
+                          name = value ;
+                        })
+                      },
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Username cannot be empty.");
                         }
-                        else if (value == "0xFF"){
+                        else if (value == ""){
                           return ("Username is not found.") ;
                         }
                         return null;
@@ -110,10 +114,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     InkWell(
                       onTap: (){
-                          String name = namer.text.trim() ;
+                          name = namer.text.trim() ;
                           String pass = passer.text.trim() ;
                           getMailFromUsername(name).then((value) {
-                            print("$name\n$pass\n$loggerMail"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                            print("$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                            setState(() {
+                              Authentication().setDisplayName(name) ;
+                            });
                             moveToHome(context, Authentication().signInUser(email: loggerMail, password: pass));
                           }) ;
                       },

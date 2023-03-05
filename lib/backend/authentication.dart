@@ -35,5 +35,9 @@ class Authentication{
   Future<void> signOut() async{
     await _auth.signOut() ;
   }
+
+  Future<void> setDisplayName(String name) async{
+    await _auth.currentUser?.updateDisplayName(name) ;
+  }
 }
 

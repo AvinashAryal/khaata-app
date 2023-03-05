@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
-
+import 'package:khaata_app/backend/userbaseUtility.dart';
 import '../utils/themes.dart';
 
 class MyDrawer extends StatelessWidget {
   MyDrawer({super.key});
 
-  final String? name = Authentication().CurrentUser?.displayName;
-  final String? mail = Authentication().CurrentUser?.email;
-
+  final String? mail = Authentication().CurrentUser?.email ;
+  final String? name = Authentication().CurrentUser?.displayName ;
   @override
   Widget build(BuildContext context) {
     final imageURL =
