@@ -1,12 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:khaata_app/models/history_data_model.dart';
+import 'package:khaata_app/models/my_map_data.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class FriendDetail extends StatefulWidget {
@@ -22,6 +20,8 @@ class FriendDetail extends StatefulWidget {
 
 class _FriendDetailState extends State<FriendDetail> {
   final id;
+  final amountController = TextEditingController();
+  final remarksController = TextEditingController();
   _FriendDetailState(this.id);
   void initState() {
     super.initState();
@@ -29,27 +29,28 @@ class _FriendDetailState extends State<FriendDetail> {
   }
 
   loadData(int id) async {
-    var detailJSON =
-        await rootBundle.loadString("assets/data/historydata.json");
-    var decodedData = jsonDecode(detailJSON);
-    var productsData = decodedData["history"];
-    var currentHistory = [];
-    for (var i = 0; i < productsData.length; i += 1) {
-      var cur = productsData[i];
-      if (cur["id"] == id) {
-        currentHistory = cur["data"];
-      }
-    }
-    HistoryModel.entry.id == id;
-    HistoryModel.entry.data.clear();
-    if (currentHistory == null) {
-      return;
-    }
-    for (var i = 0; i < currentHistory.length; i++) {
-      var cur = currentHistory[i];
-      HistoryModel.entry.data.add(SingleEntry.fromMap(cur));
-    }
-    setState(() {});
+    var currentHistory = TransactionData.myMap[id];
+//    var detailJSON =
+//        await rootBundle.loadString("assets/data/historydata.json");
+//    var decodedData = jsonDecode(detailJSON);
+//    var productsData = decodedData["history"];
+//    var currentHistory = [];
+//    for (var i = 0; i < productsData.length; i += 1) {
+//      var cur = productsData[i];
+//      if (cur["id"] == id) {
+//        currentHistory = cur["data"];
+//      }
+//    }
+//    HistoryModel.entry.id == id;
+//    HistoryModel.entry.data.clear();
+//    if (currentHistory == null) {
+//      return;
+//    }
+//    for (var i = 0; i < currentHistory.length; i++) {
+//      var cur = currentHistory[i];
+//      HistoryModel.entry.data.add(SingleEntry.fromMap(cur));
+//    }
+//    setState(() {});
   }
 
   @override
@@ -64,13 +65,35 @@ class _FriendDetailState extends State<FriendDetail> {
                   title: Text("Enter the Details of new Transaction"),
                   content: Text("Use minus(-) sign for received amount"),
                   actions: [
-                    TextFormField(
+                    TextField(
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                           alignLabelWithHint: true,
                           labelText: "Amount",
                           hintText: "Enter Amount here"),
-                    ).p32()
+                      controller: amountController,
+                    ).pOnly(left: 16, right: 16),
+                    TextField(
+                      decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          labelText: "Remarks",
+                          hintText: "Remarks about the transaction"),
+                      controller: remarksController,
+                    ).pOnly(left: 16, right: 16),
+                    TextButton(
+                        onPressed: (() {
+                          TransactionEntry cur = TransactionEntry(
+                              DateTime.now(),
+                              remarksController.text,
+                              int.parse(amountController.text));
+                          TransactionData.addData(id, cur);
+                          print(TransactionData.myMap[id]);
+                          Navigator.of(context).pop();
+                        }),
+                        child: Text(
+                          "Ok",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ))
                   ],
                 );
               }));
@@ -78,17 +101,21 @@ class _FriendDetailState extends State<FriendDetail> {
         child: Icon(CupertinoIcons.add),
       ),
       appBar: AppBar(title: "Details of friend no ${id + 1}".text.make()),
-      body: HistoryModel.entry.data.isEmpty
+      body: TransactionData.myMap[id] == null ||
+              TransactionData.myMap[id]!.isEmpty
           ? "No Transactions for Friend ${id + 1}".text.bold.make().centered()
           : ListView.builder(
-              itemCount: HistoryModel.entry.data.length,
+              itemCount: TransactionData.myMap[id]?.length,
               itemBuilder: ((context, index) {
+                var cur = TransactionData.myMap[id]![index];
                 return ListTile(
-                  leading: HistoryModel.entry.data[index].date.text.make(),
-                  trailing: HistoryModel.entry.data[index].transac.text.make(),
-                  title: "Remarks".text.make(),
+                  leading: Text(
+                      "${cur.dateTime.year}-${cur.dateTime.month}-${cur.dateTime.day} ${cur.dateTime.hour}:${cur.dateTime.minute}"),
+                  trailing: Text(cur.amount.toString()),
+                  title: cur.remarks.text.make(),
                 );
-              })),
+              }),
+            ),
     );
   }
 }
