@@ -37,7 +37,7 @@ class TransactionRecord{
     String reqID = await Authentication().CurrentUser?.uid as String ;
     final snapShot = await _database.collection(collectionPath)
                            //.where("lenderID == ${reqID} || borrowerID == ${reqID}")
-                           .where("lenderID", isEqualTo: Authentication().CurrentUser?.uid as String)
+                           .where("lenderID", isEqualTo: reqID)
                            .where("transactionDate", isLessThanOrEqualTo: Timestamp.now())
                            .limit(limiter).orderBy("transactionDate", descending: true).get() ;
     final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList() ;

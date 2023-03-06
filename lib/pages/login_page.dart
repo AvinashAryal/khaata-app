@@ -77,11 +77,6 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: "Username",
                         hintText: "Enter username",
                       ),
-                      onChanged: (value) => {
-                        setState(() {
-                          name = value ;
-                        })
-                      },
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Username cannot be empty.");
