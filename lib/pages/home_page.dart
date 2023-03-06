@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
                     }),
                     icon: Icon(CupertinoIcons.bell))
               ]
-            : [FriendSerachBar()],
+            : [FriendSearchBar()],
       ),
       drawer: MyDrawer(),
       bottomNavigationBar: NavigationBar(

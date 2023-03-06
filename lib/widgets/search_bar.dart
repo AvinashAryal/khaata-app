@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class FriendSerachBar extends StatefulWidget {
-  const FriendSerachBar({super.key});
+class FriendSearchBar extends StatefulWidget {
+  const FriendSearchBar({super.key});
 
   @override
-  State<FriendSerachBar> createState() => _FriendSerachBarState();
+  State<FriendSearchBar> createState() => _FriendSearchBarState();
 }
 
-class _FriendSerachBarState extends State<FriendSerachBar> {
+class _FriendSearchBarState extends State<FriendSearchBar> {
   @override
   Widget build(BuildContext context) {
     return IconButton(

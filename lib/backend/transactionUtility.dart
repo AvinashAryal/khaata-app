@@ -34,7 +34,7 @@ class TransactionRecord{
   // Get 5 recent records until today (R)
   // Very sensitive function because it has built composite index in Firestore - {WARNING {Diwas} - Don't touch this guy - HAHAHA}
   Future<List<Record>> getRecentRecords(int limiter) async{
-    String reqID = await Authentication().CurrentUser?.uid as String ;
+    String reqID = await Authentication().currentUser?.uid as String ;
     final snapShot = await _database.collection(collectionPath)
                            //.where("lenderID == ${reqID} || borrowerID == ${reqID}")
                            .where("lenderID", isEqualTo: reqID)

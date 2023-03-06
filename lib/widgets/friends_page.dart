@@ -13,7 +13,7 @@ class FriendsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: FriendsList());
+    return const Scaffold(body: FriendsList());
   }
 }
 
@@ -29,6 +29,7 @@ class _FriendsListState extends State<FriendsList> {
   List<String> friendDetails = [] ;
   String tempName = "" ;
 
+  @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero,() async {
@@ -39,7 +40,7 @@ class _FriendsListState extends State<FriendsList> {
   // Backend utilities {Diwas - Don't mess with field names !}
   // I will first get all ids of friends for current user !
   Future<void> getFriendsFromID () async{
-    String reqID = await Authentication().CurrentUser?.uid as String ;
+    String reqID = Authentication().currentUser?.uid as String ;
     await Userbase().getUserDetails("id", reqID).then((specified) {
       // Forget setState and I lost my shit - hahahaha !
       setState(() {
@@ -62,11 +63,11 @@ class _FriendsListState extends State<FriendsList> {
   }
 
   @override Widget build(BuildContext context) {
-    return ListView.builder(
+    return friendDetails.isEmpty ? Center(child: CircularProgressIndicator()) : ListView.builder(
         itemCount: friendDetails.length,
         itemBuilder: ((context, index) {
           return ListTile(
-            leading: Icon(CupertinoIcons.person_crop_circle_fill),
+            leading: const Icon(CupertinoIcons.person_crop_circle_fill),
             trailing: "Rs. 100".text.make(),
             title: "${friendDetails[index]}".text.make(),
             onTap: () {

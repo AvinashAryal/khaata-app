@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 // New imports for back-end {Diwas}
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:khaata_app/backend/authentication.dart' ;
 import 'package:khaata_app/backend/userbaseUtility.dart' ;
 import 'package:khaata_app/models/structure.dart';
@@ -35,12 +34,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // Add a new user using async method to push data in Firebase cloud
   Future addUser({required String name, required String email, required String number, required String password}) async{
-    final database = FirebaseFirestore.instance.collection('user-data') ;
-    final newUser = database.doc();
     final hash = generateHash(password);
     // I just remade this thing again with new classes - life is awful !
     await Authentication().registerUser(email: email, password: password) ;
-    final user = UserData(id: Authentication().CurrentUser?.uid, name: name, number: number, email: email, hash: hash, friends : []);
+    final user = UserData(id: Authentication().currentUser?.uid, name: name, number: number, email: email, hash: hash, friends : []);
     await Userbase().createNewUser(user) ;
   }
 
@@ -57,9 +54,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(
                   height: 60.0,
                 ),
-                Text(
+                const Text(
                   "Register",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
@@ -76,10 +73,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          if(ifItExists)
+                          if(ifItExists) {
                             return ("Username already exists! ");
-                          else
+                          }
+                          else {
                             return ("Username cannot be empty.");
+                          }
                         }
                         return null;
                       },
@@ -92,10 +91,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          if(ifItExists)
+                          if(ifItExists) {
                             return ("Email already exists! ");
-                          else
+                          }
+                          else {
                             return ("Email address cannot be empty.");
+                          }
                         }
                         return null;
                       },

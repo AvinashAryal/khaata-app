@@ -36,19 +36,24 @@ class _MyAppState extends State<MyApp> {
   var logged = false ;
   // Check if a user is already authenticated or not ! {Diwas - You know the deal here !}
   Future<void> checkIfAuthenticated() async{
-    await Authentication().changes.listen((user) {
-      if(user != null && mounted){
-        setState(() {
-          logged = true ;
-        });
-      }
+    await Authentication().changes.then((change){
+      change.listen((user) {
+        if(user != null && mounted){
+          setState(() {
+            logged = true ;
+          });
+        }
+      }) ;
     }) ;
   }
 
+  @override
   void initState(){
     super.initState() ;
     Future.delayed((Duration.zero), () async{
-      await checkIfAuthenticated() ;
+      await checkIfAuthenticated().then((value){
+        print('Already authenticated') ;
+      }) ;
     }) ;
   }
 

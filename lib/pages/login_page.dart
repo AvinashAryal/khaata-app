@@ -77,6 +77,11 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: "Username",
                         hintText: "Enter username",
                       ),
+                      onChanged: (value){
+                          setState(() {
+                            name = value ;
+                          });
+                        },
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Username cannot be empty.");
@@ -127,11 +132,11 @@ class _LoginPageState extends State<LoginPage> {
                               BorderRadius.circular(changeButton ? 50 : 16),
                         ),
                         child: changeButton
-                            ? Icon(
+                            ? const Icon(
                                 Icons.done,
                                 color: Colors.white,
                               )
-                            : Text(
+                            : const Text(
                                 "Login",
                                 style: TextStyle(
                                   color: Colors.white,

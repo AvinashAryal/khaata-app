@@ -18,7 +18,7 @@ class Dashboard extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          "Your Summary".text.bold.lg.make().p(8),
+          "Your Summary".text.xl2.bold.make(),
           MyPieChart().p(8),
           "Recents".text.xl2.bold.make(),
           RecentList().expand(),
@@ -54,6 +54,7 @@ class _RecentListState extends State<RecentList> {
   List<UserData> borrowers = [] ;
   List<UserData> lenders = [] ;
 
+  @override
   void initState(){
     super.initState() ;
     Future.delayed(Duration.zero,() async {
@@ -63,7 +64,9 @@ class _RecentListState extends State<RecentList> {
 
   Future<void> getPastTransactions () async{
     await TransactionRecord().getRecentRecords(5).then((specified){
-      records = specified ;
+      setState(() {
+        records = specified ;
+      });
     }) ;
   }
 
@@ -85,8 +88,8 @@ class _RecentListState extends State<RecentList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: lenders.length,
+    return borrowers.isEmpty ? Center(child: CircularProgressIndicator()) : ListView.builder(
+        itemCount: records.length,
         itemBuilder: ((context, index) {
           return ListTile(
               title: "${lenders[index].name} -----------> ${borrowers[index].name}".text.lg.make(),
