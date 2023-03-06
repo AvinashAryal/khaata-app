@@ -5,35 +5,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserData{
-  String? id ;
+  final String? id ;
   final String name, number, email, hash ;
+  final List<dynamic> friends ;
 
-  UserData({ required this.id, required this.name, required this.number, required this.email, required this.hash}) ;
+  UserData({ required this.id, required this.name, required this.number, required this.email, required this.hash, required this.friends}) ;
 
   // Convert tuple to JSON so that we can later push it to the cloud store
   Map<String, dynamic> toJSON() => {
-    'id' : id, 'name' : name, 'number' : number, 'email': email, 'hash' : hash
+    'id' : id, 'name' : name, 'number' : number, 'email': email, 'hash' : hash, 'friends' : friends
   } ;
 
   // Read the JSON from the document in the cloud store and convert to an user object with the tuple data
-  // (Two methods to do sa,me - hahhahaha) !
+  // (Two methods to do the same - hahhahaha) !
   static UserData fromJSON(Map<String, dynamic> json) =>
       UserData(id: json['id'], name : json['name'], number : json['number'],
-               email: json['email'], hash : json['hash']) ;
+               email: json['email'], hash : json['hash'], friends : json['friends']) ;
 
   factory UserData.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> docu){
-        final data = docu.data()! ;
-        return UserData(id: docu.id, name: data["name"], number: data["number"], email: data["email"], hash: data["hash"]) ;
+        final data = docu.data()! ; // null checks are lame in Dart !
+        return UserData(id: docu.id, name: data["name"], number: data["number"],
+               email: data["email"], hash: data["hash"], friends: data["friends"]) ;
   }
-
-
-
-
-
-
-
-
-
-
-
 }

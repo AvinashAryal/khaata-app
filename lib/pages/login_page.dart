@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                           String pass = passer.text.trim() ;
                           getMailFromUsername(name).then((value) async{
                             print("$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
-                            await Authentication().setDisplayName(name) ;
+                            await Authentication().setInfoForCurrentUser(name) ;
                             setState((){
                               // just in case I forget ...
                             });
@@ -153,14 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: (() {
                           Navigator.pushNamed(context, "/register");
                         }),
-                        child: Text("Not registered? Register"))
-                    //   ElevatedButton(
-                    //     child: Text("Login"),
-                    //     style: TextButton.styleFrom(minimumSize: const Size(150, 40)),
-                    //     onPressed: () {
-                    //       Navigator.pushNamed(context, MyRoutes.homeRoute);
-                    //     },
-                    //   )
+                        child: Text("Not registered? Register")
+                    )
                   ]),
                 )
               ],
