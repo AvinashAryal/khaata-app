@@ -30,15 +30,15 @@ class _LoginPageState extends State<LoginPage> {
     }) ;
   }
 
-  moveToHome(BuildContext context, Future<bool> givePass) async {
+  moveToHome(BuildContext context, bool givePass) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     setState(() {
       changeButton = true;
     });
-    if(await givePass) {
-      await Future.delayed(const Duration(milliseconds: 50));
+    if(givePass) {
+      await Future.delayed(const Duration(milliseconds: 100));
       await Navigator.pushNamed(context, "/");
       Navigator.pop(context, "/login");
       setState(() {
@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 60.0,
                 ),
                 Text(
-                  "Welcome $name!",
+                  "Welcome $name !",
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -118,10 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                           getMailFromUsername(name).then((value) async{
                             print("$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
                             await Authentication().setInfoForCurrentUser(name) ;
-                            setState((){
-                              // just in case I forget ...
-                            });
-                            moveToHome(context, Authentication().signInUser(email: loggerMail, password: pass));
+                            moveToHome(context, await Authentication().signInUser(email: loggerMail, password: pass));
                           }) ;
                       },
                       child: AnimatedContainer(

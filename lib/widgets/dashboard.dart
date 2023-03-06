@@ -56,7 +56,9 @@ class _RecentListState extends State<RecentList> {
 
   void initState(){
     super.initState() ;
-    getDetailsOfParticipants() ;
+    Future.delayed(Duration.zero,() async {
+      await getDetailsOfParticipants() ;
+    });
   }
 
   Future<void> getPastTransactions () async{
@@ -87,9 +89,13 @@ class _RecentListState extends State<RecentList> {
         itemCount: lenders.length,
         itemBuilder: ((context, index) {
           return ListTile(
-              title: "${lenders[index].name} -----------> ${borrowers[index].name}".text.sm.make(),
-              leading: "${records[index].transactionDate.toDate()}".text.sm.make(),
-              trailing: "Amount => ${records[index].amount}".text.sm.make()
+              title: "${lenders[index].name} -----------> ${borrowers[index].name}".text.lg.make(),
+              subtitle: "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                        " - ${records[index].transactionDate.toDate().toString().substring(0,16)}".text.sm.make(),
+              leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "
+                       "${records[index].transactionDate.toDate().day}".text.sm.make(),
+                         // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
+              trailing: "Amount : ${records[index].amount}".text.lg.make()
           );
         })).pOnly(top: 10);
   }

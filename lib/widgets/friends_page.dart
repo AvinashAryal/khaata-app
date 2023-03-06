@@ -31,13 +31,16 @@ class _FriendsListState extends State<FriendsList> {
 
   void initState() {
     super.initState();
-    getFriendDetails() ;
+    Future.delayed(Duration.zero,() async {
+      await getFriendDetails() ;
+    });
   }
 
   // Backend utilities {Diwas - Don't mess with field names !}
   // I will first get all ids of friends for current user !
   Future<void> getFriendsFromID () async{
-    await Userbase().getUserDetails("id", Authentication().CurrentUser?.uid as String).then((specified) {
+    String reqID = await Authentication().CurrentUser?.uid as String ;
+    await Userbase().getUserDetails("id", reqID).then((specified) {
       // Forget setState and I lost my shit - hahahaha !
       setState(() {
         friends = specified.friends ;
@@ -48,12 +51,9 @@ class _FriendsListState extends State<FriendsList> {
   // Now I will use the list to get details of friends - Sneaky MOVE - HAHAHA !
   Future<void> getFriendDetails() async{
     await getFriendsFromID() ;
-    print(friends.length) ;
     for(var i=0; i<friends.length; i++){
       await Userbase().getUserDetails("id", friends[i].toString()).then((specified) {
         // Forget setState and I lost my shit - hahahaha !
-        print(i) ;
-        print(specified.name) ;
         setState(() {
           friendDetails.insert(i, specified.name) ;
         });

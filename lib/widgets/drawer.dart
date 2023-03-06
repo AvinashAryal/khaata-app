@@ -55,7 +55,8 @@ class MyDrawer extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: ListTile(
-                onTap: (() {
+                onTap: (() async{
+                  await Authentication().signOut() ;
                   Navigator.pushNamed(context, "/login");
                 }),
                 leading: Icon(CupertinoIcons.chevron_left_square_fill,

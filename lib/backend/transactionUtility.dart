@@ -10,6 +10,8 @@ import '../models/transaction.dart';
 class TransactionRecord{
   final _database = FirebaseFirestore.instance ;
   String collectionPath = "transaction-data" ; // Don't mess with this as well - HAHAHA !
+  final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] ;
+  final months = ['Jan', 'Feb', 'Mar', 'May', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] ;
 
   // Create a new transaction and store it in the cloud (C)
   createNewRecord(Record transaction) async {
@@ -32,8 +34,9 @@ class TransactionRecord{
   // Get 5 recent records until today (R)
   // Very sensitive function because it has built composite index in Firestore - {WARNING {Diwas} - Don't touch this guy - HAHAHA}
   Future<List<Record>> getRecentRecords(int limiter) async{
+    String reqID = await Authentication().CurrentUser?.uid as String ;
     final snapShot = await _database.collection(collectionPath)
-                           //.where("lenderID == ${Authentication().CurrentUser?.uid} || borrowerID == ${Authentication().CurrentUser?.uid}")
+                           //.where("lenderID == ${reqID} || borrowerID == ${reqID}")
                            .where("lenderID", isEqualTo: Authentication().CurrentUser?.uid as String)
                            .where("transactionDate", isLessThanOrEqualTo: Timestamp.now())
                            .limit(limiter).orderBy("transactionDate", descending: true).get() ;
