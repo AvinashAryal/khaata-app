@@ -30,6 +30,7 @@ class Authentication{
       return true ;
     } on FirebaseAuthException catch (e) {
         errorDialog = e.message ;
+        print(errorDialog) ;
         return false ;
     }
   }

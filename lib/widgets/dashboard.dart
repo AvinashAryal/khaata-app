@@ -53,20 +53,18 @@ class _RecentListState extends State<RecentList> {
   List<UserData> borrowers = [] ;
   List<UserData> lenders = [] ;
 
-  @override
-  void initState(){
-    super.initState() ;
-    Future.delayed(Duration.zero,() async {
-      await getDetailsOfParticipants() ;
-    });
-  }
-
-  Future<void> getPastTransactions () async{
-    await TransactionRecord().getRecentRecords(5).then((specified){
+  Future<void> getPastTransactions() async{
+    await TransactionRecord().getRecentLendRecords(2).then((specified){
       setState(() {
         records = specified ;
       });
     }) ;
+    await TransactionRecord().getRecentBorrowRecords(2).then((specified){
+      setState(() {
+        records = records + specified ;
+      });
+    }) ;
+    print(records) ;
   }
 
   Future<void> getDetailsOfParticipants() async{
@@ -86,10 +84,19 @@ class _RecentListState extends State<RecentList> {
   }
 
   @override
+  void initState(){
+    super.initState() ;
+    Future.delayed(Duration.zero,() async {
+      await getDetailsOfParticipants() ;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return borrowers.isEmpty ? (records.isEmpty ? Center(child: "No recent transactions".text.lg.make()) : Center(child: CircularProgressIndicator()))
+    return borrowers.isEmpty && borrowers.length <= records.length ? (records.isEmpty
+        ? Center(child: "No recent transactions".text.lg.make()) : Center(child: CircularProgressIndicator()))
         : ListView.builder(
-        itemCount: records.length,
+        itemCount: lenders.length,
         itemBuilder: ((context, index) {
           return ListTile(
               title: "${lenders[index].name} -----------> ${borrowers[index].name}".text.lg.make(),

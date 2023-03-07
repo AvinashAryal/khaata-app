@@ -31,17 +31,42 @@ class TransactionRecord{
     return data ;
   }
 
-  // Get 5 recent records until today (R)
+  // Get 'x' recent records until today (R)
   // Very sensitive function because it has built composite index in Firestore - {WARNING {Diwas} - Don't touch this guy - HAHAHA}
-  Future<List<Record>> getRecentRecords(int limiter) async{
-    String reqID = Authentication().currentUser?.uid == null ? "" : Authentication().currentUser?.uid as String ;
-    final snapShot = await _database.collection(collectionPath)
-                           //.where("lenderID == ${reqID} || borrowerID == ${reqID}")
-                           .where("lenderID", isEqualTo: reqID)
-                           .where("transactionDate", isLessThanOrEqualTo: Timestamp.now())
-                           .limit(limiter).orderBy("transactionDate", descending: true).get() ;
-    final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList() ;
-    return data ;
+  Future<List<Record>> getRecentLendRecords(int limiter) async{
+    //String reqID = Authentication().currentUser?.uid == null ? "" : Authentication().currentUser?.uid as String ;
+    String reqID = "" ;
+    if(Authentication().currentUser?.uid == null){
+      return [] ;
+    }
+    else {
+      reqID = Authentication().currentUser?.uid as String;
+      final snapShot = await _database.collection(collectionPath)
+          //.where("lenderID == ${reqID} || borrowerID == ${reqID}")
+          .where("lenderID", isEqualTo: reqID)
+          .where("transactionDate", isLessThanOrEqualTo: Timestamp.now())
+          .limit(limiter).orderBy("transactionDate", descending: true).get();
+      final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList();
+      return data;
+    }
+  }
+
+  //We can only do it separately since shitty Firebase doesn't offer OR query - huhuhu {Diwas}
+  Future<List<Record>> getRecentBorrowRecords(int limiter) async{
+    //String reqID = Authentication().currentUser?.uid == null ? "" : Authentication().currentUser?.uid as String ;
+    String reqID = "" ;
+    if(Authentication().currentUser?.uid == null){
+      return [] ;
+    }
+    else {
+      reqID = Authentication().currentUser?.uid as String;
+      final snapShot = await _database.collection(collectionPath)
+          .where("borrowerID", isEqualTo: reqID)
+          .where("transactionDate", isLessThanOrEqualTo: Timestamp.now())
+          .limit(limiter).orderBy("transactionDate", descending: true).get();
+      final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList();
+      return data;
+    }
   }
 }
 

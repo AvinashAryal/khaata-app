@@ -39,7 +39,7 @@ class _FriendsListState extends State<FriendsList> {
 
   // Backend utilities {Diwas - Don't mess with field names !}
   // I will first get all ids of friends for current user !
-  Future<void> getFriendsFromID () async{
+  Future<void> getFriendsFromID() async{
     String reqID = Authentication().currentUser?.uid as String ;
     await Userbase().getUserDetails("id", reqID).then((specified) {
       // Forget setState and I lost my shit - hahahaha !
