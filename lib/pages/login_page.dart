@@ -14,7 +14,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String name = "";
-  String loggerMail = "0xFF";
+  bool wrongUser = true ;
+  bool wrongPass = false ;
+  String loggerMail = "0xFF" ;
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController namer = TextEditingController();
@@ -25,20 +27,34 @@ class _LoginPageState extends State<LoginPage> {
     await Userbase().getUserDetails("name", name).then((specified) {
       // Forget setState and I lost my shit - hahahaha !
       setState(() {
-        loggerMail = specified.email;
-      });
-    });
+        loggerMail = specified.email ;
+        wrongUser = false ; // this is needed and I know it !
+      }) ;
+    }).catchError((error){
+          print(error) ;
+          setState(() {
+            wrongUser = true ;
+          });
+    }) ;
   }
 
-  moveToHome(BuildContext context, bool givePass) async {
-    if (!_formKey.currentState!.validate()) {
-      return;
+  moveToHome(BuildContext context, bool givePass) async{
+    if(!givePass){
+      setState(() {
+        wrongPass = true ;
+      });
     }
-    setState(() {
-      changeButton = true;
-    });
-    if (givePass) {
-      await Future.delayed(const Duration(milliseconds: 100));
+    else {
+      setState(() {
+        wrongPass = false;
+        changeButton = true;
+      });
+    }
+    if (!_formKey.currentState!.validate()) {
+      return ;
+    }
+    else{
+      await Future.delayed(const Duration(milliseconds: 500));
       await Navigator.pushNamed(context, "/");
       Navigator.pop(context, "/login");
       setState(() {
@@ -85,8 +101,9 @@ class _LoginPageState extends State<LoginPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Username cannot be empty.");
-                        } else if (value == "") {
-                          return ("Username is not found.");
+                        }
+                        else if (wrongUser){
+                          return ("Username is not found.") ;
                         }
                         return null;
                       },
@@ -101,8 +118,8 @@ class _LoginPageState extends State<LoginPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Password cannot be empty.");
-                        } else if (value.length < 8) {
-                          return ("Password is too short");
+                        } else if (wrongPass) {
+                          return ("Your password doesn't match! ");
                         }
                         return null;
                       },
@@ -111,18 +128,14 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20.0,
                     ),
                     InkWell(
-                      onTap: () {
-                        name = namer.text.trim();
-                        String pass = passer.text.trim();
-                        getMailFromUsername(name).then((value) async {
-                          print(
-                              "$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
-                          await Authentication().setInfoForCurrentUser(name);
-                          moveToHome(
-                              context,
-                              await Authentication().signInUser(
-                                  email: loggerMail, password: pass));
-                        });
+                      onTap: (){
+                          name = namer.text.trim() ;
+                          String pass = passer.text.trim() ;
+                          getMailFromUsername(name).then((value) async{
+                            print("$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                            await Authentication().setInfoForCurrentUser(name) ;
+                            moveToHome(context, await Authentication().signInUser(email: loggerMail, password: pass)) ;
+                          }) ;
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 500),
