@@ -150,34 +150,35 @@ class _FriendRequestListState extends State<FriendRequestList> {
         itemBuilder: ((context, index) {
           return Card(
               elevation: 5,
-              child: Row(children: [
-                Icon(
-                  CupertinoIcons.person_fill,
-                  color: Colors.blue,
-                  size: 20,
-                ).pOnly(right: 48, left: 30),
-                SizedBox(
-                  child: "Request ${index + 1}".text.xl.bold.make(),
-                  width: 180,
-                ),
-                ButtonBar(
-                  alignment: MainAxisAlignment.spaceEvenly,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        )),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.red,
-                        ))
-                  ],
-                ),
-              ]));
+                    Icon(
+                      CupertinoIcons.person_fill,
+                      color: Colors.blue,
+                      size: 20,
+                    ).pOnly(right: 48, left: 30),
+                    SizedBox(
+                      child: "Request ${index + 1}".text.xl.bold.make(),
+                      width: 100,
+                    ),
+                    ButtonBar(
+                      children: [
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            )),
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ))
+                      ],
+                    ),
+                  ]));
         }));
   }
 }

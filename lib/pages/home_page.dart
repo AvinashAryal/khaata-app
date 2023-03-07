@@ -26,7 +26,9 @@ class _HomePageState extends State<HomePage> {
                 CupertinoIcons.person_2_fill,
               ),
               label: "Friends"),
-          NavigationDestination(icon: Icon(Icons.money), label: "Transactions"),
+          NavigationDestination(
+              icon: Icon(CupertinoIcons.arrow_2_squarepath),
+              label: "Transactions"),
         ],
         onDestinationSelected: (int index) {
           setState(() {
