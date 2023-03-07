@@ -14,15 +14,18 @@ class _FriendSearchBarState extends State<FriendSearchBar> {
   Widget build(BuildContext context) {
     return IconButton(
         onPressed: () {
-          showSearch(context: context, delegate: CustomSearchDeligate());
+          showSearch(context: context, delegate: CustomSearchDelegate());
         },
-        icon: Icon(CupertinoIcons.search));
+        icon: const Icon(CupertinoIcons.search));
   }
 }
 
-class CustomSearchDeligate extends SearchDelegate {
+class CustomSearchDelegate extends SearchDelegate {
   //list of search terms
   List<String> searchTerms = ["diwas", "avinash", "Alice", "Bob"];
+
+  // Back-end data fetch {Diwas - "Yeah this is how we do it !"}
+
 
   @override
   List<Widget>? buildActions(BuildContext context) {

@@ -63,7 +63,9 @@ class _FriendsListState extends State<FriendsList> {
   }
 
   @override Widget build(BuildContext context) {
-    return friendDetails.isEmpty ? Center(child: CircularProgressIndicator()) : ListView.builder(
+    return friendDetails.isEmpty ? (friends.isEmpty ? Center(child: "Got no friends?\nAdd one right now using '+'".text.lg.make())
+        : Center(child: CircularProgressIndicator()))
+        : ListView.builder(
         itemCount: friendDetails.length,
         itemBuilder: ((context, index) {
           return ListTile(

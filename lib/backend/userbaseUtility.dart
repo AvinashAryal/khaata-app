@@ -49,5 +49,13 @@ class Userbase{
     return data ;
   }
 
+  /*
+  // This is the best hack to create a somewhat LIKE query in Firestore. (Diwas - Its query system sucks !)
+  Future<List<UserData>> getBunchOfUsersSimilar(String fieldType, String value) async{
+    final snapShot = await _database.collection(collectionPath).orderBy(fieldType).startAt(value).endAt(value+'\uf8ff').get() ;
+    final data = snapShot.docs.map((e) => UserData.fromSnapshot(e)).toList() ;
+    return data ;
+  }
+  */
 }
 
