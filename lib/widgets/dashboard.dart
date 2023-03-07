@@ -15,6 +15,14 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MyDrawer(),
+      appBar: AppBar(title: "Khaata".text.make(), actions: [
+        IconButton(
+            onPressed: (() {
+              Navigator.pushNamed(context, "/notifications");
+            }),
+            icon: Icon(CupertinoIcons.bell))
+      ]),
       body: Column(
         children: [
           "Your Summary".text.xl2.bold.make(),
@@ -49,58 +57,78 @@ class RecentList extends StatefulWidget {
 }
 
 class _RecentListState extends State<RecentList> {
-  List<Record> records = [] ;
-  List<UserData> borrowers = [] ;
-  List<UserData> lenders = [] ;
+  List<Record> records = [];
+  List<UserData> borrowers = [];
+  List<UserData> lenders = [];
 
   @override
-  void initState(){
-    super.initState() ;
-    Future.delayed(Duration.zero,() async {
-      await getDetailsOfParticipants() ;
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await getDetailsOfParticipants();
     });
   }
 
-  Future<void> getPastTransactions () async{
-    await TransactionRecord().getRecentRecords(5).then((specified){
+  Future<void> getPastTransactions() async {
+    await TransactionRecord().getRecentRecords(5).then((specified) {
       setState(() {
-        records = specified ;
+        records = specified;
       });
-    }) ;
+    });
   }
 
-  Future<void> getDetailsOfParticipants() async{
-    await getPastTransactions() ;
-    for(var i=0; i<records.length; i++){
-      await Userbase().getUserDetails("id", records[i].lenderID.toString()).then((value){
+  Future<void> getDetailsOfParticipants() async {
+    await getPastTransactions();
+    for (var i = 0; i < records.length; i++) {
+      await Userbase()
+          .getUserDetails("id", records[i].lenderID.toString())
+          .then((value) {
         setState(() {
-          lenders.insert(i, value) ;
+          lenders.insert(i, value);
         });
-      }) ;
-      await Userbase().getUserDetails("id", records[i].borrowerID.toString()).then((value){
+      });
+      await Userbase()
+          .getUserDetails("id", records[i].borrowerID.toString())
+          .then((value) {
         setState(() {
-          borrowers.insert(i, value) ;
+          borrowers.insert(i, value);
         });
-      }) ;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return borrowers.isEmpty ? (records.isEmpty ? Center(child: "No recent transactions".text.lg.make()) : Center(child: CircularProgressIndicator()))
+    return borrowers.isEmpty
+        ? (records.isEmpty
+            ? Center(child: "No recent transactions".text.lg.make())
+            : Center(child: CircularProgressIndicator()))
         : ListView.builder(
-        itemCount: records.length,
-        itemBuilder: ((context, index) {
-          return ListTile(
-              title: "${lenders[index].name} -----------> ${borrowers[index].name}".text.lg.make(),
-              subtitle: "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
-                        " - ${records[index].transactionDate.toDate().toString().substring(0,16)}".text.sm.make(),
-              leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "
-                       "${records[index].transactionDate.toDate().day}".text.sm.make(),
-                         // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
-              trailing: "Amount : ${records[index].amount}".text.lg.make()
-          );
-        })).pOnly(top: 10);
+            itemCount: records.length,
+            itemBuilder: ((context, index) {
+              return Card(
+                child: ListTile(
+                    title:
+                        "${lenders[index].name} -----------> ${borrowers[index].name}"
+                            .text
+                            .lg
+                            .make(),
+                    subtitle:
+                        "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                                " - ${records[index].transactionDate.toDate().toString().substring(0, 16)}"
+                            .text
+                            .sm
+                            .make(),
+                    leading:
+                        "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "
+                                "${records[index].transactionDate.toDate().day}"
+                            .text
+                            .sm
+                            .make(),
+                    // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
+                    trailing:
+                        "Amount : ${records[index].amount}".text.lg.make()),
+              );
+            })).pOnly(top: 10);
   }
 }
-

@@ -7,7 +7,7 @@ import 'package:khaata_app/backend/authentication.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-  
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       changeButton = true;
     });
-    if(givePass) {
+    if (givePass) {
       await Future.delayed(const Duration(milliseconds: 100));
       await Navigator.pushNamed(context, "/");
       Navigator.pop(context, "/login");
@@ -77,17 +77,16 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: "Username",
                         hintText: "Enter username",
                       ),
-                      onChanged: (value){
-                          setState(() {
-                            name = value ;
-                          });
-                        },
+                      onChanged: (value) {
+                        setState(() {
+                          name = value;
+                        });
+                      },
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Username cannot be empty.");
-                        }
-                        else if (value == ""){
-                          return ("Username is not found.") ;
+                        } else if (value == "") {
+                          return ("Username is not found.");
                         }
                         return null;
                       },
@@ -112,14 +111,18 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20.0,
                     ),
                     InkWell(
-                      onTap: (){
-                          name = namer.text.trim() ;
-                          String pass = passer.text.trim() ;
-                          getMailFromUsername(name).then((value) async{
-                            print("$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
-                            await Authentication().setInfoForCurrentUser(name) ;
-                            moveToHome(context, await Authentication().signInUser(email: loggerMail, password: pass));
-                          }) ;
+                      onTap: () {
+                        name = namer.text.trim();
+                        String pass = passer.text.trim();
+                        getMailFromUsername(name).then((value) async {
+                          print(
+                              "$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                          await Authentication().setInfoForCurrentUser(name);
+                          moveToHome(
+                              context,
+                              await Authentication().signInUser(
+                                  email: loggerMail, password: pass));
+                        });
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 500),
@@ -150,8 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: (() {
                           Navigator.pushNamed(context, "/register");
                         }),
-                        child: Text("Not registered? Register")
-                    )
+                        child: Text("Not registered? Register"))
                   ]),
                 )
               ],
