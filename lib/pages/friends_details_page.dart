@@ -86,8 +86,9 @@ class _FriendDetailState extends State<FriendDetail> {
                               DateTime.now(),
                               remarksController.text,
                               int.parse(amountController.text));
-                          TransactionData.addData(id, cur);
-                          print(TransactionData.myMap[id]);
+                          setState(() {
+                            TransactionData.addData(id, cur);
+                          });
                           Navigator.of(context).pop();
                         }),
                         child: Text(
