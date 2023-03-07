@@ -4,7 +4,6 @@ import 'package:khaata_app/backend/transactionUtility.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../backend/authentication.dart';
 import '../backend/userbaseUtility.dart';
 import '../models/structure.dart';
 import '../models/transaction.dart';
@@ -88,7 +87,8 @@ class _RecentListState extends State<RecentList> {
 
   @override
   Widget build(BuildContext context) {
-    return borrowers.isEmpty ? Center(child: CircularProgressIndicator()) : ListView.builder(
+    return borrowers.isEmpty ? (records.isEmpty ? Center(child: "No recent transactions".text.lg.make()) : Center(child: CircularProgressIndicator()))
+        : ListView.builder(
         itemCount: records.length,
         itemBuilder: ((context, index) {
           return ListTile(
