@@ -31,7 +31,7 @@ class FriendsPage extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(20)),
-                  child: "Your Friends".text.xl.color(Colors.white70).make(),
+                  child: "Your Friends".text.lg.bold.color(Colors.white).make(),
                 ),
               ),
               Tab(
@@ -42,7 +42,8 @@ class FriendsPage extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.purpleAccent,
                       borderRadius: BorderRadius.circular(20)),
-                  child: "Friend Requests".text.xl.color(Colors.white70).make(),
+                  child:
+                      "Friend Requests".text.lg.bold.color(Colors.white).make(),
                 ),
               )
             ]),
