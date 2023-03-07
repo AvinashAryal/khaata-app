@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/transactionUtility.dart';
+import 'package:khaata_app/backend/transactionsLoader.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -57,56 +58,32 @@ class RecentList extends StatefulWidget {
 }
 
 class _RecentListState extends State<RecentList> {
-  List<Record> records = [];
-  List<UserData> borrowers = [];
-  List<UserData> lenders = [];
-
-  Future<void> getPastTransactions() async{
-    await TransactionRecord().getRecentLendRecords(2).then((specified){
-      setState(() {
-        records = specified;
-      });
-    }) ;
-    await TransactionRecord().getRecentBorrowRecords(2).then((specified){
-      setState(() {
-        records = records + specified ;
-      });
-    }) ;
-    print(records) ;
-  }
-
-  Future<void> getDetailsOfParticipants() async {
-    await getPastTransactions();
-    for (var i = 0; i < records.length; i++) {
-      await Userbase()
-          .getUserDetails("id", records[i].lenderID.toString())
-          .then((value) {
-        setState(() {
-          lenders.insert(i, value);
-        });
-      });
-      await Userbase()
-          .getUserDetails("id", records[i].borrowerID.toString())
-          .then((value) {
-        setState(() {
-          borrowers.insert(i, value);
-        });
-      });
-    }
-  }
+  List<Record> records = [] ;
+  List<UserData> borrowers = [] ;
+  List<UserData> lenders = [] ;
+  var trans = TransactionLoader() ;
 
   @override
   void initState(){
     super.initState() ;
     Future.delayed(Duration.zero,() async {
-      await getDetailsOfParticipants() ;
+        await trans.getDetailsOfParticipants().then((value){
+          if(mounted) {
+            super.setState(() {
+              records = trans.getRecords;
+              borrowers = trans.getBorrowers;
+              lenders = trans.getLenders;
+              print(records);
+            });
+          }
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return borrowers.isEmpty && borrowers.length <= records.length ? (records.isEmpty
-        ? Center(child: "No recent transactions".text.lg.make()) : Center(child: CircularProgressIndicator()))
+    return borrowers.isEmpty ? (records.isEmpty
+        ? Center(child: "No recent transactions".text.lg.make()) : const Center(child: CircularProgressIndicator()))
         : ListView.builder(
         itemCount: lenders.length,
         itemBuilder: ((context, index) {

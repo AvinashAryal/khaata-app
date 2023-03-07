@@ -7,10 +7,10 @@ import 'package:firebase_auth/firebase_auth.dart' ;
 class Authentication{
 
   String? errorDialog = "" ;
-
   final FirebaseAuth _auth = FirebaseAuth.instance ; // just made it a private instance
+
   User? get currentUser => _auth.currentUser ;
-  Future<Stream<User?>> get changes async => _auth.authStateChanges() ;
+  Future<Stream<User?>> get changes async => await _auth.authStateChanges() ;
 
   Future<bool> registerUser({required String email, required String password}) async{
     try{
