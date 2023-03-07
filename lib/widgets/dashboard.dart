@@ -15,6 +15,14 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MyDrawer(),
+      appBar: AppBar(title: "Khaata".text.make(), actions: [
+        IconButton(
+            onPressed: (() {
+              Navigator.pushNamed(context, "/notifications");
+            }),
+            icon: Icon(CupertinoIcons.bell))
+      ]),
       body: Column(
         children: [
           "Your Summary".text.xl2.bold.make(),
@@ -49,14 +57,14 @@ class RecentList extends StatefulWidget {
 }
 
 class _RecentListState extends State<RecentList> {
-  List<Record> records = [] ;
-  List<UserData> borrowers = [] ;
-  List<UserData> lenders = [] ;
+  List<Record> records = [];
+  List<UserData> borrowers = [];
+  List<UserData> lenders = [];
 
   Future<void> getPastTransactions() async{
     await TransactionRecord().getRecentLendRecords(2).then((specified){
       setState(() {
-        records = specified ;
+        records = specified;
       });
     }) ;
     await TransactionRecord().getRecentBorrowRecords(2).then((specified){
@@ -67,19 +75,23 @@ class _RecentListState extends State<RecentList> {
     print(records) ;
   }
 
-  Future<void> getDetailsOfParticipants() async{
-    await getPastTransactions() ;
-    for(var i=0; i<records.length; i++){
-      await Userbase().getUserDetails("id", records[i].lenderID.toString()).then((value){
+  Future<void> getDetailsOfParticipants() async {
+    await getPastTransactions();
+    for (var i = 0; i < records.length; i++) {
+      await Userbase()
+          .getUserDetails("id", records[i].lenderID.toString())
+          .then((value) {
         setState(() {
-          lenders.insert(i, value) ;
+          lenders.insert(i, value);
         });
-      }) ;
-      await Userbase().getUserDetails("id", records[i].borrowerID.toString()).then((value){
+      });
+      await Userbase()
+          .getUserDetails("id", records[i].borrowerID.toString())
+          .then((value) {
         setState(() {
-          borrowers.insert(i, value) ;
+          borrowers.insert(i, value);
         });
-      }) ;
+      });
     }
   }
 
@@ -110,4 +122,3 @@ class _RecentListState extends State<RecentList> {
         })).pOnly(top: 10);
   }
 }
-

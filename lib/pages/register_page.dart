@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 // New imports for back-end {Diwas}
-import 'package:khaata_app/backend/authentication.dart' ;
-import 'package:khaata_app/backend/userbaseUtility.dart' ;
+import 'package:khaata_app/backend/authentication.dart';
+import 'package:khaata_app/backend/userbaseUtility.dart';
 import 'package:khaata_app/models/structure.dart';
-import 'package:crypto/crypto.dart' ;
+import 'package:crypto/crypto.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -15,44 +15,55 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  String name = "" ;
-  String passAgain = "" ;
+  String name = "";
+  String passAgain = "";
   final _formKey = GlobalKey<FormState>();
   // Text Controllers
-  TextEditingController namer = TextEditingController() ;
-  TextEditingController numberer = TextEditingController() ;
-  TextEditingController emailer = TextEditingController() ;
-  TextEditingController passer = TextEditingController() ;
+  TextEditingController namer = TextEditingController();
+  TextEditingController numberer = TextEditingController();
+  TextEditingController emailer = TextEditingController();
+  TextEditingController passer = TextEditingController();
   // Switches
-  bool ifItExists = false ;
+  bool ifItExists = false;
   // Encrypt pin to a hash using SHA-256
-  String generateHash(String text){
-      var bytesOfData = utf8.encode(text) ;
-      String hashValue = sha256.convert(bytesOfData).toString() ;
-      return hashValue ;
+  String generateHash(String text) {
+    var bytesOfData = utf8.encode(text);
+    String hashValue = sha256.convert(bytesOfData).toString();
+    return hashValue;
   }
 
   // Add a new user using async method to push data in Firebase cloud
-  Future addUser({required String name, required String email, required String number, required String password}) async{
+  Future addUser(
+      {required String name,
+      required String email,
+      required String number,
+      required String password}) async {
     final hash = generateHash(password);
     // I just remade this thing again with new classes - life is awful !
-    await Authentication().registerUser(email: email, password: password) ;
-    final user = UserData(id: Authentication().currentUser?.uid, name: name, number: number, email: email, hash: hash, friends : []);
-    await Userbase().createNewUser(user) ;
+    await Authentication().registerUser(email: email, password: password);
+    final user = UserData(
+        id: Authentication().currentUser?.uid,
+        name: name,
+        number: number,
+        email: email,
+        hash: hash,
+        friends: []);
+    await Userbase().createNewUser(user);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: context.canvasColor,
-      child: Center(
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Material(
+        color: context.canvasColor,
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
               children: [
-                const SizedBox(
-                  height: 60.0,
+                SizedBox(
+                  height: 60,
                 ),
                 const Text(
                   "Register",
@@ -63,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 32.0),
+                      vertical: 0.0, horizontal: 32.0),
                   child: Column(children: [
                     TextFormField(
                       controller: namer,
@@ -73,10 +84,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          if(ifItExists) {
+                          if (ifItExists) {
                             return ("Username already exists! ");
-                          }
-                          else {
+                          } else {
                             return ("Username cannot be empty.");
                           }
                         }
@@ -91,10 +101,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          if(ifItExists) {
+                          if (ifItExists) {
                             return ("Email already exists! ");
-                          }
-                          else {
+                          } else {
                             return ("Email address cannot be empty.");
                           }
                         }
@@ -130,9 +139,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("The password cannot be empty! ");
-                        }
-                        else if (value.length <= 8){
-                          return ("Password is too short! ") ;
+                        } else if (value.length <= 8) {
+                          return ("Password is too short! ");
                         }
                         return null;
                       },
@@ -147,36 +155,42 @@ class _RegisterPageState extends State<RegisterPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("The password cannot be empty! ");
-                        }
-                        else if (value != passer.text.trim()) {
+                        } else if (value != passer.text.trim()) {
                           return ("The passwords don't match! ");
-                        }
-                        else{
-                          passAgain = passer.text.trim() ;
-                          return null ;
+                        } else {
+                          passAgain = passer.text.trim();
+                          return null;
                         }
                       },
                     ),
                     const SizedBox(
                       height: 20.0,
                     ),
-                    ElevatedButton(onPressed: () {
-                      String name1 = namer.text.trim();
-                      String num1 = numberer.text.trim();
-                      String pass = passer.text.trim() ;
-                      String mail = emailer.text.trim() ;
-                      if (!_formKey.currentState!.validate()) {
-                            return;
-                      }
-                      setState(() {
-                           addUser(name: name1, number: num1, email: mail, password: pass) ;
-                      });
-                      Navigator.pushNamed(context, "/login");
+                    ElevatedButton(
+                      onPressed: () {
+                        String name1 = namer.text.trim();
+                        String num1 = numberer.text.trim();
+                        String pass = passer.text.trim();
+                        String mail = emailer.text.trim();
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
+                        setState(() {
+                          addUser(
+                              name: name1,
+                              number: num1,
+                              email: mail,
+                              password: pass);
+                        });
+                        Navigator.pushNamed(context, "/login");
                       },
-                        child: const Text('Register'),
-                        style: TextButton.styleFrom(
+                      child: const Text('Register'),
+                      style: TextButton.styleFrom(
                           minimumSize: const Size(150, 40)),
                     ),
+                    SizedBox(
+                      height: MediaQuery.of(context).viewInsets.bottom,
+                    )
                   ]),
                 )
               ],
@@ -187,4 +201,3 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-

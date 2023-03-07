@@ -8,6 +8,7 @@ import 'package:khaata_app/utils/themes.dart';
 
 // Importing Firebase
 import 'package:firebase_core/firebase_core.dart';
+import 'package:khaata_app/widgets/add_new_friend_search_bar.dart';
 
 /* Yeah - I'm gonna make the main function ~ asychronous !
  [ !!! WARNING {Diwas} - Don't mess with Firebase Options and API keys !!! ]
@@ -33,28 +34,28 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var logged = false ;
+  var logged = false;
   // Check if a user is already authenticated or not ! {Diwas - You know the deal here !}
-  Future<void> checkIfAuthenticated() async{
-    await Authentication().changes.then((change){
+  Future<void> checkIfAuthenticated() async {
+    await Authentication().changes.then((change) {
       change.listen((user) {
-        if(user != null && mounted){
+        if (user != null && mounted) {
           setState(() {
-            logged = true ;
+            logged = true;
           });
         }
-      }) ;
-    }) ;
+      });
+    });
   }
 
   @override
-  void initState(){
-    super.initState() ;
-    Future.delayed((Duration.zero), () async{
-      await checkIfAuthenticated().then((value){
-        print('Already authenticated') ;
-      }) ;
-    }) ;
+  void initState() {
+    super.initState();
+    Future.delayed((Duration.zero), () async {
+      await checkIfAuthenticated().then((value) {
+        print('Already authenticated');
+      });
+    });
   }
 
   @override
@@ -64,14 +65,14 @@ class _MyAppState extends State<MyApp> {
       themeMode: ThemeMode.system,
       theme: MyTheme.LightTheme(context),
       darkTheme: MyTheme.DarkTheme(context),
-      initialRoute: logged ? "/" : "/login",
+      initialRoute: logged? "/" : "/login",
       routes: {
         "/": (context) => HomePage(),
         "/login": (context) => LoginPage(),
         "/register": (context) => RegisterPage(),
         "/notifications": (context) => NotificationPage(),
+        "/addfriend":(context) => AddFriendSearchBar(),
       },
     );
   }
 }
-

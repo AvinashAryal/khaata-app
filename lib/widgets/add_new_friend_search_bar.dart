@@ -2,21 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class FriendSearchBar extends StatefulWidget {
-  const FriendSearchBar({super.key});
+class AddFriendSearchBar extends StatefulWidget {
+  const AddFriendSearchBar({super.key});
 
   @override
-  State<FriendSearchBar> createState() => _FriendSearchBarState();
+  State<AddFriendSearchBar> createState() => _AddFriendSearchBarState();
 }
 
-class _FriendSearchBarState extends State<FriendSearchBar> {
+class _AddFriendSearchBarState extends State<AddFriendSearchBar> {
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return FloatingActionButton(
         onPressed: () {
           showSearch(context: context, delegate: CustomSearchDelegate());
         },
-        icon: const Icon(CupertinoIcons.search));
+        child: const Icon(CupertinoIcons.person_add));
   }
 }
 
@@ -25,7 +25,6 @@ class CustomSearchDelegate extends SearchDelegate {
   List<String> searchTerms = ["diwas", "avinash", "Alice", "Bob"];
 
   // Back-end data fetch {Diwas - "Yeah this is how we do it !"}
-
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -66,6 +65,13 @@ class CustomSearchDelegate extends SearchDelegate {
               var cur = matchedQuery[index];
               return ListTile(
                 title: Text(cur),
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.person_add_alt_1_sharp,
+                    color: Colors.blue,
+                  ),
+                  onPressed: (() {}),
+                ),
               );
             }))
         : "No items match your search".text.make().centered();
@@ -88,6 +94,13 @@ class CustomSearchDelegate extends SearchDelegate {
               var cur = matchedQuery[index];
               return ListTile(
                 title: Text(cur),
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.person_add_alt_1_sharp,
+                    color: Colors.blue,
+                  ),
+                  onPressed: (() {}),
+                ),
               );
             }))
         : "No items match your search".text.make().centered();

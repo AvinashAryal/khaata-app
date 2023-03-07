@@ -7,7 +7,7 @@ import 'package:khaata_app/backend/authentication.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-  
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -19,11 +19,11 @@ class _LoginPageState extends State<LoginPage> {
   String loggerMail = "0xFF" ;
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
-  TextEditingController namer = TextEditingController() ;
-  TextEditingController passer = TextEditingController() ;
+  TextEditingController namer = TextEditingController();
+  TextEditingController passer = TextEditingController();
 
   // Backend utilities {Diwas - Don't mess with field names !}
-  Future<void> getMailFromUsername (String name) async{
+  Future<void> getMailFromUsername(String name) async {
     await Userbase().getUserDetails("name", name).then((specified) {
       // Forget setState and I lost my shit - hahahaha !
       setState(() {
@@ -93,11 +93,11 @@ class _LoginPageState extends State<LoginPage> {
                         labelText: "Username",
                         hintText: "Enter username",
                       ),
-                      onChanged: (value){
-                          setState(() {
-                            name = value ;
-                          });
-                        },
+                      onChanged: (value) {
+                        setState(() {
+                          name = value;
+                        });
+                      },
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Username cannot be empty.");
@@ -166,8 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: (() {
                           Navigator.pushNamed(context, "/register");
                         }),
-                        child: Text("Not registered? Register")
-                    )
+                        child: Text("Not registered? Register"))
                   ]),
                 )
               ],
