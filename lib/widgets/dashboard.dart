@@ -1,8 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:khaata_app/backend/transactionUtility.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../backend/authentication.dart';
+import '../backend/userbaseUtility.dart';
+import '../models/structure.dart';
+import '../models/transaction.dart';
 import 'drawer.dart';
 
 class Dashboard extends StatelessWidget {
@@ -13,8 +18,9 @@ class Dashboard extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          "Your Summary".text.bold.lg.make().p(8),
+          "Your Summary".text.xl2.bold.make(),
           MyPieChart().p(8),
+          "Recents".text.xl2.bold.make(),
           RecentList().expand(),
         ],
       ),
@@ -35,19 +41,66 @@ class MyPieChart extends StatelessWidget {
   }
 }
 
-class RecentList extends StatelessWidget {
-  const RecentList({super.key});
+// {Diwas - Changed it to stateful as it needs async updates everytime the page opens}
+class RecentList extends StatefulWidget {
+  const RecentList({Key? key}) : super(key: key);
+
+  @override
+  State<RecentList> createState() => _RecentListState();
+}
+
+class _RecentListState extends State<RecentList> {
+  List<Record> records = [] ;
+  List<UserData> borrowers = [] ;
+  List<UserData> lenders = [] ;
+
+  @override
+  void initState(){
+    super.initState() ;
+    Future.delayed(Duration.zero,() async {
+      await getDetailsOfParticipants() ;
+    });
+  }
+
+  Future<void> getPastTransactions () async{
+    await TransactionRecord().getRecentRecords(5).then((specified){
+      setState(() {
+        records = specified ;
+      });
+    }) ;
+  }
+
+  Future<void> getDetailsOfParticipants() async{
+    await getPastTransactions() ;
+    for(var i=0; i<records.length; i++){
+      await Userbase().getUserDetails("id", records[i].lenderID.toString()).then((value){
+        setState(() {
+          lenders.insert(i, value) ;
+        });
+      }) ;
+      await Userbase().getUserDetails("id", records[i].borrowerID.toString()).then((value){
+        setState(() {
+          borrowers.insert(i, value) ;
+        });
+      }) ;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: 5,
+    return borrowers.isEmpty ? Center(child: CircularProgressIndicator()) : ListView.builder(
+        itemCount: records.length,
         itemBuilder: ((context, index) {
-          if (index == 0) {
-            return ListTile(leading: "Recents".text.xl2.bold.make());
-          }
           return ListTile(
-              leading: "Recent Transaction ${index}".text.sm.make());
+              title: "${lenders[index].name} -----------> ${borrowers[index].name}".text.lg.make(),
+              subtitle: "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                        " - ${records[index].transactionDate.toDate().toString().substring(0,16)}".text.sm.make(),
+              leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "
+                       "${records[index].transactionDate.toDate().day}".text.sm.make(),
+                         // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
+              trailing: "Amount : ${records[index].amount}".text.lg.make()
+          );
         })).pOnly(top: 10);
   }
 }
+

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khaata_app/backend/authentication.dart';
 import 'package:khaata_app/pages/login_page.dart';
 import 'package:khaata_app/pages/home_page.dart';
 import 'package:khaata_app/pages/notification_page.dart';
@@ -22,8 +23,39 @@ Future main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// {Diwas - Converting to stateful widget was crucial to listen to authentication changes so that initial route can be set}
+
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var logged = false ;
+  // Check if a user is already authenticated or not ! {Diwas - You know the deal here !}
+  Future<void> checkIfAuthenticated() async{
+    await Authentication().changes.then((change){
+      change.listen((user) {
+        if(user != null && mounted){
+          setState(() {
+            logged = true ;
+          });
+        }
+      }) ;
+    }) ;
+  }
+
+  @override
+  void initState(){
+    super.initState() ;
+    Future.delayed((Duration.zero), () async{
+      await checkIfAuthenticated().then((value){
+        print('Already authenticated') ;
+      }) ;
+    }) ;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +64,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: MyTheme.LightTheme(context),
       darkTheme: MyTheme.DarkTheme(context),
-      initialRoute: "/login",
+      initialRoute: logged ? "/" : "/login",
       routes: {
         "/": (context) => HomePage(),
         "/login": (context) => LoginPage(),
@@ -42,3 +74,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

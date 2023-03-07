@@ -70,7 +70,7 @@ class _FriendDetailState extends State<FriendDetail> {
                       decoration: InputDecoration(
                           alignLabelWithHint: true,
                           labelText: "Amount",
-                          hintText: "Enter Amount here"),
+                          hintText: "Enter the amount"),
                       controller: amountController,
                     ).pOnly(left: 16, right: 16),
                     TextField(
@@ -91,10 +91,13 @@ class _FriendDetailState extends State<FriendDetail> {
                           });
                           Navigator.of(context).pop();
                         }),
-                        child: Text(
-                          "Ok",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ))
+                        child: TextButton(
+                          child: Text("Ok", style: TextStyle(fontWeight: FontWeight.bold)),
+                          style: ButtonStyle(),
+                          onPressed: (){}
+                              // save a transaction
+                        )
+                    )
                   ],
                 );
               }));
