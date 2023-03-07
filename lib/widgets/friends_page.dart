@@ -111,7 +111,7 @@ class _FriendsListState extends State<FriendsList> {
                     .make())
             : Center(child: CircularProgressIndicator()))
         : ListView.builder(
-            itemCount: friendDetails.length + 1,
+            itemCount: friendDetails.length+1,
             itemBuilder: ((context, index) {
               if (index == 0) {
                 return FriendSearchBar();
@@ -123,7 +123,7 @@ class _FriendsListState extends State<FriendsList> {
                     color: Colors.blue,
                   ),
                   trailing: "Rs. 100".text.make(),
-                  title: "${friendDetails[index]}".text.make(),
+                  title: "${friendDetails[index-1]}".text.make(),
                   onTap: () {
                     Navigator.push(
                         context,
