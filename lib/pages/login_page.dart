@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) {
       return;
     } else {
-//      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       var successfulSnackBar = SnackBar(
         content: "Succefully Logged In".text.color(Colors.green).make(),
         action: SnackBarAction(
@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(successfulSnackBar);
-      await Navigator.pushNamed(context, "/");
+      await Navigator.pushNamed(context, "/home");
       Navigator.pop(context, "/login");
       setState(() {
         changeButton = false;

@@ -26,9 +26,9 @@ class Dashboard extends StatelessWidget {
       ]),
       body: Column(
         children: [
-          "Your Summary".text.xl2.bold.make(),
+          "Your Summary".text.xl2.bold.make().p(8),
           MyPieChart().p(8),
-          "Recents".text.xl2.bold.make(),
+          "Recents".text.xl2.bold.make().pOnly(top: 12, bottom: 12),
           RecentList().expand(),
         ],
       ),
@@ -58,44 +58,57 @@ class RecentList extends StatefulWidget {
 }
 
 class _RecentListState extends State<RecentList> {
-  List<Record> records = [] ;
-  List<UserData> borrowers = [] ;
-  List<UserData> lenders = [] ;
-  var trans = TransactionLoader() ;
+  List<Record> records = [];
+  List<UserData> borrowers = [];
+  List<UserData> lenders = [];
+  var trans = TransactionLoader();
 
   @override
-  void initState(){
-    super.initState() ;
-    Future.delayed(Duration.zero,() async {
-        await trans.getDetailsOfParticipants().then((value){
-          if(mounted) {
-            super.setState(() {
-              records = trans.getRecords;
-              borrowers = trans.getBorrowers;
-              lenders = trans.getLenders;
-              print(records);
-            });
-          }
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await trans.getDetailsOfParticipants().then((value) {
+        if (mounted) {
+          super.setState(() {
+            records = trans.getRecords;
+            borrowers = trans.getBorrowers;
+            lenders = trans.getLenders;
+            print(records);
+          });
+        }
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return borrowers.isEmpty ? (records.isEmpty
-        ? Center(child: "No recent transactions".text.lg.make()) : const Center(child: CircularProgressIndicator()))
+    return borrowers.isEmpty
+        ? (records.isEmpty
+            ? Center(child: "No recent transactions".text.lg.make())
+            : const Center(child: CircularProgressIndicator()))
         : ListView.builder(
-        itemCount: lenders.length,
-        itemBuilder: ((context, index) {
-          return ListTile(
-              title: "${lenders[index].name} -----------> ${borrowers[index].name}".text.lg.make(),
-              subtitle: "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
-                        " - ${records[index].transactionDate.toDate().toString().substring(0,16)}".text.sm.make(),
-              leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "
-                       "${records[index].transactionDate.toDate().day}".text.sm.make(),
-                         // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
-              trailing: "Amount : ${records[index].amount}".text.lg.make()
-          );
-        })).pOnly(top: 10);
+            itemCount: lenders.length,
+            itemBuilder: ((context, index) {
+              return ListTile(
+                  title:
+                      "${lenders[index].name} -----------> ${borrowers[index].name}"
+                          .text
+                          .lg
+                          .make(),
+                  subtitle:
+                      "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                              " - ${records[index].transactionDate.toDate().toString().substring(0, 16)}"
+                          .text
+                          .sm
+                          .make(),
+                  leading:
+                      "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "
+                              "${records[index].transactionDate.toDate().day}"
+                          .text
+                          .sm
+                          .make(),
+                  // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
+                  trailing: "Amount : ${records[index].amount}".text.lg.make());
+            })).pOnly(top: 10);
   }
 }

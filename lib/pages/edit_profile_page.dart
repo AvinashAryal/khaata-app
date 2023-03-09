@@ -82,6 +82,9 @@ class _AvatarState extends State<Avatar> {
       ),
       ElevatedButton(
               onPressed: () {
+                if (selectedImage == -1) {
+                  return;
+                }
                 setState(() {
                   url = "assets/images/avatar${selectedImage + 1}.png";
                 });
@@ -99,49 +102,47 @@ class ChangePassWordButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        showDialog(
-            context: context,
-            builder: ((context) {
-              return AlertDialog(
-                title: Text("Change Password"),
-                actions: [
-                  TextField(
-                    decoration: InputDecoration(
-                        alignLabelWithHint: true,
-                        labelText: "Old Password",
-                        hintText: "Enter Old Password"),
-                  ).pOnly(left: 16, right: 16),
-                  TextField(
-                    decoration: InputDecoration(
-                        alignLabelWithHint: true,
-                        labelText: "New Password",
-                        hintText: "Enter New Password"),
-                  ).pOnly(left: 16, right: 16),
-                  TextField(
-                    decoration: InputDecoration(
-                        alignLabelWithHint: true,
-                        labelText: "Confirm New Password",
-                        hintText: "Enter New Password Again"),
-                  ).pOnly(left: 16, right: 16),
-                  TextButton(
-                      child: Text("Ok",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      style: ButtonStyle(),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }
-                      // save a transaction
-                      )
-                ],
-              );
-            }));
-      },
-      child: "Change Password"
-          .text
-          .color(Color.fromARGB(255, 213, 54, 54))
-          .semiBold
-          .make(),
-    ).pOnly(right: 24, left: 24);
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: ((context) {
+                return AlertDialog(
+                  title: Text("Change Password"),
+                  actions: [
+                    TextField(
+                      decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          labelText: "Old Password",
+                          hintText: "Enter Old Password"),
+                    ).pOnly(left: 16, right: 16),
+                    TextField(
+                      decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          labelText: "New Password",
+                          hintText: "Enter New Password"),
+                    ).pOnly(left: 16, right: 16),
+                    TextField(
+                      decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          labelText: "Confirm New Password",
+                          hintText: "Enter New Password Again"),
+                    ).pOnly(left: 16, right: 16),
+                    TextButton(
+                        child: Text("Ok",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: ButtonStyle(),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }
+                        // save a transaction
+                        )
+                  ],
+                );
+              }));
+        },
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: "Change Password".text.semiBold.make(),
+        ).pOnly(right: 24, left: 24));
   }
 }
