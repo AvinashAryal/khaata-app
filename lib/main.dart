@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
+import 'package:khaata_app/pages/edit_profile_page.dart';
 import 'package:khaata_app/pages/login_page.dart';
 import 'package:khaata_app/pages/home_page.dart';
 import 'package:khaata_app/pages/notification_page.dart';
@@ -65,13 +66,14 @@ class _MyAppState extends State<MyApp> {
       themeMode: ThemeMode.system,
       theme: MyTheme.LightTheme(context),
       darkTheme: MyTheme.DarkTheme(context),
-      initialRoute: logged? "/" : "/login",
+      initialRoute: "/",
       routes: {
         "/": (context) => HomePage(),
         "/login": (context) => LoginPage(),
         "/register": (context) => RegisterPage(),
         "/notifications": (context) => NotificationPage(),
-        "/addfriend":(context) => AddFriendSearchBar(),
+        "/addfriend": (context) => AddFriendSearchBar(),
+        "/editprofile": (context) => EditProfilePage(),
       },
     );
   }

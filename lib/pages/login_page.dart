@@ -14,9 +14,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String name = "";
-  bool wrongUser = true ;
-  bool wrongPass = false ;
-  String loggerMail = "0xFF" ;
+  bool wrongUser = true;
+  bool wrongPass = false;
+  String loggerMail = "0xFF";
   bool changeButton = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController namer = TextEditingController();
@@ -27,34 +27,42 @@ class _LoginPageState extends State<LoginPage> {
     await Userbase().getUserDetails("name", name).then((specified) {
       // Forget setState and I lost my shit - hahahaha !
       setState(() {
-        loggerMail = specified.email ;
-        wrongUser = false ; // this is needed and I know it !
-      }) ;
-    }).catchError((error){
-          print(error) ;
-          setState(() {
-            wrongUser = true ;
-          });
-    }) ;
+        loggerMail = specified.email;
+        wrongUser = false; // this is needed and I know it !
+      });
+    }).catchError((error) {
+      print(error);
+      setState(() {
+        wrongUser = true;
+      });
+    });
   }
 
-  moveToHome(BuildContext context, bool givePass) async{
-    if(!givePass){
+  moveToHome(BuildContext context, bool givePass) async {
+    if (!givePass) {
       setState(() {
-        wrongPass = true ;
+        wrongPass = true;
       });
-    }
-    else {
+    } else {
       setState(() {
         wrongPass = false;
         changeButton = true;
       });
     }
     if (!_formKey.currentState!.validate()) {
-      return ;
-    }
-    else{
-      await Future.delayed(const Duration(milliseconds: 500));
+      return;
+    } else {
+//      await Future.delayed(const Duration(milliseconds: 500));
+      var successfulSnackBar = SnackBar(
+        content: "Succefully Logged In".text.color(Colors.green).make(),
+        action: SnackBarAction(
+          label: "DISMISS",
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(successfulSnackBar);
       await Navigator.pushNamed(context, "/");
       Navigator.pop(context, "/login");
       setState(() {
@@ -65,27 +73,29 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: context.canvasColor,
-      child: Center(
-        child: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
           child: Form(
             key: _formKey,
             child: Column(
               children: [
-                const SizedBox(
-                  height: 60.0,
-                ),
-                Text(
-                  "Welcome $name !",
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
+                SizedBox(
+                  height: 200.0,
+                  child: Image.asset("assets/images/khaata-logo.png"),
+                ).pOnly(top: 40),
+                Center(
+                  child: Text(
+                    "Welcome $name !",
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 32.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: Column(children: [
                     TextFormField(
                       controller: namer,
@@ -101,9 +111,8 @@ class _LoginPageState extends State<LoginPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Username cannot be empty.");
-                        }
-                        else if (wrongUser){
-                          return ("Username is not found.") ;
+                        } else if (wrongUser) {
+                          return ("Username is not found.");
                         }
                         return null;
                       },
@@ -128,14 +137,18 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20.0,
                     ),
                     InkWell(
-                      onTap: (){
-                          name = namer.text.trim() ;
-                          String pass = passer.text.trim() ;
-                          getMailFromUsername(name).then((value) async{
-                            print("$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
-                            await Authentication().setInfoForCurrentUser(name) ;
-                            moveToHome(context, await Authentication().signInUser(email: loggerMail, password: pass)) ;
-                          }) ;
+                      onTap: () {
+                        name = namer.text.trim();
+                        String pass = passer.text.trim();
+                        getMailFromUsername(name).then((value) async {
+                          print(
+                              "$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                          await Authentication().setInfoForCurrentUser(name);
+                          moveToHome(
+                              context,
+                              await Authentication().signInUser(
+                                  email: loggerMail, password: pass));
+                        });
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 500),
