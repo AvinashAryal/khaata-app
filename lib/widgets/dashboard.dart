@@ -5,7 +5,7 @@ import 'package:khaata_app/backend/transactionsLoader.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../backend/userbaseUtility.dart';
+// Imports
 import '../models/structure.dart';
 import '../models/transaction.dart';
 import 'drawer.dart';
@@ -87,7 +87,7 @@ class _RecentListState extends State<RecentList> {
         itemCount: lenders.length,
         itemBuilder: ((context, index) {
           return ListTile(
-              title: "${lenders[index].name} ---> ${borrowers[index].name}".text.lg.make(),
+              title: "${lenders[index].name} ----> ${borrowers[index].name}".text.lg.make(),
               subtitle: "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
                         " - ${records[index].transactionDate.toDate().toString().substring(0,16)}".text.sm.make(),
               leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "

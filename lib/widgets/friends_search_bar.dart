@@ -64,7 +64,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     friends = frLoad.fetchFriendDetails ;
-
+    print(friends) ;
     for (UserData person in friends) {
       if (person.name.toLowerCase().contains(query.toLowerCase())) {
         matchedQuery.add(person);
