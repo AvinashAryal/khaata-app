@@ -26,9 +26,9 @@ class Dashboard extends StatelessWidget {
       ]),
       body: Column(
         children: [
-          "Your Summary".text.xl2.bold.make(),
+          "Your Summary".text.xl2.bold.make().p(8),
           MyPieChart().p(8),
-          "Recents".text.xl2.bold.make(),
+          "Recents".text.xl2.bold.make().pOnly(top: 12, bottom: 12),
           RecentList().expand(),
         ],
       ),
@@ -58,10 +58,10 @@ class RecentList extends StatefulWidget {
 }
 
 class _RecentListState extends State<RecentList> {
-  List<Record> records = [] ;
-  List<UserData> borrowers = [] ;
-  List<UserData> lenders = [] ;
-  var trans = TransactionLoader() ;
+  List<Record> records = [];
+  List<UserData> borrowers = [];
+  List<UserData> lenders = [];
+  var trans = TransactionLoader();
 
   @override
   void initState(){
@@ -77,12 +77,15 @@ class _RecentListState extends State<RecentList> {
           }
       });
     });
+    print(records) ;
   }
 
   @override
   Widget build(BuildContext context) {
-    return borrowers.isEmpty ? (records.isEmpty
-        ? Center(child: "No recent transactions".text.lg.make()) : const Center(child: CircularProgressIndicator()))
+    return borrowers.isEmpty
+        ? (records.isEmpty
+            ? Center(child: "No recent transactions".text.lg.make())
+            : const Center(child: CircularProgressIndicator()))
         : ListView.builder(
         itemCount: lenders.length,
         itemBuilder: ((context, index) {

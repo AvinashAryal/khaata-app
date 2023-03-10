@@ -54,22 +54,24 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Material(
-        color: context.canvasColor,
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
           child: Form(
             key: _formKey,
             child: Column(
               children: [
                 SizedBox(
-                  height: 60,
-                ),
-                const Text(
-                  "Register",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
+                  height: 150,
+                  child: Image.asset("assets/images/khaata-logo.png"),
+                ).pOnly(top: 20),
+                const Center(
+                  child: Text(
+                    "Register",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Padding(
@@ -167,6 +169,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 20.0,
                     ),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(shape: StadiumBorder()),
                       onPressed: () {
                         String name1 = namer.text.trim();
                         String num1 = numberer.text.trim();
@@ -182,15 +185,26 @@ class _RegisterPageState extends State<RegisterPage> {
                               email: mail,
                               password: pass);
                         });
+                        var successfulSnackBar = SnackBar(
+                          content: "Succefully Registered"
+                              .text
+                              .color(Colors.green)
+                              .make(),
+                          action: SnackBarAction(
+                            label: "DISMISS",
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                          ),
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(successfulSnackBar);
                         Navigator.pushNamed(context, "/login");
+                        Navigator.pop(context, "/register");
                       },
-                      child: const Text('Register'),
-                      style: TextButton.styleFrom(
-                          minimumSize: const Size(150, 40)),
+                      child: "Register".text.xl.make(),
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).viewInsets.bottom,
-                    )
                   ]),
                 )
               ],

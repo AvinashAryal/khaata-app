@@ -91,6 +91,7 @@ class _FriendsListState extends State<FriendsList> {
                 child: Column(
                           children: [
                                         FriendSearchBar(),
+                                        SizedBox(height: 40),
                                        "Got no friends? Add one right now using '+'".text.lg.make()
                                     ]
                             )

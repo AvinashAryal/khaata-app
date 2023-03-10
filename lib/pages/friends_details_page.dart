@@ -81,7 +81,10 @@ class _FriendDetailState extends State<FriendDetail> {
                       controller: remarksController,
                     ).pOnly(left: 16, right: 16),
                     TextButton(
-                        onPressed: (() {
+                        child: Text("Ok",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: ButtonStyle(),
+                        onPressed: () {
                           TransactionEntry cur = TransactionEntry(
                               DateTime.now(),
                               remarksController.text,
@@ -90,14 +93,9 @@ class _FriendDetailState extends State<FriendDetail> {
                             TransactionData.addData(id, cur);
                           });
                           Navigator.of(context).pop();
-                        }),
-                        child: TextButton(
-                          child: Text("Ok", style: TextStyle(fontWeight: FontWeight.bold)),
-                          style: ButtonStyle(),
-                          onPressed: (){}
-                              // save a transaction
+                        }
+                        // save a transaction
                         )
-                    )
                   ],
                 );
               }));
