@@ -73,7 +73,6 @@ class _RecentListState extends State<RecentList> {
               records = trans.getRecords;
               borrowers = trans.getBorrowers;
               lenders = trans.getLenders;
-              print(records);
             });
           }
       });
@@ -88,7 +87,7 @@ class _RecentListState extends State<RecentList> {
         itemCount: lenders.length,
         itemBuilder: ((context, index) {
           return ListTile(
-              title: "${lenders[index].name} -----------> ${borrowers[index].name}".text.lg.make(),
+              title: "${lenders[index].name} ---> ${borrowers[index].name}".text.lg.make(),
               subtitle: "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
                         " - ${records[index].transactionDate.toDate().toString().substring(0,16)}".text.sm.make(),
               leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "

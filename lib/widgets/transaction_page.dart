@@ -14,7 +14,6 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  @override
 
   List<Record> records = [] ;
   List<UserData> borrowers = [] ;
@@ -31,7 +30,6 @@ class _TransactionPageState extends State<TransactionPage> {
             records = trans.getRecords;
             borrowers = trans.getBorrowers;
             lenders = trans.getLenders;
-            print(records);
           });
         }
       });

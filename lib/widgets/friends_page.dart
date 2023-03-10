@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:khaata_app/backend/friendsLoader.dart';
+import 'package:khaata_app/models/structure.dart';
 import 'package:khaata_app/pages/friends_details_page.dart';
 import 'package:khaata_app/widgets/add_new_friend_search_bar.dart';
 import 'package:khaata_app/widgets/drawer.dart';
@@ -62,42 +64,23 @@ class FriendsList extends StatefulWidget {
 
 class _FriendsListState extends State<FriendsList> {
   List<dynamic> friends = [];
-  List<String> friendDetails = [];
+  List<UserData> friendDetails = [];
   String tempName = "";
+  var frLoad = FriendLoader() ;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      await getFriendDetails();
-    });
-  }
-
-  // Backend utilities {Diwas - Don't mess with field names !}
-  // I will first get all ids of friends for current user !
-  Future<void> getFriendsFromID() async{
-    String reqID = Authentication().currentUser?.uid as String ;
-    await Userbase().getUserDetails("id", reqID).then((specified) {
-      // Forget setState and I lost my shit - hahahaha !
-      setState(() {
-        friends = specified.friends;
+    Future.delayed(Duration.zero,() async {
+      await frLoad.getFriendDetails().then((value){
+        if(mounted) {
+          super.setState(() {
+            friends = frLoad.fetchFriends ;
+            friendDetails = frLoad.fetchFriendDetails ;
+          });
+        }
       });
     });
-  }
-
-  // Now I will use the list to get details of friends - Sneaky MOVE - HAHAHA !
-  Future<void> getFriendDetails() async {
-    await getFriendsFromID();
-    for (var i = 0; i < friends.length; i++) {
-      await Userbase()
-          .getUserDetails("id", friends[i].toString())
-          .then((specified) {
-        // Forget setState and I lost my shit - hahahaha !
-        setState(() {
-          friendDetails.insert(i, specified.name);
-        });
-      });
-    }
   }
 
   @override
@@ -105,11 +88,14 @@ class _FriendsListState extends State<FriendsList> {
     return friendDetails.isEmpty
         ? (friends.isEmpty
             ? Center(
-                child: "Got no friends? Add one right now using '+'"
-                    .text
-                    .lg
-                    .make())
-            : Center(child: CircularProgressIndicator()))
+                child: Column(
+                          children: [
+                                        FriendSearchBar(),
+                                       "Got no friends? Add one right now using '+'".text.lg.make()
+                                    ]
+                            )
+                   )
+        : Center(child: CircularProgressIndicator()))
         : ListView.builder(
             itemCount: friendDetails.length+1,
             itemBuilder: ((context, index) {
@@ -123,7 +109,7 @@ class _FriendsListState extends State<FriendsList> {
                     color: Colors.blue,
                   ),
                   trailing: "Rs. 100".text.make(),
-                  title: "${friendDetails[index-1]}".text.make(),
+                  title: "${friendDetails[index-1].name}".text.make(),
                   onTap: () {
                     Navigator.push(
                         context,
