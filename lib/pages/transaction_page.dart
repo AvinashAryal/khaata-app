@@ -24,7 +24,7 @@ class _TransactionPageState extends State<TransactionPage> {
   void initState(){
     super.initState() ;
     Future.delayed(Duration.zero,() async {
-      await trans.getDetailsOfParticipants().then((value){
+      await trans.getDetailsOfParticipants(false).then((value){
         if(mounted) {
           super.setState(() {
             records = trans.getRecords;

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:khaata_app/backend/authentication.dart';
 import 'package:khaata_app/widgets/drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../backend/userbaseUtility.dart';
+import '../utils/hash.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -22,8 +26,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           Switch(
               value: darkmode,
               onChanged: ((value) {
-                darkmode = value;
-                setState(() {});
+                setState(() {
+                  darkmode = value;
+                });
               }))
         ],
       ),
@@ -56,7 +61,7 @@ class _AvatarState extends State<Avatar> {
             crossAxisCount: 4, crossAxisSpacing: 30),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemCount: 8,
+        itemCount: 8     ,
         itemBuilder: (context, index) {
           return GestureDetector(
                   onTap: () {
@@ -96,11 +101,21 @@ class _AvatarState extends State<Avatar> {
   }
 }
 
-class ChangePassWordButton extends StatelessWidget {
-  const ChangePassWordButton({super.key});
+class ChangePassWordButton extends StatefulWidget {
+  const ChangePassWordButton({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  State<ChangePassWordButton> createState() => _ChangePassWordButtonState();
+}
+
+class _ChangePassWordButtonState extends State<ChangePassWordButton> {
+  TextEditingController previous = TextEditingController() ;
+  TextEditingController next = TextEditingController() ;
+  String again = "" ;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context){
     return ElevatedButton(
         onPressed: () {
           showDialog(
@@ -109,33 +124,87 @@ class ChangePassWordButton extends StatelessWidget {
                 return AlertDialog(
                   title: Text("Change Password"),
                   actions: [
-                    TextField(
+                    Form(
+                      key: _formKey,
+                    child: Column(
+                        children: [
+                      TextFormField(
+                      controller: previous,
                       decoration: InputDecoration(
                           alignLabelWithHint: true,
                           labelText: "Old Password",
                           hintText: "Enter Old Password"),
                     ).pOnly(left: 16, right: 16),
-                    TextField(
+                    TextFormField(
+                      controller: next,
                       decoration: InputDecoration(
                           alignLabelWithHint: true,
                           labelText: "New Password",
                           hintText: "Enter New Password"),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                               return ("The password cannot be empty! ");
+                            } else if (value.length <= 8) {
+                               return ("Password is too short! ");
+                            }
+                               return null;
+                          },
                     ).pOnly(left: 16, right: 16),
-                    TextField(
+                    TextFormField(
                       decoration: InputDecoration(
                           alignLabelWithHint: true,
                           labelText: "Confirm New Password",
                           hintText: "Enter New Password Again"),
-                    ).pOnly(left: 16, right: 16),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                            return ("The password cannot be empty! ");
+                            } else if (value != next.text.trim()) {
+                            return ("The passwords don't match! ");
+                            } else {
+                            again = next.text.trim();
+                            return null;
+                            }
+                        }
+                      ).pOnly(left: 16, right: 16),
+                        ]
+                      )
+                    ),
                     TextButton(
-                        child: Text("Ok",
+                        child: Text("OK",
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         style: ButtonStyle(),
-                        onPressed: () {
-                          Navigator.of(context).pop();
+                        onPressed: () async{
+                            String old = previous.text.trim() ;
+                            String now = next.text.trim() ;
+                            String hashNew = "" ;
+                            old = Hash().generateHash(old) ;
+                            hashNew = Hash().generateHash(now) ;
+
+                            if (!_formKey.currentState!.validate()) {
+                              return;
+                            }
+                            await Authentication().currentUser?.updatePassword(now) ;
+                            Userbase().updateUserDetails("hash", hashNew) ;
+                            Navigator.of(context).pop();
+
+                            // Let the user know that it actually changed - HAHAHA !
+                            var successfulSnackBar = SnackBar(
+                              content: "Password updated successfully! "
+                                  .text
+                                  .color(Colors.green)
+                                  .make(),
+                              action: SnackBarAction(
+                                label: "DISMISS",
+                                onPressed: () {
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
+                                },
+                              ),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(successfulSnackBar);
                         }
-                        // save a transaction
-                        )
+                      )
                   ],
                 );
               }));
@@ -144,5 +213,5 @@ class ChangePassWordButton extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: "Change Password".text.semiBold.make(),
         ).pOnly(right: 24, left: 24));
-  }
+    }
 }

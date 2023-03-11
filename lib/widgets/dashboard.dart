@@ -67,7 +67,7 @@ class _RecentListState extends State<RecentList> {
   void initState(){
     super.initState() ;
     Future.delayed(Duration.zero,() async {
-        await trans.getDetailsOfParticipants().then((value){
+        await trans.getDetailsOfParticipants(true).then((value){
           if(mounted) {
             super.setState(() {
               records = trans.getRecords;

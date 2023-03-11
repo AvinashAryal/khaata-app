@@ -24,7 +24,34 @@ class TransactionRecord{
     }) ;
   }
 
-  // Get a list of transaction from the cloud whose certain field value is certain - HAHAHA ! (R)
+  // Get all the transactions for the current logged-in user (R)
+  Future<List<Record>> getAllBorrowRecords() async{
+    String reqID = "" ;
+    if(Authentication().currentUser?.uid == null){
+      return [] ;
+    }
+    else {
+      reqID = Authentication().currentUser?.uid as String;
+      final snapShot = await _database.collection(collectionPath).where("borrowerID", isEqualTo: reqID).get();
+      final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList();
+      return data;
+    }
+  }
+
+  Future<List<Record>> getAllLendRecords() async{
+    String reqID = "" ;
+    if(Authentication().currentUser?.uid == null){
+      return [] ;
+    }
+    else {
+      reqID = Authentication().currentUser?.uid as String;
+      final snapShot = await _database.collection(collectionPath).where("lenderID", isEqualTo: reqID).get();
+      final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList();
+      return data;
+    }
+  }
+
+  // Get a single record of transaction that satisfies the query (R)
   Future<Record> getRecordDetails(String fieldType, String value) async{
     final snapShot = await _database.collection(collectionPath).where(fieldType, isEqualTo: value).get() ;
     final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).single ;

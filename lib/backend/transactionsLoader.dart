@@ -28,8 +28,22 @@ class TransactionLoader{
       }) ;
     }
 
-    Future<void> getDetailsOfParticipants() async {
-    await getPastTransactions();
+    Future<void> getAllTransactions() async{
+      await TransactionRecord().getAllLendRecords().then((specified){
+        records = specified;
+      }) ;
+      await TransactionRecord().getAllBorrowRecords().then((specified){
+        records = records + specified ;
+      }) ;
+    }
+
+    Future<void> getDetailsOfParticipants(bool recent) async {
+    if(!recent){
+      await getAllTransactions() ;
+    }
+    else{
+      await getPastTransactions();
+    }
     for (var i = 0; i < records.length; i++) {
       await Userbase()
         .getUserDetails("id", records[i].lenderID.toString())

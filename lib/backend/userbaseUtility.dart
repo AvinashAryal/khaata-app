@@ -3,11 +3,13 @@
 // Firebase Access and CRUD Stuff - Userbase Utility
 
 import "package:cloud_firestore/cloud_firestore.dart" ;
+import 'package:khaata_app/backend/authentication.dart';
 import '../models/structure.dart';
 
 class Userbase{
   final _database = FirebaseFirestore.instance ;
   String collectionPath = "user-data" ; // Don't mess with this as well - HAHAHA !
+  String currentDocumentID = "" ;
 
   // Create a new user and store it in the cloud (C)
   createNewUser(UserData user) async {
@@ -61,6 +63,21 @@ class Userbase{
     final snapShot = await _database.collection(collectionPath).get() ;
     final data = snapShot.docs.map((e) => UserData.fromSnapshot(e)).toList() ;
     return data ;
+  }
+
+  // Update a particular detail for a specific user (U)
+  updateUserDetails(String updateFieldType, String newValue) async{
+    String? reqID = Authentication().currentUser?.uid ;
+    final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: reqID).get() ;
+    final data = snapShot.docs.single ;
+    // The id used here is strictly document id but, not regular or authentication uid.
+    // WARNING {Diwas - Sensitive !}
+    await _database.collection(collectionPath).doc(data.id).update({updateFieldType: newValue}).then((value){
+      print("Updated $updateFieldType successfully! ") ;
+    })
+    .catchError((error){
+      print(error) ;
+    });
   }
 }
 

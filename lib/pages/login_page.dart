@@ -15,6 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String name = "";
   bool wrongUser = true;
+  bool hide = true ;
   bool wrongPass = false;
   String loggerMail = "0xFF";
   bool changeButton = false;
@@ -54,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       await Future.delayed(const Duration(milliseconds: 500));
       var successfulSnackBar = SnackBar(
-        content: "Succefully Logged In".text.color(Colors.green).make(),
+        content: "Successfully Logged In".text.color(Colors.green).make(),
         action: SnackBarAction(
           label: "DISMISS",
           onPressed: () {
@@ -95,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  padding: EdgeInsets.symmetric(horizontal: 32.0),
                   child: Column(children: [
                     TextFormField(
                       controller: namer,
@@ -119,11 +120,19 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     TextFormField(
                       controller: passer,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: "Password",
                         hintText: "Enter password",
+                        suffixIcon: IconButton(
+                          onPressed: (){
+                            setState(() {
+                              hide = !hide ;
+                            });
+                          },
+                          icon: hide ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: hide,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("Password cannot be empty.");

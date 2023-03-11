@@ -5,7 +5,7 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:khaata_app/backend/authentication.dart';
 import 'package:khaata_app/backend/userbaseUtility.dart';
 import 'package:khaata_app/models/structure.dart';
-import 'package:crypto/crypto.dart';
+import 'package:khaata_app/utils/hash.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -24,13 +24,9 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailer = TextEditingController();
   TextEditingController passer = TextEditingController();
   // Switches
-  bool ifItExists = false;
-  // Encrypt pin to a hash using SHA-256
-  String generateHash(String text) {
-    var bytesOfData = utf8.encode(text);
-    String hashValue = sha256.convert(bytesOfData).toString();
-    return hashValue;
-  }
+  bool ifItExists = false ;
+  bool hide = true ;
+
 
   // Add a new user using async method to push data in Firebase cloud
   Future addUser(
@@ -38,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
       required String email,
       required String number,
       required String password}) async {
-    final hash = generateHash(password);
+    final hash = Hash().generateHash(password) ;
     // I just remade this thing again with new classes - life is awful !
     await Authentication().registerUser(email: email, password: password);
     final user = UserData(
@@ -124,7 +120,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("The number cannot be empty! ");
-                        } else if (value.length < 10) {
+                        } else if (value.length != 10) {
                           return ("The number must be of 10 digits! ");
                         }
                         return null;
@@ -133,11 +129,19 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: passer,
                       keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: "Password",
                         hintText: "Enter password",
+                        suffixIcon: IconButton(
+                          onPressed: (){
+                            setState(() {
+                              hide = !hide ;
+                            });
+                          },
+                          icon: hide ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
+                        ),
                       ),
-                      obscureText: true,
+                      obscureText: hide,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("The password cannot be empty! ");
@@ -149,11 +153,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     TextFormField(
                       keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: "Confirm Password",
                         hintText: "Enter password again",
                       ),
-                      obscureText: true,
+                      obscureText: hide,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return ("The password cannot be empty! ");
@@ -186,7 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               password: pass);
                         });
                         var successfulSnackBar = SnackBar(
-                          content: "Succefully Registered"
+                          content: "Successfully Registered"
                               .text
                               .color(Colors.green)
                               .make(),
