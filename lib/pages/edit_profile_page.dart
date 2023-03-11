@@ -61,7 +61,7 @@ class _AvatarState extends State<Avatar> {
             crossAxisCount: 4, crossAxisSpacing: 30),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemCount: 8     ,
+        itemCount: 8,
         itemBuilder: (context, index) {
           return GestureDetector(
                   onTap: () {
@@ -109,82 +109,81 @@ class ChangePassWordButton extends StatefulWidget {
 }
 
 class _ChangePassWordButtonState extends State<ChangePassWordButton> {
-  TextEditingController previous = TextEditingController() ;
-  TextEditingController next = TextEditingController() ;
-  String again = "" ;
+  TextEditingController previous = TextEditingController();
+  TextEditingController next = TextEditingController();
+  String again = "";
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: () {
           showDialog(
               context: context,
               builder: ((context) {
-                return AlertDialog(
-                  title: Text("Change Password"),
-                  actions: [
-                    Form(
-                      key: _formKey,
-                    child: Column(
-                        children: [
-                      TextFormField(
-                      controller: previous,
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          labelText: "Old Password",
-                          hintText: "Enter Old Password"),
-                    ).pOnly(left: 16, right: 16),
-                    TextFormField(
-                      controller: next,
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          labelText: "New Password",
-                          hintText: "Enter New Password"),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                               return ("The password cannot be empty! ");
-                            } else if (value.length <= 8) {
-                               return ("Password is too short! ");
-                            }
-                               return null;
-                          },
-                    ).pOnly(left: 16, right: 16),
-                    TextFormField(
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          labelText: "Confirm New Password",
-                          hintText: "Enter New Password Again"),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                            return ("The password cannot be empty! ");
-                            } else if (value != next.text.trim()) {
-                            return ("The passwords don't match! ");
-                            } else {
-                            again = next.text.trim();
-                            return null;
-                            }
-                        }
-                      ).pOnly(left: 16, right: 16),
-                        ]
-                      )
-                    ),
-                    TextButton(
-                        child: Text("OK",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        style: ButtonStyle(),
-                        onPressed: () async{
-                            String old = previous.text.trim() ;
-                            String now = next.text.trim() ;
-                            String hashNew = "" ;
-                            old = Hash().generateHash(old) ;
-                            hashNew = Hash().generateHash(now) ;
+                return SingleChildScrollView(
+                  child: AlertDialog(
+                    title: Text("Change Password"),
+                    actions: [
+                      Form(
+                          key: _formKey,
+                          child: Column(children: [
+                            TextFormField(
+                              controller: previous,
+                              decoration: InputDecoration(
+                                  alignLabelWithHint: true,
+                                  labelText: "Old Password",
+                                  hintText: "Enter Old Password"),
+                            ).pOnly(left: 16, right: 16),
+                            TextFormField(
+                              controller: next,
+                              decoration: InputDecoration(
+                                  alignLabelWithHint: true,
+                                  labelText: "New Password",
+                                  hintText: "Enter New Password"),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return ("The password cannot be empty! ");
+                                } else if (value.length <= 8) {
+                                  return ("Password is too short! ");
+                                }
+                                return null;
+                              },
+                            ).pOnly(left: 16, right: 16),
+                            TextFormField(
+                                decoration: InputDecoration(
+                                    alignLabelWithHint: true,
+                                    labelText: "Confirm New Password",
+                                    hintText: "Enter New Password Again"),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return ("The password cannot be empty! ");
+                                  } else if (value != next.text.trim()) {
+                                    return ("The passwords don't match! ");
+                                  } else {
+                                    again = next.text.trim();
+                                    return null;
+                                  }
+                                }).pOnly(left: 16, right: 16),
+                          ])),
+                      TextButton(
+                          child: Text("OK",
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          style: ButtonStyle(),
+                          onPressed: () async {
+                            String old = previous.text.trim();
+                            String now = next.text.trim();
+                            String hashNew = "";
+                            old = Hash().generateHash(old);
+                            hashNew = Hash().generateHash(now);
 
                             if (!_formKey.currentState!.validate()) {
                               return;
                             }
-                            await Authentication().currentUser?.updatePassword(now) ;
-                            Userbase().updateUserDetails("hash", hashNew) ;
+                            await Authentication()
+                                .currentUser
+                                ?.updatePassword(now);
+                            Userbase().updateUserDetails("hash", hashNew);
                             Navigator.of(context).pop();
 
                             // Let the user know that it actually changed - HAHAHA !
@@ -203,9 +202,9 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
                             );
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(successfulSnackBar);
-                        }
-                      )
-                  ],
+                          })
+                    ],
+                  ),
                 );
               }));
         },
@@ -213,6 +212,5 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
           alignment: Alignment.bottomCenter,
           child: "Change Password".text.semiBold.make(),
         ).pOnly(right: 24, left: 24));
-    }
-
+  }
 }

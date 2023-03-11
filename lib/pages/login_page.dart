@@ -157,21 +157,21 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: BoxDecoration(
                       color: Colors.purple,
                       borderRadius:
-                      BorderRadius.circular(changeButton ? 50 : 16),
+                          BorderRadius.circular(changeButton ? 50 : 16),
                     ),
                     child: changeButton
                         ? const Icon(
-                      Icons.done,
-                      color: Colors.white,
-                    )
+                            Icons.done,
+                            color: Colors.white,
+                          )
                         : const Text(
-                      "Login",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
+                            "Login",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
                   ),
                 ),
                 TextButton(

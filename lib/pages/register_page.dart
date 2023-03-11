@@ -35,9 +35,9 @@ class _RegisterPageState extends State<RegisterPage> {
   // Add a new user using async method to push data in Firebase cloud
   Future addUser(
       {required String name,
-        required String email,
-        required String number,
-        required String password}) async {
+      required String email,
+      required String number,
+      required String password}) async {
     final hash = generateHash(password);
     // I just remade this thing again with new classes - life is awful !
     await Authentication().registerUser(email: email, password: password);
@@ -76,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             Padding(
               padding:
-              const EdgeInsets.symmetric(vertical: 0.0, horizontal: 32.0),
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 32.0),
               child: Column(children: [
                 TextFormField(
                   controller: namer,
@@ -170,41 +170,40 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 20.0,
                 ),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(shape: StadiumBorder()),
-                  onPressed: () {
-                    String name1 = namer.text.trim();
-                    String num1 = numberer.text.trim();
-                    String pass = passer.text.trim();
-                    String mail = emailer.text.trim();
-                    if (!_formKey.currentState!.validate()) {
-                      return;
-                    }
-                    setState(() {
-                      addUser(
-                          name: name1,
-                          number: num1,
-                          email: mail,
-                          password: pass);
-                    });
-                    var successfulSnackBar = SnackBar(
-                      content: "Successfully Registered"
-                          .text
-                          .color(Colors.green)
-                          .make(),
-                      action: SnackBarAction(
-                        label: "DISMISS",
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        },
-                      ),
-                    );
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(successfulSnackBar);
-                    Navigator.pushNamed(context, "/login");
-                    Navigator.pop(context, "/register");
-                  },
-                  child: "Register".text.xl.make(),
-                ),
+                    onPressed: () {
+                      String name1 = namer.text.trim();
+                      String num1 = numberer.text.trim();
+                      String pass = passer.text.trim();
+                      String mail = emailer.text.trim();
+                      if (!_formKey.currentState!.validate()) {
+                        return;
+                      }
+                      setState(() {
+                        addUser(
+                            name: name1,
+                            number: num1,
+                            email: mail,
+                            password: pass);
+                      });
+                      var successfulSnackBar = SnackBar(
+                        content: "Successfully Registered"
+                            .text
+                            .color(Colors.green)
+                            .make(),
+                        action: SnackBarAction(
+                          label: "DISMISS",
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                        ),
+                      );
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(successfulSnackBar);
+                      Navigator.pushNamed(context, "/login");
+                      Navigator.pop(context, "/register");
+                    },
+                    child:
+                        "Register".text.xl.make().pOnly(right: 12, left: 12)),
               ]),
             )
           ],

@@ -37,7 +37,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(context, true);
                 Navigator.pushNamed(context, "/home");
               },
               leading: Icon(CupertinoIcons.home, color: Colors.white),
@@ -48,6 +48,7 @@ class MyDrawer extends StatelessWidget {
               )),
           ListTile(
               onTap: () {
+                Navigator.pop(context, true);
                 Navigator.pushNamed(context, "/editprofile");
               },
               leading:
