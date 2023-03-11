@@ -5,7 +5,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../backend/friendsLoader.dart';
 
-List<UserData> friends = [] ;
+List<UserData> friends = [];
 
 class FriendSearchBar extends StatefulWidget {
   const FriendSearchBar({super.key});
@@ -15,16 +15,16 @@ class FriendSearchBar extends StatefulWidget {
 }
 
 class _FriendSearchBarState extends State<FriendSearchBar> {
-  var frLoad = FriendLoader() ;
+  var frLoad = FriendLoader();
 
   @override
-  void initState(){
-    super.initState() ;
-    Future.delayed(Duration.zero,() async {
-      await frLoad.getFriendDetails().then((value){
-        if(mounted) {
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await frLoad.getFriendDetails().then((value) {
+        if (mounted) {
           super.setState(() {
-            friends = frLoad.fetchFriendDetails ;
+            friends = frLoad.fetchFriendDetails;
           });
         }
       });
@@ -50,9 +50,8 @@ class _FriendSearchBarState extends State<FriendSearchBar> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
-
   // Back-end data fetch {Diwas - "Yeah this is how we do it !"}
-  List<UserData> matchedQuery = [] ;
+  List<UserData> matchedQuery = [];
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -60,7 +59,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return [
       IconButton(
           onPressed: (() {
-            matchedQuery = [] ;
+            matchedQuery = [];
             query = "";
           }),
           icon: Icon(CupertinoIcons.clear))
@@ -72,7 +71,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return IconButton(
         onPressed: (() {
           //closes the search bar
-          matchedQuery = [] ;
+          matchedQuery = [];
           close(context, null);
         }),
         icon: Icon(CupertinoIcons.arrow_left));
@@ -80,18 +79,11 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    matchedQuery = [] ;
-    for (UserData person in friends) {
-      if (query != "" && person.name.toLowerCase().contains(query.toLowerCase())) {
-        matchedQuery.add(person);
-      }
-    }
-
     return matchedQuery.isNotEmpty
         ? ListView.builder(
             itemCount: matchedQuery.length,
             itemBuilder: ((context, index) {
-              var cur = matchedQuery[index].name ;
+              var cur = matchedQuery[index].name;
               return Card(
                 elevation: 5,
                 child: ListTile(
@@ -110,13 +102,20 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    matchedQuery.clear();
+    for (UserData person in friends) {
+      if (query.isNotEmpty &&
+          person.name.toLowerCase().contains(query.toLowerCase())) {
+        matchedQuery.add(person);
+      }
+    }
     //these are the suggestions
     //all matching items are given as suggestion for now
     return matchedQuery.isNotEmpty
         ? ListView.builder(
             itemCount: matchedQuery.length,
             itemBuilder: ((context, index) {
-              var cur = matchedQuery[index].name ;
+              var cur = matchedQuery[index].name;
               return Card(
                   elevation: 5,
                   child: ListTile(

@@ -66,17 +66,17 @@ class _FriendsListState extends State<FriendsList> {
   List<dynamic> friends = [];
   List<UserData> friendDetails = [];
   String tempName = "";
-  var frLoad = FriendLoader() ;
+  var frLoad = FriendLoader();
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero,() async {
-      await frLoad.getFriendDetails().then((value){
-        if(mounted) {
+    Future.delayed(Duration.zero, () async {
+      await frLoad.getFriendDetails().then((value) {
+        if (mounted) {
           super.setState(() {
-            friends = frLoad.fetchFriends ;
-            friendDetails = frLoad.fetchFriendDetails ;
+            friends = frLoad.fetchFriends;
+            friendDetails = frLoad.fetchFriendDetails;
           });
         }
       });
@@ -88,17 +88,14 @@ class _FriendsListState extends State<FriendsList> {
     return friendDetails.isEmpty
         ? (friends.isEmpty
             ? Center(
-                child: Column(
-                          children: [
-                                        FriendSearchBar(),
-                                        SizedBox(height: 40),
-                                       "Got no friends? Add one right now using '+'".text.lg.make()
-                                    ]
-                            )
-                   )
-        : Center(child: CircularProgressIndicator()))
+                child: Column(children: [
+                FriendSearchBar(),
+                SizedBox(height: 40),
+                "Got no friends? Add one right now using '+'".text.lg.make()
+              ]))
+            : Center(child: CircularProgressIndicator()))
         : ListView.builder(
-            itemCount: friendDetails.length+1,
+            itemCount: friendDetails.length + 1,
             itemBuilder: ((context, index) {
               if (index == 0) {
                 return FriendSearchBar();
@@ -110,7 +107,7 @@ class _FriendsListState extends State<FriendsList> {
                     color: Colors.blue,
                   ),
                   trailing: "Rs. 100".text.make(),
-                  title: "${friendDetails[index-1].name}".text.make(),
+                  title: "${friendDetails[index - 1].name}".text.make(),
                   onTap: () {
                     Navigator.push(
                         context,
