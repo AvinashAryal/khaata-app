@@ -77,7 +77,6 @@ class _RecentListState extends State<RecentList> {
           }
       });
     });
-    print(records);
   }
 
   @override

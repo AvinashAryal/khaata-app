@@ -6,6 +6,8 @@ import 'package:velocity_x/velocity_x.dart';
 import '../backend/friendsLoader.dart';
 import '../backend/userbaseUtility.dart';
 
+List<UserData> users = [] ;
+
 class AddFriendSearchBar extends StatefulWidget {
   const AddFriendSearchBar({super.key});
 
@@ -14,7 +16,21 @@ class AddFriendSearchBar extends StatefulWidget {
 }
 
 class _AddFriendSearchBarState extends State<AddFriendSearchBar> {
+
   @override
+  void initState(){
+    super.initState() ;
+    Future.delayed(Duration.zero,() async {
+      await Userbase().getAllUserData().then((value){
+        if(mounted) {
+          super.setState(() {
+            users = value ;
+          });
+        }
+      });
+    });
+  }
+
   Widget build(BuildContext context) {
     return FloatingActionButton(
         onPressed: () {
@@ -27,7 +43,6 @@ class _AddFriendSearchBarState extends State<AddFriendSearchBar> {
 class CustomSearchDelegate extends SearchDelegate {
 
   // Back-end data fetch {Diwas - "Yeah this is how we do it !"}
-  List<UserData> users = [] ;
   List<UserData> matchedQuery = [] ;
   var frLoad = FriendLoader() ;
 
@@ -37,6 +52,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return [
       IconButton(
           onPressed: (() {
+            matchedQuery = [] ;
             query = "";
           }),
           icon: Icon(CupertinoIcons.clear))
@@ -48,6 +64,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return IconButton(
         onPressed: (() {
           //closes the search bar
+          matchedQuery = [] ;
           close(context, null);
         }),
         icon: Icon(CupertinoIcons.arrow_left));
@@ -55,12 +72,6 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    Future.delayed(Duration.zero, ()async{
-      await Userbase().getAllUserData().then((feed){
-        users = feed ;
-      }) ;
-    }) ;
-    print(users) ;
 
     for (UserData person in users) {
       if (person.name.toLowerCase().contains(query.toLowerCase())) {

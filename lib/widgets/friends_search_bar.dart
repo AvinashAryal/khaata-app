@@ -4,7 +4,8 @@ import 'package:khaata_app/models/structure.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../backend/friendsLoader.dart';
-import '../backend/userbaseUtility.dart';
+
+List<UserData> friends = [] ;
 
 class FriendSearchBar extends StatefulWidget {
   const FriendSearchBar({super.key});
@@ -14,6 +15,22 @@ class FriendSearchBar extends StatefulWidget {
 }
 
 class _FriendSearchBarState extends State<FriendSearchBar> {
+  var frLoad = FriendLoader() ;
+
+  @override
+  void initState(){
+    super.initState() ;
+    Future.delayed(Duration.zero,() async {
+      await frLoad.getFriendDetails().then((value){
+        if(mounted) {
+          super.setState(() {
+            friends = frLoad.fetchFriendDetails ;
+          });
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -35,9 +52,7 @@ class _FriendSearchBarState extends State<FriendSearchBar> {
 class CustomSearchDelegate extends SearchDelegate {
 
   // Back-end data fetch {Diwas - "Yeah this is how we do it !"}
-  List<UserData> friends = [] ;
   List<UserData> matchedQuery = [] ;
-  var frLoad = FriendLoader() ;
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -45,6 +60,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return [
       IconButton(
           onPressed: (() {
+            matchedQuery = [] ;
             query = "";
           }),
           icon: Icon(CupertinoIcons.clear))
@@ -56,6 +72,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return IconButton(
         onPressed: (() {
           //closes the search bar
+          matchedQuery = [] ;
           close(context, null);
         }),
         icon: Icon(CupertinoIcons.arrow_left));
@@ -63,13 +80,13 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    friends = frLoad.fetchFriendDetails ;
-    print(friends) ;
+    matchedQuery = [] ;
     for (UserData person in friends) {
-      if (person.name.toLowerCase().contains(query.toLowerCase())) {
+      if (query != "" && person.name.toLowerCase().contains(query.toLowerCase())) {
         matchedQuery.add(person);
       }
     }
+
     return matchedQuery.isNotEmpty
         ? ListView.builder(
             itemCount: matchedQuery.length,

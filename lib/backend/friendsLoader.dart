@@ -39,7 +39,7 @@ class FriendLoader{
           .getUserDetails("id", friends[i].toString())
           .then((specified) {
         // Forget setState and I lost my shit - hahahaha !
-          friendDetails.insert(i, specified);
+           friendDetails.insert(i, specified);
       });
     }
   }
