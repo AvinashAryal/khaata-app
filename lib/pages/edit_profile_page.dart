@@ -47,9 +47,10 @@ class Avatar extends StatefulWidget {
 }
 
 class _AvatarState extends State<Avatar> {
-  static int currentImage = 0;
   int selectedImage = -1;
-  String url = "assets/images/avatar${currentImage + 1}.png";
+  String url = Authentication().currentUser?.photoURL == null ?
+              "assets/images/avatar1.png" : Authentication().currentUser?.photoURL as String ;
+
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -90,8 +91,18 @@ class _AvatarState extends State<Avatar> {
                 if (selectedImage == -1) {
                   return;
                 }
-                setState(() {
-                  url = "assets/images/avatar${selectedImage + 1}.png";
+                setState((){
+                   Authentication().currentUser?.updatePhotoURL("assets/images/avatar${selectedImage + 1}.png")
+                       .then((value){
+                         print("Updated avatar successfully! ") ;
+                         setState(() {
+                           url = Authentication().currentUser?.photoURL as String ;
+                           Userbase().updateUserValues('avatarIndex', selectedImage+1) ;
+                         });
+                       })
+                       .catchError((error){
+                        print(error) ;
+                       }) ;
                 });
               },
               style: ElevatedButton.styleFrom(shape: StadiumBorder()),

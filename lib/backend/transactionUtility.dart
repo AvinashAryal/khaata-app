@@ -3,7 +3,6 @@
 // Firebase Access and CRUD Stuff - TransactionRecord Utility
 
 import "package:cloud_firestore/cloud_firestore.dart" ;
-import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
 import '../models/transaction.dart';
 

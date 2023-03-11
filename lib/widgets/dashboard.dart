@@ -91,6 +91,8 @@ class _RecentListState extends State<RecentList> {
             itemBuilder: ((context, index) {
               return Card(
                 child: ListTile(
+                    leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month]}"
+                             " ${records[index].transactionDate.toDate().day}".text.lg.make(),
                     title: Row(children: [
                       "${lenders[index].name}".text.lg.make(),
                       Icon(
