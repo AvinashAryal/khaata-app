@@ -48,8 +48,9 @@ class Avatar extends StatefulWidget {
 
 class _AvatarState extends State<Avatar> {
   int selectedImage = -1;
-  String url = Authentication().currentUser?.photoURL == null ?
-              "assets/images/avatar1.png" : Authentication().currentUser?.photoURL as String ;
+  String url = Authentication().currentUser?.photoURL == null
+      ? "assets/images/avatar1.png"
+      : Authentication().currentUser?.photoURL as String;
 
   @override
   Widget build(BuildContext context) {
@@ -91,18 +92,21 @@ class _AvatarState extends State<Avatar> {
                 if (selectedImage == -1) {
                   return;
                 }
-                setState((){
-                   Authentication().currentUser?.updatePhotoURL("assets/images/avatar${selectedImage + 1}.png")
-                       .then((value){
-                         print("Updated avatar successfully! ") ;
-                         setState(() {
-                           url = Authentication().currentUser?.photoURL as String ;
-                           Userbase().updateUserValues('avatarIndex', selectedImage+1) ;
-                         });
-                       })
-                       .catchError((error){
-                        print(error) ;
-                       }) ;
+                setState(() {
+                  Authentication()
+                      .currentUser
+                      ?.updatePhotoURL(
+                          "assets/images/avatar${selectedImage + 1}.png")
+                      .then((value) {
+                    print("Updated avatar successfully! ");
+                    setState(() {
+                      url = Authentication().currentUser?.photoURL as String;
+                      Userbase()
+                          .updateUserValues('avatarIndex', selectedImage + 1);
+                    });
+                  }).catchError((error) {
+                    print(error);
+                  });
                 });
               },
               style: ElevatedButton.styleFrom(shape: StadiumBorder()),
@@ -133,50 +137,55 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
               context: context,
               builder: ((context) {
                 return SingleChildScrollView(
-                  child: AlertDialog(
-                    title: Text("Change Password"),
-                    actions: [
-                      Form(
-                          key: _formKey,
-                          child: Column(children: [
-                            TextFormField(
-                              controller: previous,
-                              decoration: InputDecoration(
-                                  alignLabelWithHint: true,
-                                  labelText: "Old Password",
-                                  hintText: "Enter Old Password"),
-                            ).pOnly(left: 16, right: 16),
-                            TextFormField(
-                              controller: next,
-                              decoration: InputDecoration(
-                                  alignLabelWithHint: true,
-                                  labelText: "New Password",
-                                  hintText: "Enter New Password"),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return ("The password cannot be empty! ");
-                                } else if (value.length <= 8) {
-                                  return ("Password is too short! ");
-                                }
+                    child:
+                        AlertDialog(title: Text("Change Password"), actions: [
+                  Form(
+                      key: _formKey,
+                      child: Column(children: [
+                        TextFormField(
+                          controller: previous,
+                          decoration: InputDecoration(
+                              alignLabelWithHint: true,
+                              labelText: "Old Password",
+                              hintText: "Enter Old Password"),
+                        ).pOnly(left: 16, right: 16),
+                        TextFormField(
+                          controller: next,
+                          decoration: InputDecoration(
+                              alignLabelWithHint: true,
+                              labelText: "New Password",
+                              hintText: "Enter New Password"),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return ("The password cannot be empty! ");
+                            } else if (value.length <= 8) {
+                              return ("Password is too short! ");
+                            }
+                            return null;
+                          },
+                        ).pOnly(left: 16, right: 16),
+                        TextFormField(
+                            decoration: InputDecoration(
+                                alignLabelWithHint: true,
+                                labelText: "Confirm New Password",
+                                hintText: "Enter New Password Again"),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return ("The password cannot be empty! ");
+                              } else if (value != next.text.trim()) {
+                                return ("The passwords don't match! ");
+                              } else {
+                                again = next.text.trim();
                                 return null;
-                              },
-                            ).pOnly(left: 16, right: 16),
-                            TextFormField(
-                                decoration: InputDecoration(
-                                    alignLabelWithHint: true,
-                                    labelText: "Confirm New Password",
-                                    hintText: "Enter New Password Again"),
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return ("The password cannot be empty! ");
-                                  } else if (value != next.text.trim()) {
-                                    return ("The passwords don't match! ");
-                                  } else {
-                                    again = next.text.trim();
-                                    return null;
-                                  }
-                                }).pOnly(left: 16, right: 16),
-                          ])),
+                              }
+                            }).pOnly(left: 16, right: 16),
+                      ])),
+                  ButtonBar(
+                    children: [
+                      TextButton(
+                        child: Text("Cancel"),
+                        onPressed: () {},
+                      ),
                       TextButton(
                           child: Text("OK",
                               style: TextStyle(fontWeight: FontWeight.bold)),
@@ -216,7 +225,7 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
                           })
                     ],
                   ),
-                );
+                ]));
               }));
         },
         child: Align(

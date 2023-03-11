@@ -1,9 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:khaata_app/models/history_data_model.dart';
 import 'package:khaata_app/models/my_map_data.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -22,6 +20,7 @@ class _FriendDetailState extends State<FriendDetail> {
   final id;
   final amountController = TextEditingController();
   final remarksController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   _FriendDetailState(this.id);
   void initState() {
     super.initState();
@@ -53,50 +52,89 @@ class _FriendDetailState extends State<FriendDetail> {
 //    setState(() {});
   }
 
+  void addRecord() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    TransactionEntry cur = TransactionEntry(DateTime.now(),
+        remarksController.text, int.parse(amountController.text));
+    setState(() {
+      TransactionData.addData(id, cur);
+    });
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          amountController.text = '';
+          remarksController.text = '';
           showDialog(
               context: context,
               builder: ((context) {
-                return AlertDialog(
-                  title: Text("Enter the Details of new Transaction"),
-                  content: Text("Use minus(-) sign for received amount"),
-                  actions: [
-                    TextField(
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          labelText: "Amount",
-                          hintText: "Enter the amount"),
-                      controller: amountController,
-                    ).pOnly(left: 16, right: 16),
-                    TextField(
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          labelText: "Remarks",
-                          hintText: "Remarks about the transaction"),
-                      controller: remarksController,
-                    ).pOnly(left: 16, right: 16),
-                    TextButton(
-                        child: Text("Ok",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        style: ButtonStyle(),
-                        onPressed: () {
-                          TransactionEntry cur = TransactionEntry(
-                              DateTime.now(),
-                              remarksController.text,
-                              int.parse(amountController.text));
-                          setState(() {
-                            TransactionData.addData(id, cur);
-                          });
-                          Navigator.of(context).pop();
-                        }
-                        // save a transaction
-                        )
-                  ],
+                return Form(
+                  key: _formKey,
+                  child: AlertDialog(
+                    title: Text("Enter the Details of new Transaction"),
+                    content: Text("Use minus(-) sign for received amount"),
+                    actions: [
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            labelText: "Amount",
+                            hintText: "Enter the amount"),
+                        controller: amountController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return ("Amount cannot be empty");
+                          } else {
+                            RegExp pattern = RegExp(r'^[-+]?[0-9]+$');
+                            if (!pattern.hasMatch(value)) {
+                              return 'Please enter a valid number';
+                            }
+                            return null;
+                          }
+                        },
+                      ).pOnly(left: 16, right: 16),
+                      TextFormField(
+                        decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            labelText: "Remarks",
+                            hintText: "Remarks about the transaction"),
+                        controller: remarksController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return ("Remarks cannot be empty");
+                          } else if (value.length > 20) {
+                            return ("Remarks is too long");
+                          }
+                          return null;
+                        },
+                      ).pOnly(left: 16, right: 16),
+                      ButtonBar(children: [
+                        TextButton(
+                            child: Text("Cancel",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }
+                            // save a transaction
+                            ),
+                        TextButton(
+                            child: Text("Ok",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: ButtonStyle(),
+                            onPressed: () {
+                              addRecord();
+                            }
+                            // save a transaction
+                            ),
+                      ]),
+                    ],
+                  ),
                 );
               }));
         },

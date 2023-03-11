@@ -31,15 +31,20 @@ class MyDrawer extends StatelessWidget {
                 style: const TextStyle(color: Colors.white),
               ),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage(Authentication().currentUser?.photoURL==null?"assets/images/avatar1.png"
-                                            :Authentication().currentUser?.photoURL as String),
+                backgroundImage: AssetImage(
+                    Authentication().currentUser?.photoURL == null
+                        ? "assets/images/avatar1.png"
+                        : Authentication().currentUser?.photoURL as String),
               ),
             ),
           ),
           ListTile(
               onTap: () {
-                Navigator.pop(context, true);
-                Navigator.pushNamed(context, "/home");
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/home',
+                  ModalRoute.withName('/'),
+                );
               },
               leading: Icon(CupertinoIcons.home, color: Colors.white),
               title: Text(
@@ -49,8 +54,11 @@ class MyDrawer extends StatelessWidget {
               )),
           ListTile(
               onTap: () {
-                Navigator.pop(context, true);
-                Navigator.pushNamed(context, "/editprofile");
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/editprofile',
+                  ModalRoute.withName('/'),
+                );
               },
               leading:
                   Icon(CupertinoIcons.profile_circled, color: Colors.white),
@@ -64,8 +72,11 @@ class MyDrawer extends StatelessWidget {
             child: ListTile(
                 onTap: (() async {
                   await Authentication().signOut();
-                  Navigator.pop(context, true);
-                  Navigator.pushReplacementNamed(context, "/login");
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    ModalRoute.withName('/'),
+                  );
                 }),
                 leading: Icon(CupertinoIcons.chevron_left_square_fill,
                     color: Colors.white),
