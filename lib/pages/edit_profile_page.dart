@@ -106,43 +106,43 @@ class ChangePassWordButton extends StatelessWidget {
           showDialog(
               context: context,
               builder: ((context) {
-                return AlertDialog(
-                  title: Text("Change Password"),
-                  actions: [
-                    TextField(
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          labelText: "Old Password",
-                          hintText: "Enter Old Password"),
-                    ).pOnly(left: 16, right: 16),
-                    TextField(
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          labelText: "New Password",
-                          hintText: "Enter New Password"),
-                    ).pOnly(left: 16, right: 16),
-                    TextField(
-                      decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          labelText: "Confirm New Password",
-                          hintText: "Enter New Password Again"),
-                    ).pOnly(left: 16, right: 16),
-                    TextButton(
-                        child: Text("Ok",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        style: ButtonStyle(),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        }
-                        // save a transaction
-                        )
-                  ],
+                return SingleChildScrollView(
+                  child: AlertDialog(
+                    title: Text("Change Password"),
+                    actions: [
+                      TextField(
+                        decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            labelText: "Old Password",
+                            hintText: "Enter Old Password"),
+                      ).pOnly(left: 16, right: 16),
+                      TextField(
+                        decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            labelText: "New Password",
+                            hintText: "Enter New Password"),
+                      ).pOnly(left: 16, right: 16),
+                      TextField(
+                        decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            labelText: "Confirm New Password",
+                            hintText: "Enter New Password Again"),
+                      ).pOnly(left: 16, right: 16),
+                      TextButton(
+                          child: Text("Ok",
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          style: ButtonStyle(),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }
+                          // save a transaction
+                          )
+                    ],
+                  ),
                 );
               }));
         },
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: "Change Password".text.semiBold.make(),
-        ).pOnly(right: 24, left: 24));
+        child:
+            "Change Password".text.semiBold.make().pOnly(right: 24, left: 24));
   }
 }

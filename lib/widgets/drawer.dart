@@ -30,12 +30,9 @@ class MyDrawer extends StatelessWidget {
                 "$mail",
                 style: const TextStyle(color: Colors.white),
               ),
-              currentAccountPicture: const Icon(
-                CupertinoIcons.profile_circled,
-                color: Colors.white,
-              ), //   CircleAvatar(
-              //       backgroundImage: NetworkImage(imageURL),
-              //     ),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage("assets/images/avatar1.png"),
+              ),
             ),
           ),
           ListTile(
