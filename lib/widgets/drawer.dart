@@ -31,7 +31,8 @@ class MyDrawer extends StatelessWidget {
                 style: const TextStyle(color: Colors.white),
               ),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage("assets/images/avatar1.png"),
+                backgroundImage: AssetImage(Authentication().currentUser?.photoURL==null?"assets/images/avatar1.png"
+                                            :Authentication().currentUser?.photoURL as String),
               ),
             ),
           ),

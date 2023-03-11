@@ -25,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController passer = TextEditingController();
   // Switches
   bool ifItExists = false;
+  bool hide = true ;
   // Encrypt pin to a hash using SHA-256
   String generateHash(String text) {
     var bytesOfData = utf8.encode(text);
@@ -47,7 +48,9 @@ class _RegisterPageState extends State<RegisterPage> {
         number: number,
         email: email,
         hash: hash,
-        friends: []);
+        friends: [],
+        avatarIndex: 1
+    );
     await Userbase().createNewUser(user);
   }
 
@@ -134,11 +137,17 @@ class _RegisterPageState extends State<RegisterPage> {
                 TextFormField(
                   controller: passer,
                   keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Password",
                     hintText: "Enter password",
+                    suffixIcon: IconButton(onPressed: (){
+                                  setState(() {
+                                    hide = !hide ;
+                                  });
+                                },
+                                icon: Icon(hide ? Icons.visibility_off : Icons.visibility))
                   ),
-                  obscureText: true,
+                  obscureText: hide,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return ("The password cannot be empty! ");
@@ -154,7 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     labelText: "Confirm Password",
                     hintText: "Enter password again",
                   ),
-                  obscureText: true,
+                  obscureText: hide,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return ("The password cannot be empty! ");

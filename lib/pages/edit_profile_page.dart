@@ -47,9 +47,10 @@ class Avatar extends StatefulWidget {
 }
 
 class _AvatarState extends State<Avatar> {
-  static int currentImage = 0;
   int selectedImage = -1;
-  String url = "assets/images/avatar${currentImage + 1}.png";
+  String url = Authentication().currentUser?.photoURL == null ?
+              "assets/images/avatar1.png" : Authentication().currentUser?.photoURL as String ;
+
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -61,7 +62,7 @@ class _AvatarState extends State<Avatar> {
             crossAxisCount: 4, crossAxisSpacing: 30),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemCount: 8     ,
+        itemCount: 8,
         itemBuilder: (context, index) {
           return GestureDetector(
                   onTap: () {
@@ -90,8 +91,18 @@ class _AvatarState extends State<Avatar> {
                 if (selectedImage == -1) {
                   return;
                 }
-                setState(() {
-                  url = "assets/images/avatar${selectedImage + 1}.png";
+                setState((){
+                   Authentication().currentUser?.updatePhotoURL("assets/images/avatar${selectedImage + 1}.png")
+                       .then((value){
+                         print("Updated avatar successfully! ") ;
+                         setState(() {
+                           url = Authentication().currentUser?.photoURL as String ;
+                           Userbase().updateUserValues('avatarIndex', selectedImage+1) ;
+                         });
+                       })
+                       .catchError((error){
+                        print(error) ;
+                       }) ;
                 });
               },
               style: ElevatedButton.styleFrom(shape: StadiumBorder()),
@@ -134,6 +145,7 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
                           alignLabelWithHint: true,
                           labelText: "Old Password",
                           hintText: "Enter Old Password"),
+                         obscureText: true,
                     ).pOnly(left: 16, right: 16),
                     TextFormField(
                       controller: next,
@@ -141,6 +153,7 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
                           alignLabelWithHint: true,
                           labelText: "New Password",
                           hintText: "Enter New Password"),
+                          obscureText: true,
                           validator: (value) {
                             if (value!.isEmpty) {
                                return ("The password cannot be empty! ");
@@ -155,6 +168,7 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
                           alignLabelWithHint: true,
                           labelText: "Confirm New Password",
                           hintText: "Enter New Password Again"),
+                          obscureText: true,
                           validator: (value) {
                             if (value!.isEmpty) {
                             return ("The password cannot be empty! ");

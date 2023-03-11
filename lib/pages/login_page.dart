@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   bool wrongPass = false;
   String loggerMail = "0xFF";
   bool changeButton = false;
+  bool hide = true ;
   final _formKey = GlobalKey<FormState>();
   TextEditingController namer = TextEditingController();
   TextEditingController passer = TextEditingController();
@@ -118,11 +119,17 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 TextFormField(
                   controller: passer,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "Password",
                     hintText: "Enter password",
+                      suffixIcon: IconButton(onPressed: (){
+                        setState(() {
+                          hide = !hide ;
+                        });
+                      },
+                          icon: Icon(hide ? Icons.visibility_off : Icons.visibility))
                   ),
-                  obscureText: true,
+                  obscureText: hide,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return ("Password cannot be empty.");

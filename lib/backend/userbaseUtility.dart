@@ -79,5 +79,19 @@ class Userbase{
       print(error) ;
     });
   }
+
+  updateUserValues(String updateFieldType, int newValue) async{
+    String? reqID = Authentication().currentUser?.uid ;
+    final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: reqID).get() ;
+    final data = snapShot.docs.single ;
+    // The id used here is strictly document id but, not regular or authentication uid.
+    // WARNING {Diwas - Sensitive !}
+    await _database.collection(collectionPath).doc(data.id).update({updateFieldType: newValue}).then((value){
+      print("Updated $updateFieldType successfully! ") ;
+    })
+        .catchError((error){
+      print(error) ;
+    });
+  }
 }
 
