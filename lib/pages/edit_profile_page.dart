@@ -214,4 +214,5 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
           child: "Change Password".text.semiBold.make(),
         ).pOnly(right: 24, left: 24));
     }
+
 }

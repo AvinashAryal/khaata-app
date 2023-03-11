@@ -40,30 +40,43 @@ class _TransactionPageState extends State<TransactionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Transactions")),
-      body: records.isEmpty ? Center(child: CircularProgressIndicator()) : ListView.builder(
-        itemCount: records.length,
-        itemBuilder: (context, index) {
-          return Card(
-              elevation: 5,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(children: [
-                      Row(children: [
-                        "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
-                            .text.xl.make().pOnly(right: 2),
-                        "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "
-                            "${records[index].transactionDate.toDate().day}".text.xl.make(),
-                        "${lenders[index].name}".text.lg.make().pOnly(right: 4),
-                        Icon(Icons.arrow_forward, color: Colors.teal),
-                        "${borrowers[index].name}".text.lg.make().pOnly(left: 4),
-                      ]).pOnly(bottom: 8, top: 8),
-                        "${records[index].transactionDate.toDate().toString().substring(0,16)}".text.make().p(8),
-                    ]),
-                    "${records[index].amount}".text.xl.bold.make(),
-                  ]));
-        },
-      ),
+      body: records.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: records.length,
+              itemBuilder: (context, index) {
+                return Card(
+                    elevation: 5,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Row(children: [
+                                  "${lenders[index].name}"
+                                      .text
+                                      .lg
+                                      .make()
+                                      .pOnly(right: 4),
+                                  Icon(Icons.arrow_forward, color: Colors.teal),
+                                  "${borrowers[index].name}"
+                                      .text
+                                      .lg
+                                      .make()
+                                      .pOnly(left: 4),
+                                ]).pOnly(bottom: 8, top: 8),
+                                "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                                        " - ${records[index].transactionDate.toDate().toString().substring(0, 16)}"
+                                    .text
+                                    .sm
+                                    .make(),
+                              ]),
+                          "${records[index].amount}".text.bold.xl.make(),
+                        ]).pOnly(right: 16, left: 16, top: 8, bottom: 8));
+              },
+            ),
     );
   }
 }

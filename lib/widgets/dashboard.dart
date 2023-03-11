@@ -77,7 +77,7 @@ class _RecentListState extends State<RecentList> {
           }
       });
     });
-    print(records) ;
+    print(records);
   }
 
   @override
@@ -87,17 +87,27 @@ class _RecentListState extends State<RecentList> {
             ? Center(child: "No recent transactions".text.lg.make())
             : const Center(child: CircularProgressIndicator()))
         : ListView.builder(
-        itemCount: lenders.length,
-        itemBuilder: ((context, index) {
-          return ListTile(
-              title: "${lenders[index].name} ----> ${borrowers[index].name}".text.lg.make(),
-              subtitle: "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
-                        " - ${records[index].transactionDate.toDate().toString().substring(0,16)}".text.sm.make(),
-              leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month]} "
-                       "${records[index].transactionDate.toDate().day}".text.sm.make(),
-                         // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
-              trailing: "Amount : ${records[index].amount}".text.lg.make()
-          );
-        })).pOnly(top: 10);
+            itemCount: lenders.length,
+            itemBuilder: ((context, index) {
+              return Card(
+                child: ListTile(
+                    title: Row(children: [
+                      "${lenders[index].name}".text.lg.make(),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Colors.teal,
+                      ),
+                      "${borrowers[index].name}".text.lg.make()
+                    ]),
+                    subtitle:
+                        "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                                " - ${records[index].transactionDate.toDate().toString().substring(0, 16)}"
+                            .text
+                            .sm
+                            .make(),
+                    // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
+                    trailing: "${records[index].amount}".text.lg.bold.make()),
+              );
+            })).pOnly(top: 10);
   }
 }

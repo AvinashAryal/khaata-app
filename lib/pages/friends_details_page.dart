@@ -110,11 +110,13 @@ class _FriendDetailState extends State<FriendDetail> {
               itemCount: TransactionData.myMap[id]?.length,
               itemBuilder: ((context, index) {
                 var cur = TransactionData.myMap[id]![index];
-                return ListTile(
-                  leading: Text(
-                      "${cur.dateTime.year}-${cur.dateTime.month}-${cur.dateTime.day} ${cur.dateTime.hour}:${cur.dateTime.minute}"),
-                  trailing: Text(cur.amount.toString()),
-                  title: cur.remarks.text.make(),
+                return Card(
+                  child: ListTile(
+                    leading: Text(
+                        "${cur.dateTime.year}-${cur.dateTime.month}-${cur.dateTime.day} ${cur.dateTime.hour}:${cur.dateTime.minute}"),
+                    trailing: Text(cur.amount.toString()),
+                    title: cur.remarks.text.make(),
+                  ),
                 );
               }),
             ),

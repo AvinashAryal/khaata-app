@@ -15,7 +15,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String name = "";
   bool wrongUser = true;
-  bool hide = true ;
   bool wrongPass = false;
   String loggerMail = "0xFF";
   bool changeButton = false;
@@ -75,125 +74,114 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 200.0,
-                  child: Image.asset("assets/images/khaata-logo.png"),
-                ).pOnly(top: 40),
-                Center(
-                  child: Text(
-                    "Welcome $name !",
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+      resizeToAvoidBottomInset: true,
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          controller: ScrollController(),
+          children: [
+            SizedBox(
+              height: 200.0,
+              child: Image.asset("assets/images/khaata-logo.png"),
+            ).pOnly(top: 40),
+            Center(
+              child: Text(
+                "Welcome $name !",
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Column(children: [
+                TextFormField(
+                  controller: namer,
+                  decoration: const InputDecoration(
+                    labelText: "Username",
+                    hintText: "Enter username",
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      name = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return ("Username cannot be empty.");
+                    } else if (wrongUser) {
+                      return ("Username is not found.");
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: passer,
+                  decoration: const InputDecoration(
+                    labelText: "Password",
+                    hintText: "Enter password",
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return ("Password cannot be empty.");
+                    } else if (wrongPass) {
+                      return ("Your password doesn't match! ");
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                InkWell(
+                  onTap: () {
+                    name = namer.text.trim();
+                    String pass = passer.text.trim();
+                    getMailFromUsername(name).then((value) async {
+                      print(
+                          "$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                      await Authentication().setInfoForCurrentUser(name);
+                      moveToHome(
+                          context,
+                          await Authentication()
+                              .signInUser(email: loggerMail, password: pass));
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    width: changeButton ? 50 : 100,
+                    height: 50,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius:
+                      BorderRadius.circular(changeButton ? 50 : 16),
+                    ),
+                    child: changeButton
+                        ? const Icon(
+                      Icons.done,
+                      color: Colors.white,
+                    )
+                        : const Text(
+                      "Login",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Column(children: [
-                    TextFormField(
-                      controller: namer,
-                      decoration: const InputDecoration(
-                        labelText: "Username",
-                        hintText: "Enter username",
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          name = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return ("Username cannot be empty.");
-                        } else if (wrongUser) {
-                          return ("Username is not found.");
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: passer,
-                      decoration: InputDecoration(
-                        labelText: "Password",
-                        hintText: "Enter password",
-                        suffixIcon: IconButton(
-                          onPressed: (){
-                            setState(() {
-                              hide = !hide ;
-                            });
-                          },
-                          icon: hide ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
-                        ),
-                      ),
-                      obscureText: hide,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return ("Password cannot be empty.");
-                        } else if (wrongPass) {
-                          return ("Your password doesn't match! ");
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        name = namer.text.trim();
-                        String pass = passer.text.trim();
-                        getMailFromUsername(name).then((value) async {
-                          print(
-                              "$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
-                          await Authentication().setInfoForCurrentUser(name);
-                          moveToHome(
-                              context,
-                              await Authentication().signInUser(
-                                  email: loggerMail, password: pass));
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 500),
-                        width: changeButton ? 50 : 100,
-                        height: 50,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Colors.purple,
-                          borderRadius:
-                              BorderRadius.circular(changeButton ? 50 : 16),
-                        ),
-                        child: changeButton
-                            ? const Icon(
-                                Icons.done,
-                                color: Colors.white,
-                              )
-                            : const Text(
-                                "Login",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                      ),
-                    ),
-                    TextButton(
-                        onPressed: (() {
-                          Navigator.pushNamed(context, "/register");
-                        }),
-                        child: Text("Not registered? Register"))
-                  ]),
-                )
-              ],
-            ),
-          ),
+                TextButton(
+                    onPressed: (() {
+                      Navigator.pushNamed(context, "/register");
+                    }),
+                    child: Text("Not registered? Register"))
+              ]),
+            )
+          ],
         ),
       ),
     );

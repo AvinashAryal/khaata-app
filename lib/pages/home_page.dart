@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:khaata_app/pages/friends_page.dart';
 import 'package:khaata_app/pages/transaction_page.dart';
-
 import '../widgets/dashboard.dart';
 
 class HomePage extends StatefulWidget {
