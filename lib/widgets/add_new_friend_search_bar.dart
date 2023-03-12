@@ -36,6 +36,7 @@ class _AddFriendSearchBarState extends State<AddFriendSearchBar> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
         onPressed: () {
@@ -175,8 +176,7 @@ class _DetailsPageState extends State<DetailsPage> {
               shape: BoxShape.circle,
               border: Border.all(color: context.accentColor, width: 3),
             ),
-            child: Image.asset(
-                "assets/images/avatar${currentPerson.avatarIndex}.png"),
+            child: Image.asset("assets/images/avatar${currentPerson.avatarIndex}.png"),
           ),
           SizedBox(
             height: 16,
@@ -191,9 +191,14 @@ class _DetailsPageState extends State<DetailsPage> {
           ),
           ElevatedButton(
                   onPressed: (() {
-                    print(currentPerson.avatarIndex);
-                    //friend request code here
-                    //also change the state from "add friend" to "request sent"
+                      // Send Request
+                      String? by = Authentication().currentUser?.uid ;
+                      String? to = currentPerson.id ;
+                      String sender = Authentication().currentUser?.displayName as String ;
+                      RequestUtility().createNewRequest(
+                          FriendRequest(byID: by, toID: to, sender: sender)
+                      ) ;
+                    // Change button info
                   }),
                   child: "Add Friend".text.make())
               .pOnly(right: 16, left: 16)
