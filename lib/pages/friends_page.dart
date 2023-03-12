@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/friendsLoader.dart';
+import 'package:khaata_app/backend/requestUtility.dart';
 import 'package:khaata_app/models/structure.dart';
 import 'package:khaata_app/pages/friends_details_page.dart';
 import 'package:khaata_app/widgets/add_new_friend_search_bar.dart';
@@ -11,6 +12,8 @@ import 'package:velocity_x/velocity_x.dart';
 // Backend utilities
 import 'package:khaata_app/backend/userbaseUtility.dart';
 import 'package:khaata_app/backend/authentication.dart';
+
+import '../models/friendRequest.dart';
 
 class FriendsPage extends StatelessWidget {
   const FriendsPage({super.key});
@@ -131,10 +134,26 @@ class FriendRequestList extends StatefulWidget {
 }
 
 class _FriendRequestListState extends State<FriendRequestList> {
+  List<FriendRequest> frReqs = [] ;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero,() async {
+      await RequestUtility().fetchFriendRequests().then((value){
+        if(mounted) {
+          super.setState(() {
+            frReqs = value ;
+          });
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 5,
+        itemCount: frReqs.length,
         itemBuilder: ((context, index) {
           return Card(
               elevation: 5,
@@ -147,19 +166,27 @@ class _FriendRequestListState extends State<FriendRequestList> {
                       size: 20,
                     ).pOnly(right: 48, left: 30),
                     SizedBox(
-                      child: "Request ${index + 1}".text.xl.bold.make(),
+                      child: "${frReqs[index].sender}".text.xl.bold.make(),
                       width: 100,
                     ),
                     ButtonBar(
                       children: [
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () async{
+                              // 1. Add as a friend
+                              await Userbase().updateUserListData("friends", frReqs[index].byID as String) ;
+                              // 2. Remove request
+                              await RequestUtility().deleteRequest(frReqs[index].byID as String, frReqs[index].toID as String) ;
+                            },
                             icon: Icon(
                               Icons.check,
                               color: Colors.green,
                             )),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              // 1. Remove request
+                              RequestUtility().deleteRequest(frReqs[index].byID as String, frReqs[index].toID as String) ;
+                            },
                             icon: Icon(
                               Icons.close,
                               color: Colors.red,

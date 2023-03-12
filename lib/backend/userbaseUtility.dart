@@ -93,5 +93,33 @@ class Userbase{
       print(error) ;
     });
   }
+
+  updateUserListData(String updateFieldType, String newValue) async{
+    var list = [newValue] ;
+    String? reqID = Authentication().currentUser?.uid ;
+    var snapShot = await _database.collection(collectionPath).where("id", isEqualTo: reqID).get() ;
+    var data = snapShot.docs.single ;
+    // The id used here is strictly document id but, not regular or authentication uid.
+    // WARNING {Diwas - Sensitive !}
+    await _database.collection(collectionPath).doc(data.id).update({updateFieldType: FieldValue.arrayUnion(list)})
+        .then((value){
+      print("Updated $updateFieldType successfully! ") ;
+    })
+        .catchError((error){
+      print(error) ;
+    });
+
+    list = [reqID as String] ;
+    snapShot = await _database.collection(collectionPath).where("id", isEqualTo: newValue).get() ;
+    data = snapShot.docs.single ;
+    await _database.collection(collectionPath).doc(data.id).update({updateFieldType: FieldValue.arrayUnion(list)})
+        .then((value){
+      print("Updated $updateFieldType successfully! ") ;
+    })
+        .catchError((error){
+      print(error) ;
+    });
+  }
+
 }
 

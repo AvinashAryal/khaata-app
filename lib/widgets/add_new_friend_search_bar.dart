@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:khaata_app/backend/authentication.dart';
+import 'package:khaata_app/backend/requestUtility.dart';
+import 'package:khaata_app/models/friendRequest.dart';
 import 'package:khaata_app/models/structure.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -74,8 +77,10 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) {
 
     for (UserData person in users) {
-      if (person.name.toLowerCase().contains(query.toLowerCase())) {
-        matchedQuery.add(person);
+      if (query != "" && person.name.toLowerCase().contains(query.toLowerCase())) {
+        if(person.name != Authentication().currentUser?.displayName) {
+          matchedQuery.add(person);
+        }
       }
     }
     return matchedQuery.isNotEmpty
@@ -91,6 +96,12 @@ class CustomSearchDelegate extends SearchDelegate {
                 icon: Icon(Icons.person_add),
                 onPressed: (() {
                   // We might load profile of a friend {Diwas}
+                  String? by = Authentication().currentUser?.uid ;
+                  String? to = matchedQuery[index].id ;
+                  String sender = Authentication().currentUser?.displayName as String ;
+                  RequestUtility().createNewRequest(
+                    FriendRequest(byID: by, toID: to, sender: sender)
+                  ) ;
                 }),
               ),
             ),
