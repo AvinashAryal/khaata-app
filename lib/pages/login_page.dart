@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   bool wrongPass = false;
   String loggerMail = "0xFF";
   bool changeButton = false;
-  bool hide = true ;
+  bool hide = true;
   final _formKey = GlobalKey<FormState>();
   TextEditingController namer = TextEditingController();
   TextEditingController passer = TextEditingController();
@@ -120,15 +120,16 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   controller: passer,
                   decoration: InputDecoration(
-                    labelText: "Password",
-                    hintText: "Enter password",
-                      suffixIcon: IconButton(onPressed: (){
-                        setState(() {
-                          hide = !hide ;
-                        });
-                      },
-                          icon: Icon(hide ? Icons.visibility_off : Icons.visibility))
-                  ),
+                      labelText: "Password",
+                      hintText: "Enter password",
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              hide = !hide;
+                            });
+                          },
+                          icon: Icon(
+                              hide ? Icons.visibility_off : Icons.visibility))),
                   obscureText: hide,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -149,11 +150,19 @@ class _LoginPageState extends State<LoginPage> {
                     getMailFromUsername(name).then((value) async {
                       print(
                           "$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                      showDialog(
+                          context: context,
+                          builder: ((context) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }));
                       await Authentication().setInfoForCurrentUser(name);
                       moveToHome(
                           context,
                           await Authentication()
                               .signInUser(email: loggerMail, password: pass));
+                      Navigator.of(context).pop();
                     });
                   },
                   child: AnimatedContainer(

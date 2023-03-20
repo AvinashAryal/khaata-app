@@ -57,7 +57,7 @@ class MyDrawer extends StatelessWidget {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   '/editprofile',
-                  ModalRoute.withName('/'),
+                  ModalRoute.withName('/home'),
                 );
               },
               leading:
