@@ -1,4 +1,3 @@
-
 // Author: Diwas Adhikari
 // Structures and classes to save user's info
 
@@ -11,7 +10,7 @@ class UserData{
   final List<dynamic> friends ;
 
   UserData({ required this.id, required this.name, required this.number, required this.email,
-             required this.hash, required this.friends, required this.avatarIndex}) ;
+    required this.hash, required this.friends, required this.avatarIndex}) ;
 
   // Convert tuple to JSON so that we can later push it to the cloud store
   Map<String, dynamic> toJSON() => {
@@ -22,11 +21,11 @@ class UserData{
   // (Two methods to do the same - hahhahaha) !
   static UserData fromJSON(Map<String, dynamic> json) =>
       UserData(id: json['id'], name : json['name'], number : json['number'],
-               email: json['email'], hash : json['hash'], friends : json['friends'], avatarIndex: json['avatarIndex']) ;
+          email: json['email'], hash : json['hash'], friends : json['friends'], avatarIndex: json['avatarIndex']) ;
 
   factory UserData.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> docu){
-        final data = docu.data()! ; // null checks are lame in Dart !
-        return UserData(id: docu.id, name: data["name"], number: data["number"],
-               email: data["email"], hash: data["hash"], friends: data["friends"], avatarIndex: data['avatarIndex']) ;
+    final data = docu.data()! ; // null checks are lame in Dart !
+    return UserData(id: data['id'], name: data['name'], number: data['number'],
+        email: data['email'], hash: data['hash'], friends: data['friends'], avatarIndex: data['avatarIndex']) ;
   }
 }

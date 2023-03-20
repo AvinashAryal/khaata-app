@@ -10,7 +10,7 @@ class TransactionRecord{
   final _database = FirebaseFirestore.instance ;
   String collectionPath = "transaction-data" ; // Don't mess with this as well - HAHAHA !
   final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] ;
-  final months = ['Jan', 'Feb', 'Mar', 'May', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] ;
+  final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] ;
 
   // Create a new transaction and store it in the cloud (C)
   createNewRecord(Record transaction) async {

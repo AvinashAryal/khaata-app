@@ -124,7 +124,7 @@ class _FriendDetailState extends State<FriendDetail> {
                             // save a transaction
                             ),
                         TextButton(
-                            child: Text("Ok",
+                            child: Text("OK",
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             style: ButtonStyle(),
                             onPressed: () {

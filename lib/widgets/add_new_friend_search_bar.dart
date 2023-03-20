@@ -1,9 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:velocity_x/velocity_x.dart';
 
+import 'package:khaata_app/backend/authentication.dart';
+import 'package:khaata_app/backend/requestUtility.dart';
+import 'package:khaata_app/models/friendRequest.dart';
 import 'package:khaata_app/models/structure.dart';
+
+import 'package:velocity_x/velocity_x.dart';
 
 import '../backend/friendsLoader.dart';
 import '../backend/userbaseUtility.dart';
@@ -32,6 +36,7 @@ class _AddFriendSearchBarState extends State<AddFriendSearchBar> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
         onPressed: () {
@@ -72,24 +77,37 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    for (UserData person in users) {
+      if (query != "" && person.name.toLowerCase().contains(query.toLowerCase())) {
+        if(person.name != Authentication().currentUser?.displayName) {
+          matchedQuery.add(person);
+        }
+      }
+    }
     return matchedQuery.isNotEmpty
         ? ListView.builder(
-            itemCount: matchedQuery.length,
-            itemBuilder: ((context, index) {
-              var cur = matchedQuery[index];
-              return Card(
-                elevation: 5,
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: ((context) => DetailsPage(person: cur))));
-                  },
-                  title: Text(cur.name),
-                ),
-              );
-            }))
+        itemCount: matchedQuery.length,
+        itemBuilder: ((context, index) {
+          var cur = matchedQuery[index].name ;
+          return Card(
+            elevation: 5,
+            child: ListTile(
+              title: Text(cur),
+              trailing: IconButton(
+                icon: Icon(Icons.person_add),
+                onPressed: (() {
+                  // We might load profile of a friend {Diwas}
+                  String? by = Authentication().currentUser?.uid ;
+                  String? to = matchedQuery[index].id ;
+                  String sender = Authentication().currentUser?.displayName as String ;
+                  RequestUtility().createNewRequest(
+                    FriendRequest(byID: by, toID: to, sender: sender)
+                  ) ;
+                }),
+              ),
+            ),
+          );
+        }))
         : "No items match your search".text.make().centered();
   }
 
@@ -158,8 +176,7 @@ class _DetailsPageState extends State<DetailsPage> {
               shape: BoxShape.circle,
               border: Border.all(color: context.accentColor, width: 3),
             ),
-            child: Image.asset(
-                "assets/images/avatar${currentPerson.avatarIndex}.png"),
+            child: Image.asset("assets/images/avatar${currentPerson.avatarIndex}.png"),
           ),
           SizedBox(
             height: 16,
@@ -174,9 +191,14 @@ class _DetailsPageState extends State<DetailsPage> {
           ),
           ElevatedButton(
                   onPressed: (() {
-                    print(currentPerson.avatarIndex);
-                    //friend request code here
-                    //also change the state from "add friend" to "request sent"
+                      // Send Request
+                      String? by = Authentication().currentUser?.uid ;
+                      String? to = currentPerson.id ;
+                      String sender = Authentication().currentUser?.displayName as String ;
+                      RequestUtility().createNewRequest(
+                          FriendRequest(byID: by, toID: to, sender: sender)
+                      ) ;
+                    // Change button info
                   }),
                   child: "Add Friend".text.make())
               .pOnly(right: 16, left: 16)
