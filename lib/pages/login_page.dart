@@ -50,10 +50,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    if (kIsWeb){
+      isConnected = true;
+      return;
+    }
     _networkConnectivity.initialise();
     _networkConnectivity.myStream.listen((source) {
       _source = source;
-      isConnected = kIsWeb ? true : _networkConnectivity.isConnected();
+      isConnected = _networkConnectivity.isConnected();
     });
     setState(() {});
   }
