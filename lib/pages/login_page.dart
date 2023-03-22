@@ -27,8 +27,8 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passer = TextEditingController();
 
   //To check internet connectivity
-  Map _source = {ConnectivityResult.none: false};
-  final NetworkConnectivity _networkConnectivity = NetworkConnectivity.instance;
+  var _source = kIsWeb ? null : {ConnectivityResult.none: false};
+  var _networkConnectivity = kIsWeb ? null : NetworkConnectivity.instance;
   bool isConnected = true;
 
   // Backend utilities {Diwas - Don't mess with field names !}
@@ -50,21 +50,21 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    if (kIsWeb){
+    if (kIsWeb || _networkConnectivity == null || _source == null) {
       isConnected = true;
       return;
     }
-    _networkConnectivity.initialise();
-    _networkConnectivity.myStream.listen((source) {
+    _networkConnectivity!.initialise();
+    _networkConnectivity!.myStream.listen((source) {
       _source = source;
-      isConnected = _networkConnectivity.isConnected();
+      isConnected = _networkConnectivity!.isConnected();
     });
     setState(() {});
   }
 
   dispose() {
     super.dispose();
-    _networkConnectivity.disposeStream();
+    _networkConnectivity!.disposeStream();
   }
 
   moveToHome(BuildContext context, bool givePass) async {
@@ -175,11 +175,15 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           InkWell(
                             onTap: () {
-                              _networkConnectivity.initialise();
-                              isConnected = _networkConnectivity.isConnected();
-                              if (isConnected == null || isConnected == false) {
-                                setState(() {});
-                                return;
+                              if (!kIsWeb) {
+                                _networkConnectivity!.initialise();
+                                isConnected =
+                                    _networkConnectivity!.isConnected();
+                                if (isConnected == null ||
+                                    isConnected == false) {
+                                  setState(() {});
+                                  return;
+                                }
                               }
                               name = namer.text.trim();
                               String pass = passer.text.trim();
