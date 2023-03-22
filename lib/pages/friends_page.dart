@@ -11,7 +11,6 @@ import 'package:velocity_x/velocity_x.dart';
 
 // Backend utilities
 import 'package:khaata_app/backend/userbaseUtility.dart';
-import 'package:khaata_app/backend/authentication.dart';
 
 import '../models/friendRequest.dart';
 
@@ -115,7 +114,7 @@ class _FriendsListState extends State<FriendsList> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => FriendDetail(id: index)));
+                            builder: (context) => FriendDetail(details: friendDetails[index-1])));
                   },
                 ),
               );
@@ -174,15 +173,31 @@ class _FriendRequestListState extends State<FriendRequestList> {
                               await Userbase().updateUserListData("friends", frReqs[index].byID as String) ;
                               // 2. Remove request
                               await RequestUtility().deleteRequest(frReqs[index].byID as String, frReqs[index].toID as String) ;
+                              // Initialize again to reload the list by removing request
+                              await RequestUtility().fetchFriendRequests().then((value){
+                                if(mounted) {
+                                  super.setState(() {
+                                    frReqs.removeAt(index) ;
+                                  });
+                                }
+                              });
                             },
                             icon: Icon(
                               Icons.check,
                               color: Colors.green,
                             )),
                         IconButton(
-                            onPressed: () {
+                            onPressed: () async{
                               // 1. Remove request
-                              RequestUtility().deleteRequest(frReqs[index].byID as String, frReqs[index].toID as String) ;
+                              await RequestUtility().deleteRequest(frReqs[index].byID as String, frReqs[index].toID as String) ;
+                              // Initialize again to reload the list by removing request
+                              await RequestUtility().fetchFriendRequests().then((value){
+                                if(mounted) {
+                                  super.setState(() {
+                                    frReqs.removeAt(index) ;
+                                  });
+                                }
+                              });
                             },
                             icon: Icon(
                               Icons.close,

@@ -6,6 +6,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 // Imports
+import '../backend/authentication.dart';
 import '../models/structure.dart';
 import '../models/transaction.dart';
 import 'drawer.dart';
@@ -94,10 +95,9 @@ class _RecentListState extends State<RecentList> {
                              " ${records[index].transactionDate.toDate().day}".text.lg.make(),
                     title: Row(children: [
                       "${lenders[index].name}".text.lg.make(),
-                      Icon(
-                        Icons.arrow_forward,
-                        color: Colors.teal,
-                      ),
+                      lenders[index].id == Authentication().currentUser?.uid ?
+                        Icon(Icons.arrow_forward, color: Colors.teal) :
+                        Icon(Icons.arrow_forward, color: Colors.red),
                       "${borrowers[index].name}".text.lg.make()
                     ]),
                     subtitle:

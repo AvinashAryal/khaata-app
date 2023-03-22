@@ -1,67 +1,60 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:khaata_app/models/my_map_data.dart';
+import 'package:khaata_app/backend/authentication.dart';
+import 'package:khaata_app/models/transaction.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+// Back-end utilities - {Diwas}
+import 'package:khaata_app/backend/transactionsLoader.dart' ;
+
+import '../backend/transactionUtility.dart';
+import '../models/structure.dart';
+
+late UserData selected ;
+
 class FriendDetail extends StatefulWidget {
-  final int id;
-  const FriendDetail({
-    Key? key,
-    required this.id,
-  }) : super(key: key);
+  final UserData details ;
+  FriendDetail({Key? key, required this.details}) : super(key: key) {
+    selected = details ;
+  }
 
   @override
-  State<FriendDetail> createState() => _FriendDetailState(this.id);
+  State<FriendDetail> createState() => _FriendDetailState();
 }
 
 class _FriendDetailState extends State<FriendDetail> {
-  final id;
+  List<Record> friendAssocRecords = [] ;
   final amountController = TextEditingController();
   final remarksController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  _FriendDetailState(this.id);
-  void initState() {
-    super.initState();
-    loadData(this.id);
-  }
+  var trLoader = TransactionLoader() ;
 
-  loadData(int id) async {
-    var currentHistory = TransactionData.myMap[id];
-//    var detailJSON =
-//        await rootBundle.loadString("assets/data/historydata.json");
-//    var decodedData = jsonDecode(detailJSON);
-//    var productsData = decodedData["history"];
-//    var currentHistory = [];
-//    for (var i = 0; i < productsData.length; i += 1) {
-//      var cur = productsData[i];
-//      if (cur["id"] == id) {
-//        currentHistory = cur["data"];
-//      }
-//    }
-//    HistoryModel.entry.id == id;
-//    HistoryModel.entry.data.clear();
-//    if (currentHistory == null) {
-//      return;
-//    }
-//    for (var i = 0; i < currentHistory.length; i++) {
-//      var cur = currentHistory[i];
-//      HistoryModel.entry.data.add(SingleEntry.fromMap(cur));
-//    }
-//    setState(() {});
-  }
-
-  void addRecord() {
+  // Add a new user using async method to push data in Firebase cloud
+  Future addRecord({required String lenderID, required String borrowerID, required int amount,
+    required String remarks}) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    TransactionEntry cur = TransactionEntry(DateTime.now(),
-        remarksController.text, int.parse(amountController.text));
-    setState(() {
-      TransactionData.addData(id, cur);
-    });
+    final Record rec = Record(transactionID: '', borrowerID: borrowerID, lenderID: lenderID,
+        transactionDate: Timestamp.now(), amount: amount, remarks: remarks) ;
+    await TransactionRecord().createNewRecord(rec) ;
     Navigator.of(context).pop();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await trLoader.getTransactionsAssocTo(selected.id as String).then((value) {
+        if (mounted) {
+          super.setState(() {
+            friendAssocRecords = trLoader.getRecords ;
+          });
+        }
+      });
+    });
   }
 
   @override
@@ -69,7 +62,7 @@ class _FriendDetailState extends State<FriendDetail> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          amountController.text = '';
+          amountController.text = '' ;
           remarksController.text = '';
           showDialog(
               context: context,
@@ -108,7 +101,7 @@ class _FriendDetailState extends State<FriendDetail> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return ("Remarks cannot be empty");
-                          } else if (value.length > 20) {
+                          } else if (value.length > 30) {
                             return ("Remarks is too long");
                           }
                           return null;
@@ -127,8 +120,14 @@ class _FriendDetailState extends State<FriendDetail> {
                             child: Text("OK",
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             style: ButtonStyle(),
-                            onPressed: () {
-                              addRecord();
+                            onPressed: () async{
+                              // add records here
+                              String tAmount = amountController.text.trim() ;
+                              String tRemarks = remarksController.text.trim() ;
+                              await addRecord(lenderID: Authentication().currentUser?.uid as String,
+                                                borrowerID: selected.id as String,
+                                                amount: int.parse(tAmount), remarks: tRemarks) ;
+                              super.initState() ;
                             }
                             // save a transaction
                             ),
@@ -140,24 +139,50 @@ class _FriendDetailState extends State<FriendDetail> {
         },
         child: Icon(CupertinoIcons.add),
       ),
-      appBar: AppBar(title: "Details of friend no ${id + 1}".text.make()),
-      body: TransactionData.myMap[id] == null ||
-              TransactionData.myMap[id]!.isEmpty
-          ? "No Transactions for Friend ${id + 1}".text.bold.make().centered()
+      appBar: AppBar(title: "Details of ${selected.name}".text.make()),
+      body: friendAssocRecords.isEmpty ? "No transactions associated to ${selected.name}".text.bold.make().centered()
           : ListView.builder(
-              itemCount: TransactionData.myMap[id]?.length,
-              itemBuilder: ((context, index) {
-                var cur = TransactionData.myMap[id]![index];
+              itemCount: friendAssocRecords.length,
+              itemBuilder: (context, index) {
                 return Card(
-                  child: ListTile(
-                    leading: Text(
-                        "${cur.dateTime.year}-${cur.dateTime.month}-${cur.dateTime.day} ${cur.dateTime.hour}:${cur.dateTime.minute}"),
-                    trailing: Text(cur.amount.toString()),
-                    title: cur.remarks.text.make(),
-                  ),
+                    elevation: 5,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Row(children: [
+                                  "${friendAssocRecords[index].lenderID == Authentication().currentUser?.uid
+                                      ? Authentication().currentUser?.displayName : selected.name }"
+                                      .text
+                                      .lg
+                                      .make()
+                                      .pOnly(right: 4),
+                                  friendAssocRecords[index].lenderID == Authentication().currentUser?.uid
+                                      ? Icon(Icons.arrow_forward, color: Colors.teal) :
+                                        Icon(Icons.arrow_forward, color: Colors.red),
+                                  "${friendAssocRecords[index].borrowerID == Authentication().currentUser?.uid
+                                      ? Authentication().currentUser?.displayName : selected.name }"
+                                      .text
+                                      .lg
+                                      .make()
+                                      .pOnly(left: 4),
+                                ]).pOnly(bottom: 8, top: 8),
+                                "${TransactionRecord().days[friendAssocRecords[index].transactionDate.toDate().weekday]}"
+                                    " - ${friendAssocRecords[index].transactionDate.toDate().toString().substring(0, 16)}"
+                                    .text
+                                    .sm
+                                    .make(),
+                              ]),
+
+                          "${friendAssocRecords[index].remarks}".text.xl.make(),
+                          "${friendAssocRecords[index].amount}".text.bold.xl.make(),
+                        ]).pOnly(right: 16, left: 16, top: 8, bottom: 8)
                 );
-              }),
+              },
             ),
-    );
+        );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:khaata_app/backend/authentication.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../backend/transactionUtility.dart';
@@ -60,7 +61,9 @@ class _TransactionPageState extends State<TransactionPage> {
                                       .lg
                                       .make()
                                       .pOnly(right: 4),
-                                  Icon(Icons.arrow_forward, color: Colors.teal),
+                                  lenders[index].id == Authentication().currentUser?.uid ?
+                                    Icon(Icons.arrow_forward, color: Colors.teal) :
+                                    Icon(Icons.arrow_forward, color: Colors.red),
                                   "${borrowers[index].name}"
                                       .text
                                       .lg
