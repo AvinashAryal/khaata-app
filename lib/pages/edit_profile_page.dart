@@ -130,13 +130,19 @@ class _AvatarState extends State<Avatar> {
                 if (selectedImage == -1) {
                   return;
                 }
+                showDialog(
+                    context: context,
+                    builder: ((context) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }));
                 setState(() {
                   Authentication()
                       .currentUser
                       ?.updatePhotoURL(
                           "assets/images/avatar${selectedImage + 1}.png")
                       .then((value) {
-                    print("Updated avatar successfully! ");
                     setState(() {
                       url = Authentication().currentUser?.photoURL as String;
                       Userbase()
@@ -145,6 +151,7 @@ class _AvatarState extends State<Avatar> {
                   }).catchError((error) {
                     print(error);
                   });
+                  Navigator.of(context).pop();
                 });
               },
               style: ElevatedButton.styleFrom(shape: StadiumBorder()),
