@@ -25,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController passer = TextEditingController();
   // Switches
   bool ifItExists = false;
-  bool hide = true ;
+  bool hide = true;
   // Encrypt pin to a hash using SHA-256
   String generateHash(String text) {
     var bytesOfData = utf8.encode(text);
@@ -49,8 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
         email: email,
         hash: hash,
         friends: [],
-        avatarIndex: 1
-    );
+        avatarIndex: 1);
     await Userbase().createNewUser(user);
   }
 
@@ -58,7 +57,9 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: "Register".text.make(),
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -139,15 +140,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: passer,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    labelText: "Password",
-                    hintText: "Enter password",
-                    suffixIcon: IconButton(onPressed: (){
-                                  setState(() {
-                                    hide = !hide ;
-                                  });
-                                },
-                                icon: Icon(hide ? Icons.visibility_off : Icons.visibility))
-                  ),
+                      labelText: "Password",
+                      hintText: "Enter password",
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              hide = !hide;
+                            });
+                          },
+                          icon: Icon(
+                              hide ? Icons.visibility_off : Icons.visibility))),
                   obscureText: hide,
                   validator: (value) {
                     if (value!.isEmpty) {
