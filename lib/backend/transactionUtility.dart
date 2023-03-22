@@ -57,6 +57,29 @@ class TransactionRecord{
     return data ;
   }
 
+  // Get a list of records of transaction that involves specific two parties (R)
+  Future<List<Record>> getBorrowRecordsBetweenCurrentUserAnd(String value) async{
+    if(Authentication().currentUser?.uid == null){
+      return [] ;
+    }
+    final snapShot = await _database.collection(collectionPath)
+        .where('borrowerID', isEqualTo: Authentication().currentUser?.uid)
+        .where('lenderID', isEqualTo: value).get() ;
+    final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList() ;
+    return data ;
+  }
+
+  Future<List<Record>> getLendRecordsBetweenCurrentUserAnd(String value) async{
+    if(Authentication().currentUser?.uid == null){
+      return [] ;
+    }
+    final snapShot = await _database.collection(collectionPath)
+        .where('borrowerID', isEqualTo: value)
+        .where('lenderID', isEqualTo: Authentication().currentUser?.uid).get() ;
+    final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList() ;
+    return data ;
+  }
+
   // Get 'x' recent records until today (R)
   // Very sensitive function because it has built composite index in Firestore - {WARNING {Diwas} - Don't touch this guy - HAHAHA}
   Future<List<Record>> getRecentLendRecords(int limiter) async{
