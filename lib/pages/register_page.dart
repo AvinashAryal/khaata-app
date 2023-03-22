@@ -58,6 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      appBar: AppBar(),
       body: Form(
         key: _formKey,
         child: ListView(

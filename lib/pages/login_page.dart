@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 // Back-end imports
 import 'package:khaata_app/backend/userbaseUtility.dart';
 import 'package:khaata_app/backend/authentication.dart';
@@ -52,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
     _networkConnectivity.initialise();
     _networkConnectivity.myStream.listen((source) {
       _source = source;
-      isConnected = _networkConnectivity.isConnected();
+      isConnected = kIsWeb ? true : _networkConnectivity.isConnected();
     });
     setState(() {});
   }
