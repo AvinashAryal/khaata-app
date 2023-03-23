@@ -31,7 +31,8 @@ class TransactionRecord{
     }
     else {
       reqID = Authentication().currentUser?.uid as String;
-      final snapShot = await _database.collection(collectionPath).where("borrowerID", isEqualTo: reqID).get();
+      final snapShot = await _database.collection(collectionPath).where("borrowerID", isEqualTo: reqID)
+          .orderBy("transactionDate", descending: true).get();
       final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList();
       return data;
     }
@@ -44,7 +45,8 @@ class TransactionRecord{
     }
     else {
       reqID = Authentication().currentUser?.uid as String;
-      final snapShot = await _database.collection(collectionPath).where("lenderID", isEqualTo: reqID).get();
+      final snapShot = await _database.collection(collectionPath).where("lenderID", isEqualTo: reqID)
+          .orderBy("transactionDate", descending: true).get();
       final data = snapShot.docs.map((e) => Record.fromSnapshot(e)).toList();
       return data;
     }

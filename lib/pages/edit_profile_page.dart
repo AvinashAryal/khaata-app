@@ -146,7 +146,7 @@ class _AvatarState extends State<Avatar> {
                     setState(() {
                       url = Authentication().currentUser?.photoURL as String;
                       Userbase()
-                          .updateUserValues('avatarIndex', selectedImage + 1);
+                          .updateCurrentUserValue('avatarIndex', selectedImage + 1);
                     });
                   }).catchError((error) {
                     print(error);
@@ -251,7 +251,7 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
                                         .currentUser
                                         ?.updatePassword(now);
                                     Userbase()
-                                        .updateUserDetails("hash", hashNew);
+                                        .updateCurrentUserDetail("hash", hashNew);
                                     Navigator.of(context).pop();
 
                                     // Let the user know that it actually changed - HAHAHA !

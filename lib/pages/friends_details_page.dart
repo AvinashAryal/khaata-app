@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
+import 'package:khaata_app/backend/userbaseUtility.dart';
 import 'package:khaata_app/models/transaction.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -40,6 +41,14 @@ class _FriendDetailState extends State<FriendDetail> {
     final Record rec = Record(transactionID: '', borrowerID: borrowerID, lenderID: lenderID,
         transactionDate: Timestamp.now(), amount: amount, remarks: remarks) ;
     await TransactionRecord().createNewRecord(rec) ;
+    if(lenderID == Authentication().currentUser?.uid){
+      await Userbase().incrementCurrentUserValue('outBalance', amount) ;
+      await Userbase().incrementSpecificUserValue(borrowerID, 'inBalance', amount) ;
+    }
+    else{
+      await Userbase().incrementCurrentUserValue('inBalance', amount) ;
+      await Userbase().incrementSpecificUserValue(lenderID, 'outBalance', amount) ;
+    }
     Navigator.of(context).pop();
   }
 
@@ -127,7 +136,7 @@ class _FriendDetailState extends State<FriendDetail> {
                               await addRecord(lenderID: Authentication().currentUser?.uid as String,
                                                 borrowerID: selected.id as String,
                                                 amount: int.parse(tAmount), remarks: tRemarks) ;
-                              super.initState() ;
+                              // refresh to dashboard to give update some time
                             }
                             // save a transaction
                             ),

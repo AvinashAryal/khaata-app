@@ -65,8 +65,9 @@ class Userbase{
     return data ;
   }
 
-  // Update a particular detail for a specific user (U)
-  updateUserDetails(String updateFieldType, String newValue) async{
+  // Update a particular detail for only the current user (U)
+  // for string updates - I miss C++ and its templates - Huhuhu {Diwas}
+  updateCurrentUserDetail(String updateFieldType, String newValue) async{
     String? reqID = Authentication().currentUser?.uid ;
     final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: reqID).get() ;
     final data = snapShot.docs.single ;
@@ -80,7 +81,8 @@ class Userbase{
     });
   }
 
-  updateUserValues(String updateFieldType, int newValue) async{
+  // for integer updates
+  updateCurrentUserValue(String updateFieldType, int newValue) async{
     String? reqID = Authentication().currentUser?.uid ;
     final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: reqID).get() ;
     final data = snapShot.docs.single ;
@@ -121,5 +123,47 @@ class Userbase{
     });
   }
 
+  // Update a particular detail for a specified associated user (U)
+  // for integer updates
+  updateSpecificUserValue(String specID, String updateFieldType, int newValue) async{
+    final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: specID).get() ;
+    final data = snapShot.docs.single ;
+    // The id used here is strictly document id but, not regular or authentication uid.
+    // WARNING {Diwas - Sensitive !}
+    await _database.collection(collectionPath).doc(data.id).update({updateFieldType: newValue}).then((value){
+      print("Updated $updateFieldType successfully! ") ;
+    })
+        .catchError((error){
+      print(error) ;
+    });
+  }
+
+  // Increment integer values if needed
+  incrementCurrentUserValue(String updateFieldType, int newValue) async{
+    String? reqID = Authentication().currentUser?.uid ;
+    final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: reqID).get() ;
+    final data = snapShot.docs.single ;
+    // The id used here is strictly document id but, not regular or authentication uid.
+    // WARNING {Diwas - Sensitive !}
+    await _database.collection(collectionPath).doc(data.id).update({updateFieldType: FieldValue.increment(newValue)}).then((value){
+      print("Updated $updateFieldType successfully! ") ;
+    })
+        .catchError((error){
+      print(error) ;
+    });
+  }
+
+  incrementSpecificUserValue(String specID, String updateFieldType, int newValue) async{
+    final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: specID).get() ;
+    final data = snapShot.docs.single ;
+    // The id used here is strictly document id but, not regular or authentication uid.
+    // WARNING {Diwas - Sensitive !}
+    await _database.collection(collectionPath).doc(data.id).update({updateFieldType: FieldValue.increment(newValue)}).then((value){
+      print("Updated $updateFieldType successfully! ") ;
+    })
+        .catchError((error){
+      print(error) ;
+    });
+  }
 }
 

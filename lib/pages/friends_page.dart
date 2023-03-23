@@ -108,7 +108,7 @@ class _FriendsListState extends State<FriendsList> {
                     CupertinoIcons.person_fill,
                     color: Colors.blue,
                   ),
-                  trailing: "Rs. 100".text.make(),
+                  trailing: "Net balance: ${friendDetails[index-1].outBalance-friendDetails[index-1].inBalance}".text.lg.make(),
                   title: "${friendDetails[index - 1].name}".text.make(),
                   onTap: () {
                     Navigator.push(
