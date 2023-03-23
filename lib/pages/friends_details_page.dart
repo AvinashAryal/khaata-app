@@ -124,7 +124,7 @@ class _FriendDetailState extends State<FriendDetail> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return ("Remarks cannot be empty");
-                          } else if (value.length > 30) {
+                          } else if (value.length > 25) {
                             return ("Remarks is too long");
                           }
                           return null;
@@ -166,6 +166,7 @@ class _FriendDetailState extends State<FriendDetail> {
       body: friendAssocRecords.isEmpty ? "No transactions associated to ${selected.name}".text.bold.make().centered()
           : Stack(children:[
             ListView.builder(
+              padding: EdgeInsets.only(bottom: 100),
               itemCount: friendAssocRecords.length+1,
               itemBuilder: (context, index) {
                 if (index == 0) {
@@ -225,7 +226,7 @@ class _FriendDetailState extends State<FriendDetail> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      "Net Balance: 10"
+                      "Net Balance: ${outBal-inBal}"
                           .text
                           .lg
                           .bold
@@ -284,7 +285,7 @@ class _FriendDetailState extends State<FriendDetail> {
                                                     onPressed: () async {
                                                       // add notification for request here
                                                     }
-                                                    
+
                                                     ),
                                               ]),
                                             ],
