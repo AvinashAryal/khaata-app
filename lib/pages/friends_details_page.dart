@@ -7,17 +7,17 @@ import 'package:khaata_app/models/transaction.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 // Back-end utilities - {Diwas}
-import 'package:khaata_app/backend/transactionsLoader.dart' ;
+import 'package:khaata_app/backend/transactionsLoader.dart';
 
 import '../backend/transactionUtility.dart';
 import '../models/structure.dart';
 
-late UserData selected ;
+late UserData selected;
 
 class FriendDetail extends StatefulWidget {
-  final UserData details ;
+  final UserData details;
   FriendDetail({Key? key, required this.details}) : super(key: key) {
-    selected = details ;
+    selected = details;
   }
 
   @override
@@ -25,21 +25,29 @@ class FriendDetail extends StatefulWidget {
 }
 
 class _FriendDetailState extends State<FriendDetail> {
-  List<Record> friendAssocRecords = [] ;
+  List<Record> friendAssocRecords = [];
   final amountController = TextEditingController();
   final remarksController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  var trLoader = TransactionLoader() ;
+  var trLoader = TransactionLoader();
 
   // Add a new user using async method to push data in Firebase cloud
-  Future addRecord({required String lenderID, required String borrowerID, required int amount,
-    required String remarks}) async {
+  Future addRecord(
+      {required String lenderID,
+      required String borrowerID,
+      required int amount,
+      required String remarks}) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    final Record rec = Record(transactionID: '', borrowerID: borrowerID, lenderID: lenderID,
-        transactionDate: Timestamp.now(), amount: amount, remarks: remarks) ;
-    await TransactionRecord().createNewRecord(rec) ;
+    final Record rec = Record(
+        transactionID: '',
+        borrowerID: borrowerID,
+        lenderID: lenderID,
+        transactionDate: Timestamp.now(),
+        amount: amount,
+        remarks: remarks);
+    await TransactionRecord().createNewRecord(rec);
     Navigator.of(context).pop();
   }
 
@@ -47,10 +55,12 @@ class _FriendDetailState extends State<FriendDetail> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      await trLoader.getTransactionsAssocTo(selected.id as String).then((value) {
+      await trLoader
+          .getTransactionsAssocTo(selected.id as String)
+          .then((value) {
         if (mounted) {
           super.setState(() {
-            friendAssocRecords = trLoader.getRecords ;
+            friendAssocRecords = trLoader.getRecords;
           });
         }
       });
@@ -62,7 +72,7 @@ class _FriendDetailState extends State<FriendDetail> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          amountController.text = '' ;
+          amountController.text = '';
           remarksController.text = '';
           showDialog(
               context: context,
@@ -120,14 +130,17 @@ class _FriendDetailState extends State<FriendDetail> {
                             child: Text("OK",
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             style: ButtonStyle(),
-                            onPressed: () async{
+                            onPressed: () async {
                               // add records here
-                              String tAmount = amountController.text.trim() ;
-                              String tRemarks = remarksController.text.trim() ;
-                              await addRecord(lenderID: Authentication().currentUser?.uid as String,
-                                                borrowerID: selected.id as String,
-                                                amount: int.parse(tAmount), remarks: tRemarks) ;
-                              super.initState() ;
+                              String tAmount = amountController.text.trim();
+                              String tRemarks = remarksController.text.trim();
+                              await addRecord(
+                                  lenderID: Authentication().currentUser?.uid
+                                      as String,
+                                  borrowerID: selected.id as String,
+                                  amount: int.parse(tAmount),
+                                  remarks: tRemarks);
+                              super.initState();
                             }
                             // save a transaction
                             ),
@@ -140,7 +153,12 @@ class _FriendDetailState extends State<FriendDetail> {
         child: Icon(CupertinoIcons.add),
       ),
       appBar: AppBar(title: "Details of ${selected.name}".text.make()),
-      body: friendAssocRecords.isEmpty ? "No transactions associated to ${selected.name}".text.bold.make().centered()
+      body: friendAssocRecords.isEmpty
+          ? "No transactions associated to ${selected.name}"
+              .text
+              .bold
+              .make()
+              .centered()
           : ListView.builder(
               itemCount: friendAssocRecords.length,
               itemBuilder: (context, index) {
@@ -154,35 +172,44 @@ class _FriendDetailState extends State<FriendDetail> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Row(children: [
-                                  "${friendAssocRecords[index].lenderID == Authentication().currentUser?.uid
-                                      ? Authentication().currentUser?.displayName : selected.name }"
+                                  "${friendAssocRecords[index].lenderID == Authentication().currentUser?.uid ? Authentication().currentUser?.displayName : selected.name}"
                                       .text
                                       .lg
                                       .make()
                                       .pOnly(right: 4),
-                                  friendAssocRecords[index].lenderID == Authentication().currentUser?.uid
-                                      ? Icon(Icons.arrow_forward, color: Colors.teal) :
-                                        Icon(Icons.arrow_forward, color: Colors.red),
-                                  "${friendAssocRecords[index].borrowerID == Authentication().currentUser?.uid
-                                      ? Authentication().currentUser?.displayName : selected.name }"
+                                  friendAssocRecords[index].lenderID ==
+                                          Authentication().currentUser?.uid
+                                      ? Icon(Icons.arrow_forward,
+                                          color: Colors.teal)
+                                      : Icon(Icons.arrow_forward,
+                                          color: Colors.red),
+                                  "${friendAssocRecords[index].borrowerID == Authentication().currentUser?.uid ? Authentication().currentUser?.displayName : selected.name}"
                                       .text
                                       .lg
                                       .make()
                                       .pOnly(left: 4),
                                 ]).pOnly(bottom: 8, top: 8),
                                 "${TransactionRecord().days[friendAssocRecords[index].transactionDate.toDate().weekday]}"
-                                    " - ${friendAssocRecords[index].transactionDate.toDate().toString().substring(0, 16)}"
+                                        " - ${friendAssocRecords[index].transactionDate.toDate().toString().substring(0, 16)}"
                                     .text
                                     .sm
                                     .make(),
                               ]),
-
-                          "${friendAssocRecords[index].remarks}".text.xl.make(),
-                          "${friendAssocRecords[index].amount}".text.bold.xl.make(),
-                        ]).pOnly(right: 16, left: 16, top: 8, bottom: 8)
-                );
+                          SizedBox(
+                              width: 50,
+                              child: "${friendAssocRecords[index].remarks}"
+                                  .text
+                                  .sm
+                                  .make()
+                                  .expand()),
+                          "${friendAssocRecords[index].amount}"
+                              .text
+                              .bold
+                              .xl
+                              .make(),
+                        ]).pOnly(right: 16, left: 16, top: 8, bottom: 8));
               },
             ),
-        );
+    );
   }
 }

@@ -114,7 +114,8 @@ class _FriendsListState extends State<FriendsList> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => FriendDetail(details: friendDetails[index-1])));
+                            builder: (context) => FriendDetail(
+                                details: friendDetails[index - 1])));
                   },
                 ),
               );
@@ -130,16 +131,16 @@ class FriendRequestList extends StatefulWidget {
 }
 
 class _FriendRequestListState extends State<FriendRequestList> {
-  List<FriendRequest> frReqs = [] ;
+  List<FriendRequest> frReqs = [];
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero,() async {
-      await RequestUtility().fetchFriendRequests().then((value){
-        if(mounted) {
+    Future.delayed(Duration.zero, () async {
+      await RequestUtility().fetchFriendRequests().then((value) {
+        if (mounted) {
           super.setState(() {
-            frReqs = value ;
+            frReqs = value;
           });
         }
       });
@@ -148,64 +149,75 @@ class _FriendRequestListState extends State<FriendRequestList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: frReqs.length,
-        itemBuilder: ((context, index) {
-          return Card(
-              elevation: 5,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      CupertinoIcons.person_fill,
-                      color: Colors.blue,
-                      size: 20,
-                    ).pOnly(right: 48, left: 30),
-                    SizedBox(
-                      child: "${frReqs[index].sender}".text.xl.bold.make(),
-                      width: 100,
-                    ),
-                    ButtonBar(
+    return frReqs.length == 0
+        ? Center(child: "No new friend requests".text.xl2.bold.make())
+        : ListView.builder(
+            itemCount: frReqs.length,
+            itemBuilder: ((context, index) {
+              return Card(
+                  elevation: 5,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                            onPressed: () async{
-                              // 1. Add as a friend
-                              await Userbase().updateUserListData("friends", frReqs[index].byID as String) ;
-                              // 2. Remove request
-                              await RequestUtility().deleteRequest(frReqs[index].byID as String, frReqs[index].toID as String) ;
-                              // Initialize again to reload the list by removing request
-                              await RequestUtility().fetchFriendRequests().then((value){
-                                if(mounted) {
-                                  super.setState(() {
-                                    frReqs.removeAt(index) ;
+                        Icon(
+                          CupertinoIcons.person_fill,
+                          color: Colors.blue,
+                          size: 20,
+                        ).pOnly(right: 48, left: 30),
+                        SizedBox(
+                          child: "${frReqs[index].sender}".text.xl.bold.make(),
+                          width: 100,
+                        ),
+                        ButtonBar(
+                          children: [
+                            IconButton(
+                                onPressed: () async {
+                                  // 1. Add as a friend
+                                  await Userbase().updateUserListData(
+                                      "friends", frReqs[index].byID as String);
+                                  // 2. Remove request
+                                  await RequestUtility().deleteRequest(
+                                      frReqs[index].byID as String,
+                                      frReqs[index].toID as String);
+                                  // Initialize again to reload the list by removing request
+                                  await RequestUtility()
+                                      .fetchFriendRequests()
+                                      .then((value) {
+                                    if (mounted) {
+                                      super.setState(() {
+                                        frReqs.removeAt(index);
+                                      });
+                                    }
                                   });
-                                }
-                              });
-                            },
-                            icon: Icon(
-                              Icons.check,
-                              color: Colors.green,
-                            )),
-                        IconButton(
-                            onPressed: () async{
-                              // 1. Remove request
-                              await RequestUtility().deleteRequest(frReqs[index].byID as String, frReqs[index].toID as String) ;
-                              // Initialize again to reload the list by removing request
-                              await RequestUtility().fetchFriendRequests().then((value){
-                                if(mounted) {
-                                  super.setState(() {
-                                    frReqs.removeAt(index) ;
+                                },
+                                icon: Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                )),
+                            IconButton(
+                                onPressed: () async {
+                                  // 1. Remove request
+                                  await RequestUtility().deleteRequest(
+                                      frReqs[index].byID as String,
+                                      frReqs[index].toID as String);
+                                  // Initialize again to reload the list by removing request
+                                  await RequestUtility()
+                                      .fetchFriendRequests()
+                                      .then((value) {
+                                    if (mounted) {
+                                      super.setState(() {
+                                        frReqs.removeAt(index);
+                                      });
+                                    }
                                   });
-                                }
-                              });
-                            },
-                            icon: Icon(
-                              Icons.close,
-                              color: Colors.red,
-                            ))
-                      ],
-                    ),
-                  ]));
-        }));
+                                },
+                                icon: Icon(
+                                  Icons.close,
+                                  color: Colors.red,
+                                ))
+                          ],
+                        ),
+                      ]));
+            }));
   }
 }
