@@ -74,14 +74,18 @@ class _MyPieChartState extends State<MyPieChart> {
   Widget build(BuildContext context) {
     Userbase()
         .getUserDetails('id', Authentication().currentUser?.uid as String);
-    return PieChart(
-      dataMap: {
-        "Outflows": (pos == 0.0 && neg == 0.0) ? 1.0 : pos,
-        "Inflows": (pos == 0.0 && neg == 0.0) ? 0.0 : neg,
-      },
-      colorList: [Colors.greenAccent, Colors.redAccent],
-      //legendOptions: LegendOptions(showLegends: false),
-    ).box.square(200).rounded.make();
+    return SizedBox(
+      height: 180,
+      width: MediaQuery.of(context).size.width,
+      child: PieChart(
+        dataMap: {
+          "Lent": (pos == 0.0 && neg == 0.0) ? 1.0 : pos,
+          "Owed": (pos == 0.0 && neg == 0.0) ? 0.0 : neg,
+        },
+        colorList: [Colors.greenAccent, Colors.redAccent],
+        //legendOptions: LegendOptions(showLegends: false),
+      ),
+    );
   }
 }
 

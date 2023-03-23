@@ -29,9 +29,11 @@ class _FriendDetailState extends State<FriendDetail> {
   List<Record> friendAssocRecords = [];
   final amountController = TextEditingController();
   final remarksController = TextEditingController();
+  final paymentRequestRemarksController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  var trLoader = TransactionLoader() ;
-  var inBal, outBal ;
+  final _paymentRequestFormKey = GlobalKey<FormState>();
+  var trLoader = TransactionLoader();
+  var inBal, outBal;
 
   // Add a new user using async method to push data in Firebase cloud
   Future addRecord(
@@ -71,15 +73,15 @@ class _FriendDetailState extends State<FriendDetail> {
           .then((value) {
         if (mounted) {
           super.setState(() {
-            friendAssocRecords = trLoader.getRecords ;
-            inBal = 0 ;
-            outBal = 0 ;
-            for(int i=0; i<friendAssocRecords.length; i++){
-              if(friendAssocRecords[i].lenderID == Authentication().currentUser?.uid){
-                outBal += friendAssocRecords[i].amount ;
-              }
-              else{
-                inBal += friendAssocRecords[i].amount ;
+            friendAssocRecords = trLoader.getRecords;
+            inBal = 0;
+            outBal = 0;
+            for (int i = 0; i < friendAssocRecords.length; i++) {
+              if (friendAssocRecords[i].lenderID ==
+                  Authentication().currentUser?.uid) {
+                outBal += friendAssocRecords[i].amount;
+              } else {
+                inBal += friendAssocRecords[i].amount;
               }
             }
           });
@@ -98,75 +100,84 @@ class _FriendDetailState extends State<FriendDetail> {
           showDialog(
               context: context,
               builder: ((context) {
-                return Form(
-                  key: _formKey,
-                  child: AlertDialog(
-                    title: Text("Enter the Details of new Transaction"),
-                    content: Text("Use minus(-) sign for received amount"),
-                    actions: [
-                      TextFormField(
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            alignLabelWithHint: true,
-                            labelText: "Amount",
-                            hintText: "Enter the amount"),
-                        controller: amountController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return ("Amount cannot be empty");
-                          } else {
-                            RegExp pattern = RegExp(r'^[-+]?[0-9]+$');
-                            if (!pattern.hasMatch(value)) {
-                              return 'Please enter a valid number';
-                            }
-                            return null;
-                          }
-                        },
-                      ).pOnly(left: 16, right: 16),
-                      TextFormField(
-                        decoration: InputDecoration(
-                            alignLabelWithHint: true,
-                            labelText: "Remarks",
-                            hintText: "Remarks about the transaction"),
-                        controller: remarksController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return ("Remarks cannot be empty");
-                          } else if (value.length > 30) {
-                            return ("Remarks is too long");
-                          }
-                          return null;
-                        },
-                      ).pOnly(left: 16, right: 16),
-                      ButtonBar(children: [
-                        TextButton(
-                            child: Text("Cancel",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            }
-                            // save a transaction
-                            ),
-                        TextButton(
-                            child: Text("OK",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            style: ButtonStyle(),
-                            onPressed: () async {
-                              // add records here
-                              String tAmount = amountController.text.trim();
-                              String tRemarks = remarksController.text.trim();
-                              await addRecord(
-                                  lenderID: Authentication().currentUser?.uid
-                                      as String,
-                                  borrowerID: selected.id as String,
-                                  amount: int.parse(tAmount),
-                                  remarks: tRemarks);
-                              // refresh to dashboard to give update some time
-                            }
-                            // save a transaction
-                            ),
-                      ]),
-                    ],
+                return Center(
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: AlertDialog(
+                        title: Text("Enter the Details of new Transaction"),
+                        content: Text("Use minus(-) sign for received amount"),
+                        actions: [
+                          TextFormField(
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                alignLabelWithHint: true,
+                                labelText: "Amount",
+                                hintText: "Enter the amount"),
+                            controller: amountController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return ("Amount cannot be empty");
+                              } else {
+                                RegExp pattern = RegExp(r'^[-+]?[0-9]+$');
+                                if (!pattern.hasMatch(value)) {
+                                  return 'Please enter a valid number';
+                                }
+                                return null;
+                              }
+                            },
+                          ).pOnly(left: 16, right: 16),
+                          TextFormField(
+                            decoration: InputDecoration(
+                                alignLabelWithHint: true,
+                                labelText: "Remarks",
+                                hintText: "Remarks about the transaction"),
+                            controller: remarksController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return ("Remarks cannot be empty");
+                              } else if (value.length > 30) {
+                                return ("Remarks is too long");
+                              }
+                              return null;
+                            },
+                          ).pOnly(left: 16, right: 16),
+                          ButtonBar(children: [
+                            TextButton(
+                                child: Text("Cancel",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }
+                                // save a transaction
+                                ),
+                            TextButton(
+                                child: Text("OK",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                style: ButtonStyle(),
+                                onPressed: () async {
+                                  // add records here
+                                  String tAmount = amountController.text.trim();
+                                  String tRemarks =
+                                      remarksController.text.trim();
+                                  await addRecord(
+                                      lenderID: Authentication()
+                                          .currentUser
+                                          ?.uid as String,
+                                      borrowerID: selected.id as String,
+                                      amount: int.parse(tAmount),
+                                      remarks: tRemarks);
+                                  Navigator.of(context).pop();
+                                  // refresh to dashboard to give update some time
+                                }
+                                // save a transaction
+                                ),
+                          ]),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               }));
@@ -254,7 +265,62 @@ class _FriendDetailState extends State<FriendDetail> {
                                 showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return AlertDialog();
+                                    return Form(
+                                      key: _paymentRequestFormKey,
+                                      child: Center(
+                                        child: SingleChildScrollView(
+                                          child: AlertDialog(
+                                            title: Text("Add a note"),
+                                            actions: [
+                                              TextFormField(
+                                                decoration: InputDecoration(
+                                                    alignLabelWithHint: true,
+                                                    labelText: "Remarks",
+                                                    hintText:
+                                                        "Remarks about the request"),
+                                                controller:
+                                                    paymentRequestRemarksController,
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return ("Remarks cannot be empty");
+                                                  } else if (value.length >
+                                                      20) {
+                                                    return ("Remarks is too long");
+                                                  }
+                                                  return null;
+                                                },
+                                              ).pOnly(left: 16, right: 16),
+                                              ButtonBar(children: [
+                                                TextButton(
+                                                    child: Text("Cancel",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    }
+                                                    // save a transaction
+                                                    ),
+                                                TextButton(
+                                                    child: Text("OK",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    style: ButtonStyle(),
+                                                    onPressed: () async {
+                                                      // add records here
+                                                    }
+                                                    // save a transaction
+                                                    ),
+                                              ]),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
                                   },
                                 );
                               },
