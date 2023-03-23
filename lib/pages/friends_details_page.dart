@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
 import 'package:khaata_app/backend/userbaseUtility.dart';
 import 'package:khaata_app/models/transaction.dart';
+import 'package:khaata_app/widgets/piechart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 // Back-end utilities - {Diwas}
@@ -32,8 +33,8 @@ class _FriendDetailState extends State<FriendDetail> {
   final paymentRequestRemarksController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _paymentRequestFormKey = GlobalKey<FormState>();
-  var trLoader = TransactionLoader();
-  var inBal, outBal;
+  var trLoader = TransactionLoader() ;
+  var inBal, outBal ;
 
   // Add a new user using async method to push data in Firebase cloud
   Future addRecord(
@@ -100,84 +101,72 @@ class _FriendDetailState extends State<FriendDetail> {
           showDialog(
               context: context,
               builder: ((context) {
-                return Center(
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: _formKey,
-                      child: AlertDialog(
-                        title: Text("Enter the Details of new Transaction"),
-                        content: Text("Use minus(-) sign for received amount"),
-                        actions: [
-                          TextFormField(
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                                alignLabelWithHint: true,
-                                labelText: "Amount",
-                                hintText: "Enter the amount"),
-                            controller: amountController,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return ("Amount cannot be empty");
-                              } else {
-                                RegExp pattern = RegExp(r'^[-+]?[0-9]+$');
-                                if (!pattern.hasMatch(value)) {
-                                  return 'Please enter a valid number';
-                                }
-                                return null;
-                              }
-                            },
-                          ).pOnly(left: 16, right: 16),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                alignLabelWithHint: true,
-                                labelText: "Remarks",
-                                hintText: "Remarks about the transaction"),
-                            controller: remarksController,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return ("Remarks cannot be empty");
-                              } else if (value.length > 30) {
-                                return ("Remarks is too long");
-                              }
-                              return null;
-                            },
-                          ).pOnly(left: 16, right: 16),
-                          ButtonBar(children: [
-                            TextButton(
-                                child: Text("Cancel",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }
-                                // save a transaction
-                                ),
-                            TextButton(
-                                child: Text("OK",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                style: ButtonStyle(),
-                                onPressed: () async {
-                                  // add records here
-                                  String tAmount = amountController.text.trim();
-                                  String tRemarks =
-                                      remarksController.text.trim();
-                                  await addRecord(
-                                      lenderID: Authentication()
-                                          .currentUser
-                                          ?.uid as String,
-                                      borrowerID: selected.id as String,
-                                      amount: int.parse(tAmount),
-                                      remarks: tRemarks);
-                                  Navigator.of(context).pop();
-                                  // refresh to dashboard to give update some time
-                                }
-                                // save a transaction
-                                ),
-                          ]),
-                        ],
-                      ),
-                    ),
+                return Form(
+                  key: _formKey,
+                  child: AlertDialog(
+                    title: Text("Enter the details of new transaction"),
+                    content: Text("Specify a short remark in 20 characters "),
+                    actions: [
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            labelText: "Amount",
+                            hintText: "Enter the amount"),
+                        controller: amountController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return ("Amount cannot be empty");
+                          } else {
+                            RegExp pattern = RegExp(r'^[-+]?[0-9]+$');
+                            if (!pattern.hasMatch(value)) {
+                              return 'Please enter a valid number';
+                            }
+                            return null;
+                          }
+                        },
+                      ).pOnly(left: 16, right: 16),
+                      TextFormField(
+                        decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            labelText: "Remarks",
+                            hintText: "Remarks about the transaction"),
+                        controller: remarksController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return ("Remarks cannot be empty");
+                          } else if (value.length > 21) {
+                            return ("Remarks is too long");
+                          }
+                          return null;
+                        },
+                      ).pOnly(left: 16, right: 16),
+                      ButtonBar(children: [
+                        TextButton(
+                            child: Text("Cancel",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }
+                            // save a transaction
+                            ),
+                        TextButton(
+                            child: Text("OK",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: ButtonStyle(),
+                            onPressed: () async{
+                              // add records here
+                              String tAmount = amountController.text.trim() ;
+                              String tRemarks = remarksController.text.trim() ;
+                              await addRecord(lenderID: Authentication().currentUser?.uid as String,
+                                                borrowerID: selected.id as String,
+                                                amount: int.parse(tAmount), remarks: tRemarks) ;
+                              // refresh to dashboard to give update some time
+                            }
+                            // save a transaction
+                            ),
+                      ]),
+                    ],
                   ),
                 );
               }));
@@ -185,65 +174,59 @@ class _FriendDetailState extends State<FriendDetail> {
         child: Icon(CupertinoIcons.add),
       ),
       appBar: AppBar(title: "Details of ${selected.name}".text.make()),
-      body: friendAssocRecords.isEmpty
-          ? "No transactions associated to ${selected.name}"
-              .text
-              .bold
-              .make()
-              .centered()
-          : Stack(children: [
-              ListView.builder(
-                itemCount: friendAssocRecords.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                      elevation: 5,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(children: [
-                                    "${friendAssocRecords[index].lenderID == Authentication().currentUser?.uid ? Authentication().currentUser?.displayName : selected.name}"
-                                        .text
-                                        .lg
-                                        .make()
-                                        .pOnly(right: 4),
-                                    friendAssocRecords[index].lenderID ==
-                                            Authentication().currentUser?.uid
-                                        ? Icon(Icons.arrow_forward,
-                                            color: Colors.teal)
-                                        : Icon(Icons.arrow_forward,
-                                            color: Colors.red),
-                                    "${friendAssocRecords[index].borrowerID == Authentication().currentUser?.uid ? Authentication().currentUser?.displayName : selected.name}"
-                                        .text
-                                        .lg
-                                        .make()
-                                        .pOnly(left: 4),
-                                  ]).pOnly(bottom: 8, top: 8),
-                                  "${TransactionRecord().days[friendAssocRecords[index].transactionDate.toDate().weekday]}"
-                                          " - ${friendAssocRecords[index].transactionDate.toDate().toString().substring(0, 16)}"
+      body: friendAssocRecords.isEmpty ? "No transactions associated to ${selected.name}".text.bold.make().centered()
+          : Stack(children:[
+            ListView.builder(
+              padding: EdgeInsets.only(bottom: 100),
+              itemCount: friendAssocRecords.length+1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Column(children: [
+                    MyPieChart(association: true, posBal: outBal, negBal: inBal),
+                    outBal - inBal <= 0 ? "Net balance with ${selected.name}: ${outBal - inBal}".text.lg.bold.red500.make() :
+                    "Net balance with ${selected.name}: ${outBal - inBal}".text.lg.bold.green500.make()
+                  ],) ;
+                }
+                return Card(
+                    elevation: 5,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Row(children: [
+                                  "${friendAssocRecords[index-1].lenderID == Authentication().currentUser?.uid
+                                      ? Authentication().currentUser?.displayName : selected.name }"
                                       .text
-                                      .sm
-                                      .make(),
-                                ]),
-                            SizedBox(
-                                width: 50,
-                                child: "${friendAssocRecords[index].remarks}"
+                                      .lg
+                                      .make()
+                                      .pOnly(right: 4),
+                                  friendAssocRecords[index-1].lenderID == Authentication().currentUser?.uid
+                                      ? Icon(Icons.arrow_forward, color: Colors.teal) :
+                                        Icon(Icons.arrow_forward, color: Colors.red),
+                                  "${friendAssocRecords[index-1].borrowerID == Authentication().currentUser?.uid
+                                      ? Authentication().currentUser?.displayName : selected.name }"
+                                      .text
+                                      .lg
+                                      .make()
+                                      .pOnly(left: 4),
+                                ]).pOnly(bottom: 8, top: 8),
+                                "${TransactionRecord().days[friendAssocRecords[index-1].transactionDate.toDate().weekday]}"
+                                    " - ${friendAssocRecords[index-1].transactionDate.toDate().toString().substring(0, 16)}"
                                     .text
                                     .sm
-                                    .make()
-                                    .expand()),
-                            "${friendAssocRecords[index].amount}"
-                                .text
-                                .bold
-                                .xl
-                                .make(),
-                          ]).pOnly(right: 16, left: 16, top: 8, bottom: 8));
-                },
-              ),
-              Positioned(
+                                    .make(),
+                              ]),
+
+                          "${friendAssocRecords[index-1].remarks}".text.xl.make(),
+                          "${friendAssocRecords[index-1].amount}".text.bold.xl.make(),
+                        ]).pOnly(right: 16, left: 16, top: 8, bottom: 8)
+                );
+              },
+            ),
+          Positioned(
                 bottom: 0, // Adjust this value to change the button's position
                 left: 0,
                 right: 0,
@@ -254,7 +237,7 @@ class _FriendDetailState extends State<FriendDetail> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      "Net Balance: 10"
+                      "Net Balance: ${outBal-inBal}"
                           .text
                           .lg
                           .bold
@@ -311,9 +294,9 @@ class _FriendDetailState extends State<FriendDetail> {
                                                                     .bold)),
                                                     style: ButtonStyle(),
                                                     onPressed: () async {
-                                                      // add records here
+                                                      // add notification for request here
                                                     }
-                                                    // save a transaction
+
                                                     ),
                                               ]),
                                             ],
@@ -329,8 +312,9 @@ class _FriendDetailState extends State<FriendDetail> {
                     ],
                   ),
                 ),
-              ),
-            ]),
-    );
+            )
+          ]
+          )
+        );
   }
 }

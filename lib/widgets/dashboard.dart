@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/transactionUtility.dart';
 import 'package:khaata_app/backend/transactionsLoader.dart';
-import 'package:khaata_app/backend/userbaseUtility.dart';
-import 'package:pie_chart/pie_chart.dart';
+import 'package:khaata_app/widgets/piechart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 // Imports
@@ -29,61 +28,10 @@ class Dashboard extends StatelessWidget {
       body: Column(
         children: [
           "Your Summary".text.xl2.bold.make().p(8),
-          MyPieChart().p(8),
+          MyPieChart(association: false).p(8),
           "Recents".text.xl2.bold.make().pOnly(top: 12, bottom: 12),
           RecentList().expand(),
         ],
-      ),
-    );
-  }
-}
-
-class MyPieChart extends StatefulWidget {
-  const MyPieChart({Key? key}) : super(key: key);
-
-  @override
-  State<MyPieChart> createState() => _MyPieChartState();
-}
-
-class _MyPieChartState extends State<MyPieChart> {
-  var pos = 0.0, neg = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () async {
-      await Userbase()
-          .getUserDetails('id', Authentication().currentUser?.uid as String)
-          .then((value) {
-        if (mounted) {
-          print("mounted");
-          print(value.outBalance);
-          print(value.inBalance);
-          super.setState(() {
-            pos = value.outBalance.toDouble();
-            neg = value.inBalance.toDouble();
-          });
-          print(pos);
-          print(neg);
-        }
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Userbase()
-        .getUserDetails('id', Authentication().currentUser?.uid as String);
-    return SizedBox(
-      height: 180,
-      width: MediaQuery.of(context).size.width,
-      child: PieChart(
-        dataMap: {
-          "Lent": (pos == 0.0 && neg == 0.0) ? 1.0 : pos,
-          "Owed": (pos == 0.0 && neg == 0.0) ? 0.0 : neg,
-        },
-        colorList: [Colors.greenAccent, Colors.redAccent],
-        //legendOptions: LegendOptions(showLegends: false),
       ),
     );
   }

@@ -36,7 +36,7 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: AppBar(
         title: "Notifications".text.make(),
       ),
-      body: notifications.isEmpty ? "No new notifications !".text.make() :
+      body: notifications.isEmpty ? "No new notifications !".text.center.make() :
         ListView.builder(
           itemCount: notifications.length,
           itemBuilder: ((context, index) {
