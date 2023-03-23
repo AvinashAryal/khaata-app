@@ -69,6 +69,7 @@ class _FriendsListState extends State<FriendsList> {
   List<UserData> friendDetails = [];
   String tempName = "";
   var frLoad = FriendLoader();
+  List<int> netAmount = [];
 
   @override
   void initState() {
@@ -79,6 +80,10 @@ class _FriendsListState extends State<FriendsList> {
           super.setState(() {
             friends = frLoad.fetchFriends;
             friendDetails = frLoad.fetchFriendDetails;
+            netAmount = List.generate(
+                friendDetails.length,
+                (index) => (friendDetails[index].outBalance -
+                    friendDetails[index].inBalance));
           });
         }
       });
@@ -102,22 +107,47 @@ class _FriendsListState extends State<FriendsList> {
               if (index == 0) {
                 return FriendSearchBar();
               }
-              return Card(
-                child: ListTile(
-                  leading: Icon(
-                    CupertinoIcons.person_fill,
-                    color: Colors.blue,
-                  ),
-                  trailing: "Net balance: ${friendDetails[index-1].outBalance-friendDetails[index-1].inBalance}".text.lg.make(),
-                  title: "${friendDetails[index - 1].name}".text.make(),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FriendDetail(
-                                details: friendDetails[index - 1])));
-                  },
-                ),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              FriendDetail(details: friendDetails[index - 1])));
+                },
+                child: Card(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: context.accentColor)),
+                        child: Image.asset(
+                            "assets/images/avatar${friendDetails[index - 1].avatarIndex}.png"),
+                      ).pOnly(left: 16),
+                      "${friendDetails[index - 1].name}".text.lg.make(),
+                      Row(children: [
+                        Icon(
+                          netAmount[index - 1] >= 0
+                              ? Icons.arrow_upward
+                              : Icons.arrow_downward,
+                          color: netAmount[index - 1] >= 0
+                              ? Colors.greenAccent
+                              : Colors.redAccent,
+                        ).pOnly(right: 4),
+                        "Rs.${netAmount[index - 1].abs()}"
+                            .text
+                            .lg
+                            .color(netAmount[index - 1] >= 0
+                                ? Colors.greenAccent
+                                : Colors.redAccent)
+                            .make()
+                            .pOnly(right: 12)
+                      ]),
+                    ]).pOnly(top: 16, right: 16, bottom: 16)),
               );
             }));
   }
