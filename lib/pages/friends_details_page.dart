@@ -42,16 +42,22 @@ class _FriendDetailState extends State<FriendDetail> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    final Record rec = Record(transactionID: '', borrowerID: borrowerID, lenderID: lenderID,
-        transactionDate: Timestamp.now(), amount: amount, remarks: remarks) ;
-    await TransactionRecord().createNewRecord(rec) ;
-    if(lenderID == Authentication().currentUser?.uid){
-      await Userbase().incrementCurrentUserValue('outBalance', amount) ;
-      await Userbase().incrementSpecificUserValue(borrowerID, 'inBalance', amount) ;
-    }
-    else{
-      await Userbase().incrementCurrentUserValue('inBalance', amount) ;
-      await Userbase().incrementSpecificUserValue(lenderID, 'outBalance', amount) ;
+    final Record rec = Record(
+        transactionID: '',
+        borrowerID: borrowerID,
+        lenderID: lenderID,
+        transactionDate: Timestamp.now(),
+        amount: amount,
+        remarks: remarks);
+    await TransactionRecord().createNewRecord(rec);
+    if (lenderID == Authentication().currentUser?.uid) {
+      await Userbase().incrementCurrentUserValue('outBalance', amount);
+      await Userbase()
+          .incrementSpecificUserValue(borrowerID, 'inBalance', amount);
+    } else {
+      await Userbase().incrementCurrentUserValue('inBalance', amount);
+      await Userbase()
+          .incrementSpecificUserValue(lenderID, 'outBalance', amount);
     }
     Navigator.of(context).pop();
   }
@@ -147,11 +153,14 @@ class _FriendDetailState extends State<FriendDetail> {
                             style: ButtonStyle(),
                             onPressed: () async {
                               // add records here
-                              String tAmount = amountController.text.trim() ;
-                              String tRemarks = remarksController.text.trim() ;
-                              await addRecord(lenderID: Authentication().currentUser?.uid as String,
-                                                borrowerID: selected.id as String,
-                                                amount: int.parse(tAmount), remarks: tRemarks) ;
+                              String tAmount = amountController.text.trim();
+                              String tRemarks = remarksController.text.trim();
+                              await addRecord(
+                                  lenderID: Authentication().currentUser?.uid
+                                      as String,
+                                  borrowerID: selected.id as String,
+                                  amount: int.parse(tAmount),
+                                  remarks: tRemarks);
                               // refresh to dashboard to give update some time
                             }
                             // save a transaction
@@ -164,59 +173,98 @@ class _FriendDetailState extends State<FriendDetail> {
         },
         child: Icon(CupertinoIcons.add),
       ),
-      appBar: AppBar(title: "Details of ${selected.name} --------------> Net Balance: ${outBal-inBal}".text.make()),
-      body: friendAssocRecords.isEmpty ? "No transactions associated to ${selected.name}".text.bold.make().centered()
-          : ListView.builder(
-              itemCount: friendAssocRecords.length,
-              itemBuilder: (context, index) {
-                return Card(
-                    elevation: 5,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(children: [
-                                  "${friendAssocRecords[index].lenderID == Authentication().currentUser?.uid ? Authentication().currentUser?.displayName : selected.name}"
+      appBar: AppBar(title: "Details of ${selected.name}".text.make()),
+      body: friendAssocRecords.isEmpty
+          ? "No transactions associated to ${selected.name}"
+              .text
+              .bold
+              .make()
+              .centered()
+          : Stack(children: [
+              ListView.builder(
+                itemCount: friendAssocRecords.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                      elevation: 5,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(children: [
+                                    "${friendAssocRecords[index].lenderID == Authentication().currentUser?.uid ? Authentication().currentUser?.displayName : selected.name}"
+                                        .text
+                                        .lg
+                                        .make()
+                                        .pOnly(right: 4),
+                                    friendAssocRecords[index].lenderID ==
+                                            Authentication().currentUser?.uid
+                                        ? Icon(Icons.arrow_forward,
+                                            color: Colors.teal)
+                                        : Icon(Icons.arrow_forward,
+                                            color: Colors.red),
+                                    "${friendAssocRecords[index].borrowerID == Authentication().currentUser?.uid ? Authentication().currentUser?.displayName : selected.name}"
+                                        .text
+                                        .lg
+                                        .make()
+                                        .pOnly(left: 4),
+                                  ]).pOnly(bottom: 8, top: 8),
+                                  "${TransactionRecord().days[friendAssocRecords[index].transactionDate.toDate().weekday]}"
+                                          " - ${friendAssocRecords[index].transactionDate.toDate().toString().substring(0, 16)}"
                                       .text
-                                      .lg
-                                      .make()
-                                      .pOnly(right: 4),
-                                  friendAssocRecords[index].lenderID ==
-                                          Authentication().currentUser?.uid
-                                      ? Icon(Icons.arrow_forward,
-                                          color: Colors.teal)
-                                      : Icon(Icons.arrow_forward,
-                                          color: Colors.red),
-                                  "${friendAssocRecords[index].borrowerID == Authentication().currentUser?.uid ? Authentication().currentUser?.displayName : selected.name}"
-                                      .text
-                                      .lg
-                                      .make()
-                                      .pOnly(left: 4),
-                                ]).pOnly(bottom: 8, top: 8),
-                                "${TransactionRecord().days[friendAssocRecords[index].transactionDate.toDate().weekday]}"
-                                        " - ${friendAssocRecords[index].transactionDate.toDate().toString().substring(0, 16)}"
+                                      .sm
+                                      .make(),
+                                ]),
+                            SizedBox(
+                                width: 50,
+                                child: "${friendAssocRecords[index].remarks}"
                                     .text
                                     .sm
-                                    .make(),
-                              ]),
-                          SizedBox(
-                              width: 50,
-                              child: "${friendAssocRecords[index].remarks}"
-                                  .text
-                                  .sm
-                                  .make()
-                                  .expand()),
-                          "${friendAssocRecords[index].amount}"
-                              .text
-                              .bold
-                              .xl
-                              .make(),
-                        ]).pOnly(right: 16, left: 16, top: 8, bottom: 8));
-              },
-            ),
+                                    .make()
+                                    .expand()),
+                            "${friendAssocRecords[index].amount}"
+                                .text
+                                .bold
+                                .xl
+                                .make(),
+                          ]).pOnly(right: 16, left: 16, top: 8, bottom: 8));
+                },
+              ),
+              Positioned(
+                bottom: 0, // Adjust this value to change the button's position
+                left: 0,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color: context.theme.hoverColor),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      "Net Balance: 10"
+                          .text
+                          .lg
+                          .bold
+                          .make()
+                          .pOnly(bottom: 20, top: 20, left: 20),
+                      ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog();
+                                  },
+                                );
+                              },
+                              child: 'Request to pay'.text.make())
+                          .pOnly(bottom: 20, right: 100, top: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
     );
   }
 }
