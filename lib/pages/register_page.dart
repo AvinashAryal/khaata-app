@@ -49,14 +49,10 @@ class _RegisterPageState extends State<RegisterPage> {
         email: email,
         hash: hash,
         friends: [],
-<<<<<<< HEAD
-        avatarIndex: 1);
-=======
         avatarIndex: 1,
         inBalance: 0,
         outBalance: 0
     );
->>>>>>> ee9eaf4572636ca30f410bc75b82848349f4a571
     await Userbase().createNewUser(user);
   }
 
