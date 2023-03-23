@@ -93,8 +93,8 @@ class _FriendDetailState extends State<FriendDetail> {
                 return Form(
                   key: _formKey,
                   child: AlertDialog(
-                    title: Text("Enter the Details of new Transaction"),
-                    content: Text("Use minus(-) sign for received amount"),
+                    title: Text("Enter the details of new transaction"),
+                    content: Text("Specify a short remark in 20 characters "),
                     actions: [
                       TextFormField(
                         keyboardType: TextInputType.number,
@@ -124,7 +124,7 @@ class _FriendDetailState extends State<FriendDetail> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return ("Remarks cannot be empty");
-                          } else if (value.length > 25) {
+                          } else if (value.length > 21) {
                             return ("Remarks is too long");
                           }
                           return null;
