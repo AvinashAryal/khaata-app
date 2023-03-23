@@ -46,28 +46,36 @@ class MyPieChart extends StatefulWidget {
 }
 
 class _MyPieChartState extends State<MyPieChart> {
-  var pos, neg ;
+  var pos, neg;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      await Userbase().getUserDetails('id', Authentication().currentUser?.uid as String).then((value){
-        if(mounted){
+      await Userbase()
+          .getUserDetails('id', Authentication().currentUser?.uid as String)
+          .then((value) {
+        if (mounted) {
           super.setState(() {
-              pos = value.outBalance ;
-              neg = value.inBalance ;
+            pos = value.outBalance.toDouble();
+            neg = value.inBalance.toDouble();
           });
+          print(pos);
+          print(neg);
         }
-      }) ;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Userbase().getUserDetails('id', Authentication().currentUser?.uid as String) ;
+    Userbase()
+        .getUserDetails('id', Authentication().currentUser?.uid as String);
     return PieChart(
-      dataMap: {"Outflows": pos == null ? 0 : pos, "Inflows": neg == null ? 0 : neg},
+      dataMap: {
+        "Outflows": pos == null ? 1.0 : pos,
+        "Inflows": neg == null ? 0.0 : neg
+      },
       colorList: [Colors.greenAccent, Colors.redAccent],
       legendOptions: LegendOptions(showLegends: false),
     ).box.square(200).rounded.make();
@@ -89,17 +97,17 @@ class _RecentListState extends State<RecentList> {
   var trans = TransactionLoader();
 
   @override
-  void initState(){
-    super.initState() ;
-    Future.delayed(Duration.zero,() async {
-        await trans.getDetailsOfParticipants(true).then((value){
-          if(mounted) {
-            super.setState(() {
-              records = trans.getRecords;
-              borrowers = trans.getBorrowers;
-              lenders = trans.getLenders;
-            });
-          }
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await trans.getDetailsOfParticipants(true).then((value) {
+        if (mounted) {
+          super.setState(() {
+            records = trans.getRecords;
+            borrowers = trans.getBorrowers;
+            lenders = trans.getLenders;
+          });
+        }
       });
     });
   }
@@ -115,13 +123,17 @@ class _RecentListState extends State<RecentList> {
             itemBuilder: ((context, index) {
               return Card(
                 child: ListTile(
-                    leading: "${TransactionRecord().months[records[index].transactionDate.toDate().month-1]}"
-                             " ${records[index].transactionDate.toDate().day}".text.lg.make(),
+                    leading:
+                        "${TransactionRecord().months[records[index].transactionDate.toDate().month - 1]}"
+                                " ${records[index].transactionDate.toDate().day}"
+                            .text
+                            .lg
+                            .make(),
                     title: Row(children: [
                       "${lenders[index].name}".text.lg.make(),
-                      lenders[index].id == Authentication().currentUser?.uid ?
-                        Icon(Icons.arrow_forward, color: Colors.teal) :
-                        Icon(Icons.arrow_forward, color: Colors.red),
+                      lenders[index].id == Authentication().currentUser?.uid
+                          ? Icon(Icons.arrow_forward, color: Colors.teal)
+                          : Icon(Icons.arrow_forward, color: Colors.red),
                       "${borrowers[index].name}".text.lg.make()
                     ]),
                     subtitle:
