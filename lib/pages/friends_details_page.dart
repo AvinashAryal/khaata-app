@@ -30,7 +30,8 @@ class _FriendDetailState extends State<FriendDetail> {
   final amountController = TextEditingController();
   final remarksController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  var trLoader = TransactionLoader();
+  var trLoader = TransactionLoader() ;
+  var inBal, outBal ;
 
   // Add a new user using async method to push data in Firebase cloud
   Future addRecord(
@@ -64,7 +65,17 @@ class _FriendDetailState extends State<FriendDetail> {
           .then((value) {
         if (mounted) {
           super.setState(() {
-            friendAssocRecords = trLoader.getRecords;
+            friendAssocRecords = trLoader.getRecords ;
+            inBal = 0 ;
+            outBal = 0 ;
+            for(int i=0; i<friendAssocRecords.length; i++){
+              if(friendAssocRecords[i].lenderID == Authentication().currentUser?.uid){
+                outBal += friendAssocRecords[i].amount ;
+              }
+              else{
+                inBal += friendAssocRecords[i].amount ;
+              }
+            }
           });
         }
       });
@@ -153,13 +164,8 @@ class _FriendDetailState extends State<FriendDetail> {
         },
         child: Icon(CupertinoIcons.add),
       ),
-      appBar: AppBar(title: "Details of ${selected.name}".text.make()),
-      body: friendAssocRecords.isEmpty
-          ? "No transactions associated to ${selected.name}"
-              .text
-              .bold
-              .make()
-              .centered()
+      appBar: AppBar(title: "Details of ${selected.name} --------------> Net Balance: ${outBal-inBal}".text.make()),
+      body: friendAssocRecords.isEmpty ? "No transactions associated to ${selected.name}".text.bold.make().centered()
           : ListView.builder(
               itemCount: friendAssocRecords.length,
               itemBuilder: (context, index) {

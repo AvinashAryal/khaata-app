@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,9 @@ import 'package:khaata_app/models/structure.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../backend/friendsLoader.dart';
+import '../backend/notificationUtility.dart';
 import '../backend/userbaseUtility.dart';
+import '../models/notification.dart';
 
 List<UserData> users = [];
 
@@ -198,6 +201,8 @@ class _DetailsPageState extends State<DetailsPage> {
                       RequestUtility().createNewRequest(
                           FriendRequest(byID: by, toID: to, sender: sender)
                       ) ;
+                      Notifier().createNewNotification(Notify(toID: currentPerson.id as String,
+                          message: "Looks like you've got a new friend request !", seen: false, time: Timestamp.now())) ;
                     // Change button info
                   }),
                   child: "Add Friend".text.make())

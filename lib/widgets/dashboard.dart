@@ -67,7 +67,7 @@ class _MyPieChartState extends State<MyPieChart> {
   Widget build(BuildContext context) {
     Userbase().getUserDetails('id', Authentication().currentUser?.uid as String) ;
     return PieChart(
-      dataMap: {"Outflows": pos == null ? 1 : pos, "Inflows": neg == null ? 1 : neg},
+      dataMap: {"Outflows": pos == null ? 0 : pos, "Inflows": neg == null ? 0 : neg},
       colorList: [Colors.greenAccent, Colors.redAccent],
       legendOptions: LegendOptions(showLegends: false),
     ).box.square(200).rounded.make();
