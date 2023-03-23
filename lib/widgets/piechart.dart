@@ -20,7 +20,8 @@ class MyPieChart extends StatefulWidget {
 }
 
 class _MyPieChartState extends State<MyPieChart> {
-  var pos, neg ;
+  double pos = 0.0 ;
+  double neg = 0.0 ;
 
   @override
   void initState() {
@@ -28,8 +29,8 @@ class _MyPieChartState extends State<MyPieChart> {
     Future.delayed(Duration.zero, () async {
       if(assoc){
         setState(() {
-          pos = positive ;
-          neg = negative ;
+          pos = double.parse(positive.toString()) ;
+          neg = double.parse(negative.toString()) ;
         });
       }
       else {
@@ -37,8 +38,8 @@ class _MyPieChartState extends State<MyPieChart> {
             'id', Authentication().currentUser?.uid as String).then((value) {
           if (mounted) {
             super.setState(() {
-              pos = value.outBalance;
-              neg = value.inBalance;
+              pos = value.outBalance.toDouble() ;
+              neg = value.inBalance.toDouble() ;
             });
           }
         });
@@ -50,7 +51,7 @@ class _MyPieChartState extends State<MyPieChart> {
   Widget build(BuildContext context) {
     Userbase().getUserDetails('id', Authentication().currentUser?.uid as String) ;
     return PieChart(
-      dataMap: {"Outflows": pos == null ? 0 : pos, "Inflows": neg == null ? 0 : neg},
+      dataMap: {"Outflows": pos, "Inflows": neg},
       colorList: [Colors.greenAccent, Colors.redAccent],
       legendOptions: LegendOptions(showLegends: false),
     ).box.square(200).rounded.make();

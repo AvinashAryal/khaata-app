@@ -30,7 +30,9 @@ class _FriendDetailState extends State<FriendDetail> {
   List<Record> friendAssocRecords = [] ;
   final amountController = TextEditingController();
   final remarksController = TextEditingController();
+  final paymentRequestRemarksController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _paymentRequestFormKey = GlobalKey<FormState>();
   var trLoader = TransactionLoader() ;
   var inBal, outBal ;
 
@@ -162,7 +164,8 @@ class _FriendDetailState extends State<FriendDetail> {
       ),
       appBar: AppBar(title: "Details of ${selected.name}".text.make()),
       body: friendAssocRecords.isEmpty ? "No transactions associated to ${selected.name}".text.bold.make().centered()
-          : ListView.builder(
+          : Stack(children:[
+            ListView.builder(
               itemCount: friendAssocRecords.length+1,
               itemBuilder: (context, index) {
                 if (index == 0) {
@@ -211,6 +214,95 @@ class _FriendDetailState extends State<FriendDetail> {
                 );
               },
             ),
+          Positioned(
+                bottom: 0, // Adjust this value to change the button's position
+                left: 0,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color: context.theme.hoverColor),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      "Net Balance: 10"
+                          .text
+                          .lg
+                          .bold
+                          .make()
+                          .pOnly(bottom: 20, top: 20, left: 20),
+                      ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Form(
+                                      key: _paymentRequestFormKey,
+                                      child: Center(
+                                        child: SingleChildScrollView(
+                                          child: AlertDialog(
+                                            title: Text("Add a note"),
+                                            actions: [
+                                              TextFormField(
+                                                decoration: InputDecoration(
+                                                    alignLabelWithHint: true,
+                                                    labelText: "Remarks",
+                                                    hintText:
+                                                        "Remarks about the request"),
+                                                controller:
+                                                    paymentRequestRemarksController,
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return ("Remarks cannot be empty");
+                                                  } else if (value.length >
+                                                      20) {
+                                                    return ("Remarks is too long");
+                                                  }
+                                                  return null;
+                                                },
+                                              ).pOnly(left: 16, right: 16),
+                                              ButtonBar(children: [
+                                                TextButton(
+                                                    child: Text("Cancel",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    }
+                                                    // save a transaction
+                                                    ),
+                                                TextButton(
+                                                    child: Text("OK",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    style: ButtonStyle(),
+                                                    onPressed: () async {
+                                                      // add notification for request here
+                                                    }
+                                                    
+                                                    ),
+                                              ]),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: 'Request to pay'.text.make())
+                          .pOnly(bottom: 20, right: 100, top: 20),
+                    ],
+                  ),
+                ),
+            )
+          ]
+          )
         );
   }
 }
