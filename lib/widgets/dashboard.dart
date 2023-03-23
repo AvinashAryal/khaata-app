@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/transactionUtility.dart';
 import 'package:khaata_app/backend/transactionsLoader.dart';
+import 'package:khaata_app/backend/userbaseUtility.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -37,14 +38,37 @@ class Dashboard extends StatelessWidget {
   }
 }
 
-class MyPieChart extends StatelessWidget {
-  const MyPieChart({super.key});
+class MyPieChart extends StatefulWidget {
+  const MyPieChart({Key? key}) : super(key: key);
+
+  @override
+  State<MyPieChart> createState() => _MyPieChartState();
+}
+
+class _MyPieChartState extends State<MyPieChart> {
+  var pos, neg ;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await Userbase().getUserDetails('id', Authentication().currentUser?.uid as String).then((value){
+        if(mounted){
+          super.setState(() {
+              pos = value.outBalance ;
+              neg = value.inBalance ;
+          });
+        }
+      }) ;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    Userbase().getUserDetails('id', Authentication().currentUser?.uid as String) ;
     return PieChart(
-      dataMap: {"Positive": 5, "Negative": 3},
-      colorList: [Colors.redAccent, Colors.greenAccent],
+      dataMap: {"Outflows": pos == null ? 1 : pos, "Inflows": neg == null ? 1 : neg},
+      colorList: [Colors.greenAccent, Colors.redAccent],
       legendOptions: LegendOptions(showLegends: false),
     ).box.square(200).rounded.make();
   }
