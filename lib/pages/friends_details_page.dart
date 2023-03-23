@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
 import 'package:khaata_app/backend/userbaseUtility.dart';
 import 'package:khaata_app/models/transaction.dart';
+import 'package:khaata_app/widgets/piechart.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 // Back-end utilities - {Diwas}
@@ -159,11 +160,18 @@ class _FriendDetailState extends State<FriendDetail> {
         },
         child: Icon(CupertinoIcons.add),
       ),
-      appBar: AppBar(title: "Details of ${selected.name} --------------> Net Balance: ${outBal-inBal}".text.make()),
+      appBar: AppBar(title: "Details of ${selected.name}".text.make()),
       body: friendAssocRecords.isEmpty ? "No transactions associated to ${selected.name}".text.bold.make().centered()
           : ListView.builder(
-              itemCount: friendAssocRecords.length,
+              itemCount: friendAssocRecords.length+1,
               itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Column(children: [
+                    MyPieChart(association: true, posBal: outBal, negBal: inBal),
+                    outBal - inBal <= 0 ? "Net balance with ${selected.name}: ${outBal - inBal}".text.lg.bold.red500.make() :
+                    "Net balance with ${selected.name}: ${outBal - inBal}".text.lg.bold.green500.make()
+                  ],) ;
+                }
                 return Card(
                     elevation: 5,
                     child: Row(
@@ -174,31 +182,31 @@ class _FriendDetailState extends State<FriendDetail> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Row(children: [
-                                  "${friendAssocRecords[index].lenderID == Authentication().currentUser?.uid
+                                  "${friendAssocRecords[index-1].lenderID == Authentication().currentUser?.uid
                                       ? Authentication().currentUser?.displayName : selected.name }"
                                       .text
                                       .lg
                                       .make()
                                       .pOnly(right: 4),
-                                  friendAssocRecords[index].lenderID == Authentication().currentUser?.uid
+                                  friendAssocRecords[index-1].lenderID == Authentication().currentUser?.uid
                                       ? Icon(Icons.arrow_forward, color: Colors.teal) :
                                         Icon(Icons.arrow_forward, color: Colors.red),
-                                  "${friendAssocRecords[index].borrowerID == Authentication().currentUser?.uid
+                                  "${friendAssocRecords[index-1].borrowerID == Authentication().currentUser?.uid
                                       ? Authentication().currentUser?.displayName : selected.name }"
                                       .text
                                       .lg
                                       .make()
                                       .pOnly(left: 4),
                                 ]).pOnly(bottom: 8, top: 8),
-                                "${TransactionRecord().days[friendAssocRecords[index].transactionDate.toDate().weekday]}"
-                                    " - ${friendAssocRecords[index].transactionDate.toDate().toString().substring(0, 16)}"
+                                "${TransactionRecord().days[friendAssocRecords[index-1].transactionDate.toDate().weekday]}"
+                                    " - ${friendAssocRecords[index-1].transactionDate.toDate().toString().substring(0, 16)}"
                                     .text
                                     .sm
                                     .make(),
                               ]),
 
-                          "${friendAssocRecords[index].remarks}".text.xl.make(),
-                          "${friendAssocRecords[index].amount}".text.bold.xl.make(),
+                          "${friendAssocRecords[index-1].remarks}".text.xl.make(),
+                          "${friendAssocRecords[index-1].amount}".text.bold.xl.make(),
                         ]).pOnly(right: 16, left: 16, top: 8, bottom: 8)
                 );
               },
