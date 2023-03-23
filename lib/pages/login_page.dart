@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        body: isConnected != null && isConnected == true
+        body: ((isConnected != null && isConnected == true) || kIsWeb)
             ? Form(
                 key: _formKey,
                 child: ListView(
