@@ -98,7 +98,7 @@ class _FriendsListState extends State<FriendsList> {
                 child: Column(children: [
                 FriendSearchBar(),
                 SizedBox(height: 40),
-              "Got no friends? Add one right now using the button below !".text.lg.make()
+              "Got no friends? Add one right now '+' !".text.lg.make()
               ]))
             : Center(child: CircularProgressIndicator()))
         : ListView.builder(

@@ -243,7 +243,6 @@ class _FriendDetailState extends State<FriendDetail> {
                                   ]),
                               "${friendAssocRecords[index - 1].remarks}"
                                   .text
-                                  .xl
                                   .make(),
                               "${friendAssocRecords[index - 1].amount}"
                                   .text
