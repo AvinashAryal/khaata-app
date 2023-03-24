@@ -76,6 +76,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                     .sm
                                     .make(),
                               ]),
+                          "${records[index].remarks}".text.xl.make(),
                           "${records[index].amount}".text.bold.xl.make(),
                         ]).pOnly(right: 16, left: 16, top: 8, bottom: 8));
               },

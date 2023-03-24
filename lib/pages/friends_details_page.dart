@@ -52,6 +52,11 @@ class _FriendDetailState extends State<FriendDetail> {
         transactionDate: Timestamp.now(),
         amount: amount,
         remarks: remarks);
+    setState(() {
+      friendAssocRecords.add(rec) ;
+      friendAssocRecords.sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
+    });
+    Navigator.of(context).pop();
     await TransactionRecord().createNewRecord(rec);
     if (lenderID == Authentication().currentUser?.uid) {
       await Userbase().incrementCurrentUserValue('outBalance', amount);
@@ -62,7 +67,6 @@ class _FriendDetailState extends State<FriendDetail> {
       await Userbase()
           .incrementSpecificUserValue(lenderID, 'outBalance', amount);
     }
-    Navigator.of(context).pop();
   }
 
   @override
@@ -75,6 +79,7 @@ class _FriendDetailState extends State<FriendDetail> {
         if (mounted) {
           super.setState(() {
             friendAssocRecords = trLoader.getRecords;
+            friendAssocRecords.sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
             inBal = 0;
             outBal = 0;
             for (int i = 0; i < friendAssocRecords.length; i++) {
@@ -105,7 +110,7 @@ class _FriendDetailState extends State<FriendDetail> {
                     key: _formKey,
                     child: AlertDialog(
                       title: Text("Enter the details of new transaction"),
-                      content: Text("Specify a short remark in 20 characters "),
+                      content: Text("* Specify a short remark in 20 characters *"),
                       actions: [
                         TextFormField(
                           keyboardType: TextInputType.number,
