@@ -11,7 +11,9 @@ import 'package:velocity_x/velocity_x.dart';
 // Back-end utilities - {Diwas}
 import 'package:khaata_app/backend/transactionsLoader.dart';
 
+import '../backend/notificationUtility.dart';
 import '../backend/transactionUtility.dart';
+import '../models/notification.dart';
 import '../models/structure.dart';
 
 late UserData selected;
@@ -299,14 +301,14 @@ class _FriendDetailState extends State<FriendDetail> {
                                                       alignLabelWithHint: true,
                                                       labelText: "Remarks",
                                                       hintText:
-                                                          "Remarks about the request"),
+                                                          "Ask for payback"),
                                                   controller:
                                                       paymentRequestRemarksController,
                                                   validator: (value) {
                                                     if (value!.isEmpty) {
                                                       return ("Remarks cannot be empty");
                                                     } else if (value.length >
-                                                        20) {
+                                                        40) {
                                                       return ("Remarks is too long");
                                                     }
                                                     return null;
@@ -320,8 +322,7 @@ class _FriendDetailState extends State<FriendDetail> {
                                                                   FontWeight
                                                                       .bold)),
                                                       onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
+                                                        Navigator.of(context).pop();
                                                       }
                                                       // save a transaction
                                                       ),
@@ -334,6 +335,11 @@ class _FriendDetailState extends State<FriendDetail> {
                                                       style: ButtonStyle(),
                                                       onPressed: () async {
                                                         // add notification for request here
+                                                        Notifier().createNewNotification(
+                                                            Notify(toID: selected.id as String,
+                                                            message: paymentRequestRemarksController.text.trim() ,
+                                                                seen: false, time: Timestamp.now())) ;
+                                                        Navigator.of(context).pop();
                                                       }),
                                                 ]),
                                               ],
