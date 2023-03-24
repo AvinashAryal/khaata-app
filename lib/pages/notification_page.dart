@@ -41,8 +41,8 @@ class _NotificationPageState extends State<NotificationPage> {
           itemCount: notifications.length,
           itemBuilder: ((context, index) {
             return ListTile(title: "${notifications[index].message}".text.make(),
-              leading: "${Notifier().days[notifications[index].time.toDate().weekday]}"
-                  " - ${Notifier().months[notifications[index].time.toDate().month]} ${notifications[index].time.toDate().day}"
+              leading: "${Notifier().days[notifications[index].time.toDate().weekday]}\n"
+                  "${Notifier().months[notifications[index].time.toDate().month]} ${notifications[index].time.toDate().day}"
                             .text
                             .sm
                         .make(),

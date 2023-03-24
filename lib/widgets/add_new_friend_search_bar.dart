@@ -202,7 +202,8 @@ class _DetailsPageState extends State<DetailsPage> {
                           FriendRequest(byID: by, toID: to, sender: sender)
                       ) ;
                       Notifier().createNewNotification(Notify(toID: currentPerson.id as String,
-                          message: "Looks like you've got a new friend request !", seen: false, time: Timestamp.now())) ;
+                          message: "Looks like you've got a new friend request from ${Authentication().currentUser?.displayName} !",
+                          seen: false, time: Timestamp.now())) ;
                     // Change button info
                   }),
                   child: "Add Friend".text.make())

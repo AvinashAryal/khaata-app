@@ -336,7 +336,8 @@ class _FriendDetailState extends State<FriendDetail> {
                                                         // add notification for request here
                                                         Notifier().createNewNotification(
                                                             Notify(toID: selected.id as String,
-                                                            message: paymentRequestRemarksController.text.trim() ,
+                                                            message: "${Authentication().currentUser?.displayName}: "
+                                                                     "${paymentRequestRemarksController.text.trim()}",
                                                                 seen: false, time: Timestamp.now())) ;
                                                         Navigator.of(context).pop();
                                                       }),
