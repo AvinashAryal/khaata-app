@@ -55,8 +55,9 @@ class _FriendDetailState extends State<FriendDetail> {
         amount: amount,
         remarks: remarks);
     setState(() {
-      friendAssocRecords.add(rec) ;
-      friendAssocRecords.sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
+      friendAssocRecords.add(rec);
+      friendAssocRecords
+          .sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
     });
     Navigator.of(context).pop();
     await TransactionRecord().createNewRecord(rec);
@@ -81,7 +82,8 @@ class _FriendDetailState extends State<FriendDetail> {
         if (mounted) {
           super.setState(() {
             friendAssocRecords = trLoader.getRecords;
-            friendAssocRecords.sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
+            friendAssocRecords
+                .sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
             inBal = 0;
             outBal = 0;
             for (int i = 0; i < friendAssocRecords.length; i++) {
@@ -112,7 +114,8 @@ class _FriendDetailState extends State<FriendDetail> {
                     key: _formKey,
                     child: AlertDialog(
                       title: Text("Enter the details of new transaction"),
-                      content: Text("* Specify a short remark in 20 characters *"),
+                      content:
+                          Text("* Specify a short remark in 20 characters *"),
                       actions: [
                         TextFormField(
                           keyboardType: TextInputType.number,
@@ -125,7 +128,7 @@ class _FriendDetailState extends State<FriendDetail> {
                             if (value!.isEmpty) {
                               return ("Amount cannot be empty");
                             } else {
-                              RegExp pattern = RegExp(r'^[-+]?[0-9]+$');
+                              RegExp pattern = RegExp(r'^[0-9]+$');
                               if (!pattern.hasMatch(value)) {
                                 return 'Please enter a valid number';
                               }
@@ -173,6 +176,19 @@ class _FriendDetailState extends State<FriendDetail> {
                                     borrowerID: selected.id as String,
                                     amount: int.parse(tAmount),
                                     remarks: tRemarks);
+                                inBal = 0;
+                                outBal = 0;
+                                for (int i = 0;
+                                    i < friendAssocRecords.length;
+                                    i++) {
+                                  if (friendAssocRecords[i].lenderID ==
+                                      Authentication().currentUser?.uid) {
+                                    outBal += friendAssocRecords[i].amount;
+                                  } else {
+                                    inBal += friendAssocRecords[i].amount;
+                                  }
+                                }
+                                super.setState(() {});
                                 // refresh to dashboard to give update some time
                               }
                               // save a transaction
@@ -321,7 +337,8 @@ class _FriendDetailState extends State<FriendDetail> {
                                                                   FontWeight
                                                                       .bold)),
                                                       onPressed: () {
-                                                        Navigator.of(context).pop();
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       }
                                                       // save a transaction
                                                       ),
@@ -335,11 +352,18 @@ class _FriendDetailState extends State<FriendDetail> {
                                                       onPressed: () async {
                                                         // add notification for request here
                                                         Notifier().createNewNotification(
-                                                            Notify(toID: selected.id as String,
-                                                            message: "${Authentication().currentUser?.displayName}: "
-                                                                     "${paymentRequestRemarksController.text.trim()}",
-                                                                seen: false, time: Timestamp.now())) ;
-                                                        Navigator.of(context).pop();
+                                                            Notify(
+                                                                toID: selected
+                                                                        .id
+                                                                    as String,
+                                                                message:
+                                                                    "${Authentication().currentUser?.displayName}: "
+                                                                    "${paymentRequestRemarksController.text.trim()}",
+                                                                seen: false,
+                                                                time: Timestamp
+                                                                    .now()));
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       }),
                                                 ]),
                                               ],
