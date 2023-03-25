@@ -320,9 +320,9 @@ class _FriendDetailState extends State<FriendDetail> {
                                               child: SingleChildScrollView(
                                                 child: AlertDialog(
                                                   title:
-                                                      Text("Inavalid Action"),
+                                                      Text("Invalid Action"),
                                                   content: Text(
-                                                      "The person you're trying send payment request doesn't owe you any money"),
+                                                      "The person you're trying to send payment request doesn't owe you any money"),
                                                   actions: [
                                                     TextButton(
                                                             onPressed: (() =>
