@@ -29,6 +29,11 @@ class _HomePageState extends State<HomePage> {
           NavigationDestination(
               icon: Icon(CupertinoIcons.arrow_2_squarepath),
               label: "Transactions"),
+         /* A prospect to acheive later - {Diwas}
+          NavigationDestination(
+              icon: Icon(Icons.account_balance_wallet),
+              label: "Biller")
+          */
         ],
         onDestinationSelected: (int index) {
           setState(() {

@@ -55,10 +55,18 @@ class _FriendDetailState extends State<FriendDetail> {
         amount: amount,
         remarks: remarks);
     setState(() {
+      outBal += amount ;
       friendAssocRecords.add(rec) ;
       friendAssocRecords.sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
     });
     Navigator.of(context).pop();
+
+    Notifier().createNewNotification(
+        Notify(toID: selected.id as String,
+            message: "Received $amount from ${Authentication().currentUser?.displayName} ! "
+                "${paymentRequestRemarksController.text.trim()}",
+            seen: false, time: Timestamp.now())) ;
+
     await TransactionRecord().createNewRecord(rec);
     if (lenderID == Authentication().currentUser?.uid) {
       await Userbase().incrementCurrentUserValue('outBalance', amount);
