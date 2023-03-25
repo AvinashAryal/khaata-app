@@ -12,22 +12,21 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-
-  List<Notify> notifications = [] ;
-  var notifier = Notifier() ;
+  List<Notify> notifications = [];
+  var notifier = Notifier();
 
   @override
-  void initState(){
-    super.initState() ;
-    Future.delayed(Duration.zero, () async{
-      await notifier.getAllNotifications().then((value){
-        if(mounted){
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await notifier.getAllNotifications().then((value) {
+        if (mounted) {
           super.setState(() {
-              notifications = value ;
+            notifications = value;
           });
         }
-      }) ;
-    }) ;
+      });
+    });
   }
 
   @override
@@ -35,21 +34,35 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
       appBar: AppBar(
         title: "Notifications".text.make(),
+        actions: [
+          IconButton(
+              onPressed: (() {
+                //insert code to clear all notifications here
+              }),
+              icon: Icon(Icons.clear_all)),
+        ],
       ),
-      body: notifications.isEmpty ? "No new notifications !".text.lg.bold.makeCentered() :
-        ListView.builder(
-          itemCount: notifications.length,
-          itemBuilder: ((context, index) {
-            return ListTile(title: "${notifications[index].message}".text.make(),
-              leading: "${Notifier().days[notifications[index].time.toDate().weekday]}\n"
-                  "${Notifier().months[notifications[index].time.toDate().month]} ${notifications[index].time.toDate().day}"
-                            .text
-                            .sm
-                        .make(),
-                trailing: "${notifications[index].time.toDate().toString().substring(10,16)}".text.sm.make()
-                        );
-          })),
+      body: notifications.isEmpty
+          ? "No new notifications !".text.lg.bold.makeCentered()
+          : ListView.builder(
+              itemCount: notifications.length,
+              itemBuilder: ((context, index) {
+                return Card(
+                  child: ListTile(
+                      title: "${notifications[index].message}".text.make(),
+                      leading:
+                          "${Notifier().days[notifications[index].time.toDate().weekday]}-"
+                                  "${Notifier().months[notifications[index].time.toDate().month]} ${notifications[index].time.toDate().day}"
+                              .text
+                              .sm
+                              .make(),
+                      trailing:
+                          "${notifications[index].time.toDate().toString().substring(10, 16)}"
+                              .text
+                              .sm
+                              .make()),
+                );
+              })),
     );
   }
 }
-
