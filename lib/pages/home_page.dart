@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Widget> pages = [Dashboard(), FriendsPage(), TransactionPage()];
   int currentPage = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
           NavigationDestination(
               icon: Icon(CupertinoIcons.arrow_2_squarepath),
               label: "Transactions"),
-         /* A prospect to acheive later - {Diwas}
+          /* A prospect to acheive later - {Diwas}
           NavigationDestination(
               icon: Icon(Icons.account_balance_wallet),
               label: "Biller")
@@ -39,6 +40,12 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             currentPage = index;
           });
+          if (ModalRoute.of(context)!.isFirst ) {
+            Navigator.pushNamed(context, "/home");
+            setState(() {
+              currentPage = 0;
+            });
+          }
         },
         selectedIndex: currentPage,
       ),

@@ -4,7 +4,9 @@ import 'package:khaata_app/backend/friendsLoader.dart';
 import 'package:khaata_app/backend/requestUtility.dart';
 import 'package:khaata_app/models/structure.dart';
 import 'package:khaata_app/pages/friends_details_page.dart';
+import 'package:khaata_app/pages/home_page.dart';
 import 'package:khaata_app/widgets/add_new_friend_search_bar.dart';
+import 'package:khaata_app/widgets/dashboard.dart';
 import 'package:khaata_app/widgets/drawer.dart';
 import 'package:khaata_app/widgets/friends_search_bar.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -116,38 +118,26 @@ class _FriendsListState extends State<FriendsList> {
                               FriendDetail(details: friendDetails[index - 1])));
                 },
                 child: Card(
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: context.accentColor)),
-                        child: Image.asset(
-                            "assets/images/avatar${friendDetails[index - 1].avatarIndex}.png"),
-                      ).pOnly(left: 16),
-                      "${friendDetails[index - 1].name}".text.lg.make(),
-                      Row(children: [
-                        Icon(
-                          netAmount[index - 1] < 0
-                              ? Icons.arrow_upward
-                              : Icons.arrow_downward,
-                          color: netAmount[index - 1] < 0
-                              ? Colors.green
-                              : Colors.redAccent,
-                        ).pOnly(right: 4),
-                        "Rs.${netAmount[index - 1].abs()}"
-                            .text
-                            .lg
-                            .color(netAmount[index - 1] < 0
-                                ? Colors.green
-                                : Colors.redAccent)
-                            .make()
-                            .pOnly(right: 12)
-                      ]),
-                    ]).pOnly(top: 16, right: 16, bottom: 16)),
+                    child: Row(children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: Color.fromARGB(255, 8, 118, 174))),
+                    child: Image.asset(
+                        "assets/images/avatar${friendDetails[index - 1].avatarIndex}.png"),
+                  ).pOnly(
+                      left: 24,
+                      right: MediaQuery.of(context).size.width / 2 - 84),
+                  "${friendDetails[index - 1].name}"
+                      .text
+                      .lg
+                      .bold
+                      .make()
+                      .pOnly(left: 16)
+                ]).pOnly(top: 16, right: 16, bottom: 16)),
               );
             }));
   }
