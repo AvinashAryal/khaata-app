@@ -7,9 +7,12 @@ import 'package:velocity_x/velocity_x.dart';
 
 // Imports
 import '../backend/authentication.dart';
+import '../backend/notificationUtility.dart';
 import '../models/structure.dart';
 import '../models/transaction.dart';
 import 'drawer.dart';
+
+var notifCounts = 0 ;
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -32,7 +35,7 @@ class Dashboard extends StatelessWidget {
                     height: 14,
                     width: 14,
                     decoration: BoxDecoration(
-                        color: Colors.red, shape: BoxShape.circle),
+                        color: notifCounts == 0 ? Colors.transparent : Colors.red, shape: BoxShape.circle),
                   )),
               Positioned(
                 right: 0,
@@ -41,10 +44,8 @@ class Dashboard extends StatelessWidget {
                   height: 14,
                   width: 14,
                   child: Center(
-                    child: Text(
-                      //insert actual number here
-                      "2",
-                      style: TextStyle(
+                    child: notifCounts == 0 ? Text("") :
+                    Text("$notifCounts", style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 10),
@@ -84,6 +85,11 @@ class _RecentListState extends State<RecentList> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
+      setState(() {
+        Notifier().countSeenNotifications().then((value){
+          notifCounts = value ;
+        }) ;
+      });
       await trans.getDetailsOfParticipants(true).then((value) {
         if (mounted) {
           super.setState(() {

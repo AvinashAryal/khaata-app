@@ -165,5 +165,20 @@ class Userbase{
       print(error) ;
     });
   }
+
+  // Checkers
+  Future<bool> isSpecifiedUserFriend(String specID) async{
+    String reqID = Authentication().currentUser?.uid as String ;
+    final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: reqID).get() ;
+    final data = snapShot.docs.map((e) => UserData.fromSnapshot(e)).single ;
+    if(data.friends.contains(specID)){
+      print("Friends") ;
+      return true ;
+    }
+    else{
+      print("Not Friends") ;
+      return false ;
+    }
+  }
 }
 

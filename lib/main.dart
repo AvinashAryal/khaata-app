@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
+import 'package:khaata_app/pages/biller.dart';
 import 'package:khaata_app/pages/edit_profile_page.dart';
 import 'package:khaata_app/pages/login_page.dart';
 import 'package:khaata_app/pages/home_page.dart';
@@ -80,6 +81,7 @@ class _MyAppState extends State<MyApp> {
         "/notifications": (context) => NotificationPage(),
         "/addfriend": (context) => AddFriendSearchBar(),
         "/editprofile": (context) => EditProfilePage(),
+        "/biller": (context) => BillerPage(),
       },
     );
   }

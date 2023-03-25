@@ -29,12 +29,27 @@ class RequestUtility{
     return data ;
   }
 
+  // Delete(D)
   deleteRequest(String byRequestID, String toRequestID) async{
     final snapShot = await _database.collection(collectionPath)
         .where("byID", isEqualTo: byRequestID)
         .where("toID", isEqualTo: toRequestID).get() ;
     final data = snapShot.docs.single ;
     await _database.collection(collectionPath).doc(data.id).delete() ;
+  }
+
+  // Checkers
+  Future<bool> isRequestPending(String byID, String toID) async{
+    String reqID = Authentication().currentUser?.uid as String ;
+    final snapShot = await _database.collection(collectionPath)
+        .where("byID", isEqualTo: byID).where("toID", isEqualTo: toID).get() ;
+    if(snapShot.docs.isNotEmpty){
+      print("Request is pending !") ;
+      return true ;
+    }
+    else{
+      return false ;
+    }
   }
 }
 

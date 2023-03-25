@@ -55,11 +55,21 @@ class _FriendDetailState extends State<FriendDetail> {
         amount: amount,
         remarks: remarks);
     setState(() {
+      outBal += amount;
       friendAssocRecords.add(rec);
       friendAssocRecords
           .sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
     });
     Navigator.of(context).pop();
+
+    Notifier().createNewNotification(Notify(
+        toID: selected.id as String,
+        message:
+            "Received $amount from ${Authentication().currentUser?.displayName} ! "
+            "${paymentRequestRemarksController.text.trim()}",
+        seen: false,
+        time: Timestamp.now()));
+
     await TransactionRecord().createNewRecord(rec);
     if (lenderID == Authentication().currentUser?.uid) {
       await Userbase().incrementCurrentUserValue('outBalance', amount);
@@ -274,9 +284,13 @@ class _FriendDetailState extends State<FriendDetail> {
                   left: 0,
                   right: 0,
                   child: Container(
+                    margin: EdgeInsets.only(top: 10),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                        color: context.theme.hoverColor),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          topLeft: Radius.circular(8)),
+                      color: Color.fromARGB(255, 233, 230, 233),
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -293,6 +307,7 @@ class _FriendDetailState extends State<FriendDetail> {
                             "Rs.${(outBal - inBal).abs()}"
                                 .text
                                 .lg
+                                .bold
                                 .color((outBal - inBal) >= 0
                                     ? Colors.greenAccent
                                     : Colors.redAccent)
@@ -312,10 +327,9 @@ class _FriendDetailState extends State<FriendDetail> {
                                           ? Center(
                                               child: SingleChildScrollView(
                                                 child: AlertDialog(
-                                                  title:
-                                                      Text("Inavalid Action"),
+                                                  title: Text("Invalid Action"),
                                                   content: Text(
-                                                      "The person you're trying send payment request doesn't owe you any money"),
+                                                      "The person you're trying to send payment request doesn't owe you any money"),
                                                   actions: [
                                                     TextButton(
                                                             onPressed: (() =>
