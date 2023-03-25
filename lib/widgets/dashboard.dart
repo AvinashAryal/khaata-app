@@ -23,7 +23,36 @@ class Dashboard extends StatelessWidget {
             onPressed: (() {
               Navigator.pushNamed(context, "/notifications");
             }),
-            icon: Icon(CupertinoIcons.bell))
+            icon: Stack(children: [
+              Icon(CupertinoIcons.bell),
+              Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    height: 14,
+                    width: 14,
+                    decoration: BoxDecoration(
+                        color: Colors.red, shape: BoxShape.circle),
+                  )),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: SizedBox(
+                  height: 14,
+                  width: 14,
+                  child: Center(
+                    child: Text(
+                      //insert actual number here
+                      "2",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10),
+                    ),
+                  ),
+                ),
+              )
+            ]))
       ]),
       body: Column(
         children: [

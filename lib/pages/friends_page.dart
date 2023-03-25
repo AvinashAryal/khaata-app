@@ -98,7 +98,7 @@ class _FriendsListState extends State<FriendsList> {
                 child: Column(children: [
                 FriendSearchBar(),
                 SizedBox(height: 40),
-              "Got no friends? Add one right now '+' !".text.lg.make()
+                "Got no friends? Add one right now '+' !".text.lg.make()
               ]))
             : Center(child: CircularProgressIndicator()))
         : ListView.builder(
@@ -131,17 +131,17 @@ class _FriendsListState extends State<FriendsList> {
                       "${friendDetails[index - 1].name}".text.lg.make(),
                       Row(children: [
                         Icon(
-                          netAmount[index - 1] >= 0
+                          netAmount[index - 1] < 0
                               ? Icons.arrow_upward
                               : Icons.arrow_downward,
-                          color: netAmount[index - 1] >= 0
+                          color: netAmount[index - 1] < 0
                               ? Colors.greenAccent
                               : Colors.redAccent,
                         ).pOnly(right: 4),
                         "Rs.${netAmount[index - 1].abs()}"
                             .text
                             .lg
-                            .color(netAmount[index - 1] >= 0
+                            .color(netAmount[index - 1] < 0
                                 ? Colors.greenAccent
                                 : Colors.redAccent)
                             .make()

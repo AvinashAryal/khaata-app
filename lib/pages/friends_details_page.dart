@@ -89,7 +89,8 @@ class _FriendDetailState extends State<FriendDetail> {
         if (mounted) {
           super.setState(() {
             friendAssocRecords = trLoader.getRecords;
-            friendAssocRecords.sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
+            friendAssocRecords
+                .sort((b, a) => a.transactionDate.compareTo(b.transactionDate));
             inBal = 0;
             outBal = 0;
             for (int i = 0; i < friendAssocRecords.length; i++) {
@@ -120,7 +121,8 @@ class _FriendDetailState extends State<FriendDetail> {
                     key: _formKey,
                     child: AlertDialog(
                       title: Text("Enter the details of new transaction"),
-                      content: Text("* Specify a short remark in 20 characters *"),
+                      content:
+                          Text("* Specify a short remark in 20 characters *"),
                       actions: [
                         TextFormField(
                           keyboardType: TextInputType.number,
@@ -133,7 +135,7 @@ class _FriendDetailState extends State<FriendDetail> {
                             if (value!.isEmpty) {
                               return ("Amount cannot be empty");
                             } else {
-                              RegExp pattern = RegExp(r'^[-+]?[0-9]+$');
+                              RegExp pattern = RegExp(r'^[0-9]+$');
                               if (!pattern.hasMatch(value)) {
                                 return 'Please enter a valid number';
                               }
@@ -181,6 +183,19 @@ class _FriendDetailState extends State<FriendDetail> {
                                     borrowerID: selected.id as String,
                                     amount: int.parse(tAmount),
                                     remarks: tRemarks);
+                                inBal = 0;
+                                outBal = 0;
+                                for (int i = 0;
+                                    i < friendAssocRecords.length;
+                                    i++) {
+                                  if (friendAssocRecords[i].lenderID ==
+                                      Authentication().currentUser?.uid) {
+                                    outBal += friendAssocRecords[i].amount;
+                                  } else {
+                                    inBal += friendAssocRecords[i].amount;
+                                  }
+                                }
+                                super.setState(() {});
                                 // refresh to dashboard to give update some time
                               }
                               // save a transaction
@@ -292,69 +307,111 @@ class _FriendDetailState extends State<FriendDetail> {
                           ],
                         ).pOnly(bottom: 20, top: 20, left: 20),
                         ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: (outBal - inBal) > 0
+                                        ? Colors.blueAccent
+                                        : Colors.blueGrey),
                                 onPressed: () {
                                   showDialog(
                                     context: context,
                                     builder: (context) {
-                                      return Form(
-                                        key: _paymentRequestFormKey,
-                                        child: Center(
-                                          child: SingleChildScrollView(
-                                            child: AlertDialog(
-                                              title: Text("Add a note"),
-                                              actions: [
-                                                TextFormField(
-                                                  decoration: InputDecoration(
-                                                      alignLabelWithHint: true,
-                                                      labelText: "Remarks",
-                                                      hintText:
-                                                          "Ask for payback"),
-                                                  controller:
-                                                      paymentRequestRemarksController,
-                                                  validator: (value) {
-                                                    if (value!.isEmpty) {
-                                                      return ("Remarks cannot be empty");
-                                                    } else if (value.length >
-                                                        40) {
-                                                      return ("Remarks is too long");
-                                                    }
-                                                    return null;
-                                                  },
-                                                ).pOnly(left: 16, right: 16),
-                                                ButtonBar(children: [
-                                                  TextButton(
-                                                      child: Text("Cancel",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                      onPressed: () {
-                                                        Navigator.of(context).pop();
-                                                      }
-                                                      // save a transaction
-                                                      ),
-                                                  TextButton(
-                                                      child: Text("OK",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                      style: ButtonStyle(),
-                                                      onPressed: () async {
-                                                        // add notification for request here
-                                                        Notifier().createNewNotification(
-                                                            Notify(toID: selected.id as String,
-                                                            message: "${Authentication().currentUser?.displayName}: "
-                                                                     "${paymentRequestRemarksController.text.trim()}",
-                                                                seen: false, time: Timestamp.now())) ;
-                                                        Navigator.of(context).pop();
-                                                      }),
-                                                ]),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                                      return (outBal - inBal) <= 0
+                                          ? Center(
+                                              child: SingleChildScrollView(
+                                                child: AlertDialog(
+                                                  title:
+                                                      Text("Inavalid Action"),
+                                                  content: Text(
+                                                      "The person you're trying send payment request doesn't owe you any money"),
+                                                  actions: [
+                                                    TextButton(
+                                                            onPressed: (() =>
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop()),
+                                                            child:
+                                                                Text("Abort"))
+                                                        .p(8)
+                                                  ],
+                                                ).p(8),
+                                              ),
+                                            )
+                                          : Form(
+                                              key: _paymentRequestFormKey,
+                                              child: Center(
+                                                child: SingleChildScrollView(
+                                                  child: AlertDialog(
+                                                    title: Text("Add a note"),
+                                                    actions: [
+                                                      TextFormField(
+                                                        decoration: InputDecoration(
+                                                            alignLabelWithHint:
+                                                                true,
+                                                            labelText:
+                                                                "Remarks",
+                                                            hintText:
+                                                                "Ask for payback"),
+                                                        controller:
+                                                            paymentRequestRemarksController,
+                                                        validator: (value) {
+                                                          if (value!.isEmpty) {
+                                                            return ("Remarks cannot be empty");
+                                                          } else if (value
+                                                                  .length >
+                                                              40) {
+                                                            return ("Remarks is too long");
+                                                          }
+                                                          return null;
+                                                        },
+                                                      ).pOnly(
+                                                          left: 16, right: 16),
+                                                      ButtonBar(children: [
+                                                        TextButton(
+                                                            child: Text(
+                                                                "Cancel",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            }
+                                                            // save a transaction
+                                                            ),
+                                                        TextButton(
+                                                            child: Text("OK",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                            style:
+                                                                ButtonStyle(),
+                                                            onPressed:
+                                                                () async {
+                                                              // add notification for request here
+                                                              Notifier().createNewNotification(
+                                                                  Notify(
+                                                                      toID: selected.id
+                                                                          as String,
+                                                                      message:
+                                                                          "${Authentication().currentUser?.displayName}: "
+                                                                          "${paymentRequestRemarksController.text.trim()}",
+                                                                      seen:
+                                                                          false,
+                                                                      time: Timestamp
+                                                                          .now()));
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            }),
+                                                      ]),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
                                     },
                                   );
                                 },
