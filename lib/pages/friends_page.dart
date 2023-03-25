@@ -135,14 +135,14 @@ class _FriendsListState extends State<FriendsList> {
                               ? Icons.arrow_upward
                               : Icons.arrow_downward,
                           color: netAmount[index - 1] < 0
-                              ? Colors.greenAccent
+                              ? Colors.green
                               : Colors.redAccent,
                         ).pOnly(right: 4),
                         "Rs.${netAmount[index - 1].abs()}"
                             .text
                             .lg
                             .color(netAmount[index - 1] < 0
-                                ? Colors.greenAccent
+                                ? Colors.green
                                 : Colors.redAccent)
                             .make()
                             .pOnly(right: 12)

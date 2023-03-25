@@ -29,6 +29,7 @@ class RequestUtility{
     return data ;
   }
 
+  // Delete(D)
   deleteRequest(String byRequestID, String toRequestID) async{
     final snapShot = await _database.collection(collectionPath)
         .where("byID", isEqualTo: byRequestID)

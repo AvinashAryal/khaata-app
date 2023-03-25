@@ -23,6 +23,9 @@ class _NotificationPageState extends State<NotificationPage> {
         if (mounted) {
           super.setState(() {
             notifications = value;
+            Notifier().updateNotificationsToSeen().then((value){
+              // Haha no need to do anything here !
+            }) ;
           });
         }
       });
@@ -36,8 +39,11 @@ class _NotificationPageState extends State<NotificationPage> {
         title: "Notifications".text.make(),
         actions: [
           IconButton(
-              onPressed: (() {
-                //insert code to clear all notifications here
+              onPressed: (() async{
+                setState(() {
+                  notifications = [] ;
+                });
+                await Notifier().deleteUserNotifications() ;
               }),
               icon: Icon(Icons.clear_all)),
         ],

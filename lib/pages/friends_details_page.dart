@@ -294,14 +294,14 @@ class _FriendDetailState extends State<FriendDetail> {
                                   ? Icons.arrow_upward
                                   : Icons.arrow_downward,
                               color: (outBal - inBal) >= 0
-                                  ? Colors.greenAccent
+                                  ? Colors.green
                                   : Colors.redAccent,
                             ).pOnly(right: 4),
                             "Rs.${(outBal - inBal).abs()}"
                                 .text
                                 .lg
                                 .color((outBal - inBal) >= 0
-                                    ? Colors.greenAccent
+                                    ? Colors.green
                                     : Colors.redAccent)
                                 .make()
                           ],
