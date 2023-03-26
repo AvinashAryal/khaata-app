@@ -34,8 +34,7 @@ class _MyPieChartState extends State<MyPieChart> {
         });
       }
       else {
-        await Userbase().getUserDetails(
-            'id', Authentication().currentUser?.uid as String).then((value) {
+        await Userbase().getUserDetails('id', Authentication().currentUser?.uid as String).then((value) {
           if (mounted) {
             super.setState(() {
               pos = value.outBalance.toDouble() ;

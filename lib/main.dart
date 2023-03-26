@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
       darkTheme: MyTheme.DarkTheme(context),
       initialRoute: logged ? "/dashboard" : "/login",
       routes: {
-        "/": (context) => Dashboard(),
+        //"/": (context) => Dashboard(),
         "/dashboard": (context) => Dashboard(),
         "/friends": ((context) => FriendsPage()),
         "/transactions": (context) => TransactionPage(),
