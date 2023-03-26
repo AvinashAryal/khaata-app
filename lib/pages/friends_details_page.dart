@@ -80,6 +80,20 @@ class _FriendDetailState extends State<FriendDetail> {
       await Userbase()
           .incrementSpecificUserValue(lenderID, 'outBalance', amount);
     }
+    var successfulSnackBar = SnackBar(
+      content: "Successfully added the transaction !"
+          .text
+          .color(Colors.green)
+          .make(),
+      action: SnackBarAction(
+        label: "DISMISS",
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(successfulSnackBar);
   }
 
   @override
@@ -407,6 +421,20 @@ class _FriendDetailState extends State<FriendDetail> {
                                                               Navigator.of(
                                                                       context)
                                                                   .pop();
+                                                              var successfulSnackBar = SnackBar(
+                                                                content: "Request for payment sent !"
+                                                                    .text
+                                                                    .color(Colors.green)
+                                                                    .make(),
+                                                                action: SnackBarAction(
+                                                                  label: "DISMISS",
+                                                                  onPressed: () {
+                                                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                                                  },
+                                                                ),
+                                                              );
+                                                              ScaffoldMessenger.of(context)
+                                                                  .showSnackBar(successfulSnackBar);
                                                             }),
                                                       ]),
                                                     ],
