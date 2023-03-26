@@ -94,13 +94,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
-                      if (ifItExists) {
-                        return ("Username already exists! ");
-                      } else {
                         return ("Username cannot be empty.");
-                      }
                     }
-                    return null;
+                    else if (ifItExists) {
+                      return ("Username already exists! ");
+                    }
+                    else {
+                      return null;
+                    }
                   },
                 ),
                 TextFormField(
@@ -112,13 +113,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
-                      if (ifItExists) {
-                        return ("Email already exists! ");
-                      } else {
-                        return ("Email address cannot be empty.");
-                      }
+                      return ("Username cannot be empty.");
                     }
-                    return null;
+                    else if (ifItExists) {
+                      return ("Username already exists! ");
+                    }
+                    else {
+                      return null;
+                    }
                   },
                 ),
                 TextFormField(
@@ -190,6 +192,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       String num1 = numberer.text.trim();
                       String pass = passer.text.trim();
                       String mail = emailer.text.trim();
+                      Userbase().doesUserAlreadyExist(name1).then((value1){
+                        setState(() {
+                          ifItExists = value1 ;
+                        });
+                      }) ;
                       if (!_formKey.currentState!.validate()) {
                         return;
                       }

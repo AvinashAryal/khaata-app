@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -20,6 +21,7 @@ class _TransactionPageState extends State<TransactionPage> {
   List<UserData> borrowers = [] ;
   List<UserData> lenders = [] ;
   var trans = TransactionLoader() ;
+  int currentPage = 2;
 
   @override
   void initState(){
@@ -40,6 +42,35 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: NavigationBar(
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.home_rounded), label: "Home"),
+          NavigationDestination(
+              icon: Icon(
+                CupertinoIcons.person_2_fill,
+              ),
+              label: "Friends"),
+          NavigationDestination(
+              icon: Icon(CupertinoIcons.arrow_2_squarepath),
+              label: "Transactions"),
+          /* A prospect to acheive later - {Diwas}
+          NavigationDestination(
+              icon: Icon(Icons.account_balance_wallet),
+              label: "Biller")
+          */
+        ],
+        onDestinationSelected: (int index) {
+          if(index == 0)
+          {
+            Navigator.pushNamed(context, "/dashboard");
+          }
+          else if(index == 1)
+          {
+            Navigator.pushNamed(context, "/friends");
+          }
+        },
+        selectedIndex: currentPage,
+      ),
       appBar: AppBar(title: Text("Transactions")),
       body: records.isEmpty
           ? Center(child: CircularProgressIndicator())

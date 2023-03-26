@@ -167,6 +167,18 @@ class Userbase{
   }
 
   // Checkers
+  Future<bool> doesUserAlreadyExist(String username) async{
+    final snapShot = await _database.collection(collectionPath).where("name", isEqualTo: username).get() ;
+    if(snapShot.docs.isNotEmpty){
+      print("Username already exists !") ;
+      return true ;
+    }
+    else{
+      print("Valid username") ;
+      return false ;
+    }
+  }
+
   Future<bool> isSpecifiedUserFriend(String specID) async{
     String reqID = Authentication().currentUser?.uid as String ;
     final snapShot = await _database.collection(collectionPath).where("id", isEqualTo: reqID).get() ;

@@ -49,7 +49,6 @@ class _MyPieChartState extends State<MyPieChart> {
 
   @override
   Widget build(BuildContext context) {
-    Userbase().getUserDetails('id', Authentication().currentUser?.uid as String) ;
     return PieChart(
       dataMap: {"Outflows": pos, "Inflows": neg},
       colorList: [Colors.greenAccent, Colors.redAccent],

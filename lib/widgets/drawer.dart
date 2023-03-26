@@ -42,7 +42,7 @@ class MyDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
-                  '/home',
+                  '/dashboard',
                   ModalRoute.withName('/'),
                 );
               },
@@ -54,11 +54,7 @@ class MyDrawer extends StatelessWidget {
               )),
           ListTile(
               onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/editprofile',
-                  ModalRoute.withName('/home'),
-                );
+                Navigator.pushNamed(context, "/editprofile");
               },
               leading:
                   Icon(CupertinoIcons.profile_circled, color: Colors.white),

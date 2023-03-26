@@ -81,36 +81,37 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     for (UserData person in users) {
-      if (query != "" && person.name.toLowerCase().contains(query.toLowerCase())) {
-        if(person.name != Authentication().currentUser?.displayName) {
+      if (query != "" &&
+          person.name.toLowerCase().contains(query.toLowerCase())) {
+        if (person.name != Authentication().currentUser?.displayName) {
           matchedQuery.add(person);
         }
       }
     }
     return matchedQuery.isNotEmpty
         ? ListView.builder(
-        itemCount: matchedQuery.length,
-        itemBuilder: ((context, index) {
-          var cur = matchedQuery[index].name ;
-          return Card(
-            elevation: 5,
-            child: ListTile(
-              title: Text(cur),
-              trailing: IconButton(
-                icon: Icon(Icons.person_add),
-                onPressed: (() {
-                  // We might load profile of a friend {Diwas}
-                  String? by = Authentication().currentUser?.uid ;
-                  String? to = matchedQuery[index].id ;
-                  String sender = Authentication().currentUser?.displayName as String ;
-                  RequestUtility().createNewRequest(
-                    FriendRequest(byID: by, toID: to, sender: sender)
-                  ) ;
-                }),
-              ),
-            ),
-          );
-        }))
+            itemCount: matchedQuery.length,
+            itemBuilder: ((context, index) {
+              var cur = matchedQuery[index].name;
+              return Card(
+                elevation: 5,
+                child: ListTile(
+                  title: Text(cur),
+                  trailing: IconButton(
+                    icon: Icon(Icons.person_add),
+                    onPressed: (() {
+                      // We might load profile of a friend {Diwas}
+                      String? by = Authentication().currentUser?.uid;
+                      String? to = matchedQuery[index].id;
+                      String sender =
+                          Authentication().currentUser?.displayName as String;
+                      RequestUtility().createNewRequest(
+                          FriendRequest(byID: by, toID: to, sender: sender));
+                    }),
+                  ),
+                ),
+              );
+            }))
         : "No items match your search".text.make().centered();
   }
 
@@ -118,8 +119,9 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     matchedQuery.clear();
     for (UserData person in users) {
-      if (query.isNotEmpty && person.name.toLowerCase().contains(query.toLowerCase())) {
-        if(person.name != Authentication().currentUser?.displayName) {
+      if (query.isNotEmpty &&
+          person.name.toLowerCase().contains(query.toLowerCase())) {
+        if (person.name != Authentication().currentUser?.displayName) {
           matchedQuery.add(person);
         }
       }
@@ -161,29 +163,34 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage> {
   final UserData currentPerson;
-  bool isThatAFriend = false ;
-  bool isReqPending = false ;
+  bool isThatAFriend = false;
+  bool isReqPending = false;
 
   _DetailsPageState(this.currentPerson);
 
   @override
-  void initState(){
+  void initState() {
     Future.delayed(Duration.zero, () async {
-      await Userbase().isSpecifiedUserFriend(currentPerson.id as String).then((value){
-        if(mounted){
+      await Userbase()
+          .isSpecifiedUserFriend(currentPerson.id as String)
+          .then((value) {
+        if (mounted) {
           super.setState(() {
-            isThatAFriend = value ;
+            isThatAFriend = value;
           });
         }
-      }) ;
-      await RequestUtility().isRequestPending(Authentication().currentUser?.uid as String, currentPerson.id as String).then((value){
-        if(mounted){
+      });
+      await RequestUtility()
+          .isRequestPending(Authentication().currentUser?.uid as String,
+              currentPerson.id as String)
+          .then((value) {
+        if (mounted) {
           super.setState(() {
-            isReqPending = value ;
+            isReqPending = value;
           });
         }
-      }) ;
-    }) ;
+      });
+    });
   }
 
   @override
@@ -203,7 +210,8 @@ class _DetailsPageState extends State<DetailsPage> {
               shape: BoxShape.circle,
               border: Border.all(color: context.accentColor, width: 3),
             ),
-            child: Image.asset("assets/images/avatar${currentPerson.avatarIndex}.png"),
+            child: Image.asset(
+                "assets/images/avatar${currentPerson.avatarIndex}.png"),
           ),
           SizedBox(
             height: 16,
@@ -216,44 +224,68 @@ class _DetailsPageState extends State<DetailsPage> {
           SizedBox(
             height: 32,
           ),
-          "Total money lent from others - Rs. ${currentPerson.outBalance}".text.lg.bold.green500.make().centered(),
-          "Total money borrowed from others - Rs. ${currentPerson.inBalance}".text.lg.bold.red500.make().centered(),
+          Center(
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(Icons.arrow_upward, color: Colors.greenAccent),
+              "Rs. ${currentPerson.outBalance}"
+                  .text
+                  .lg
+                  .bold
+                  .color(Colors.greenAccent)
+                  .make(),
+              SizedBox(
+                width: 50,
+              ),
+              Icon(Icons.arrow_downward, color: Colors.redAccent),
+              "Rs. ${currentPerson.inBalance}"
+                  .text
+                  .lg
+                  .bold
+                  .color(Colors.redAccent)
+                  .make()
+            ]),
+          ),
           SizedBox(
             height: 32,
           ),
-          isThatAFriend ? ElevatedButton(
-                onPressed: (() {
-                  // do nothing - hahaha {Diwas}
-                }),
-                child: "Friends".text.green300.make()).pOnly(right: 16, left: 16)
-              : (isReqPending ? ElevatedButton(
-                onPressed: (() {
-                  // do nothing again - hahaha {Diwas}
-                }),
-                child: "Request Pending".text.yellow300.make()).pOnly(right: 16, left: 16)
-              : ElevatedButton(
-                onPressed: (() {
-                  // Send Request
-                  String? by = Authentication().currentUser?.uid ;
-                  String? to = currentPerson.id ;
-                  String sender = Authentication().currentUser?.displayName as String ;
-                  if(!isReqPending) {
-                    RequestUtility().createNewRequest(
-                        FriendRequest(byID: by, toID: to, sender: sender)
-                    );
-                    Notifier().createNewNotification(
-                        Notify(toID: currentPerson.id as String,
-                            message: "Looks like you've got a new friend request from ${Authentication()
-                                .currentUser?.displayName} !",
-                            seen: false, time: Timestamp.now())
-                    );
-                    setState(() {
-                      isReqPending = true;
-                    });
-                  }
-                }),
-                child: "Add Friend".text.make()).pOnly(right: 16, left: 16)
-          )
+          isThatAFriend
+              ? ElevatedButton(
+                      onPressed: (() {
+                        // do nothing - hahaha {Diwas}
+                      }),
+                      child: "Friends".text.green300.make())
+                  .pOnly(right: 16, left: 16)
+              : (isReqPending
+                  ? ElevatedButton(
+                          onPressed: (() {
+                            // do nothing again - hahaha {Diwas}
+                          }),
+                          child: "Request Pending".text.yellow300.make())
+                      .pOnly(right: 16, left: 16)
+                  : ElevatedButton(
+                          onPressed: (() {
+                            // Send Request
+                            String? by = Authentication().currentUser?.uid;
+                            String? to = currentPerson.id;
+                            String sender = Authentication()
+                                .currentUser
+                                ?.displayName as String;
+                            if (!isReqPending) {
+                              RequestUtility().createNewRequest(FriendRequest(
+                                  byID: by, toID: to, sender: sender));
+                              Notifier().createNewNotification(Notify(
+                                  toID: currentPerson.id as String,
+                                  message:
+                                      "Looks like you've got a new friend request from ${Authentication().currentUser?.displayName} !",
+                                  seen: false,
+                                  time: Timestamp.now()));
+                              setState(() {
+                                isReqPending = true;
+                              });
+                            }
+                          }),
+                          child: "Add Friend".text.make())
+                      .pOnly(right: 16, left: 16))
         ],
       ),
     );

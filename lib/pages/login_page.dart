@@ -92,8 +92,8 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(successfulSnackBar);
-      await Navigator.pushNamed(context, "/home");
-      Navigator.pop(context, "/login");
+      await Navigator.pushNamed(context, "/dashboard");
+      //Navigator.pop(context, "/login");
       setState(() {
         changeButton = false;
       });
@@ -106,140 +106,140 @@ class _LoginPageState extends State<LoginPage> {
         resizeToAvoidBottomInset: true,
         body: ((isConnected != null && isConnected == true) || kIsWeb)
             ? Form(
-          key: _formKey,
-          child: ListView(
-            controller: ScrollController(),
-            children: [
-              SizedBox(
-                height: 200.0,
-                child: Image.asset("assets/images/khaata-logo.png"),
-              ).pOnly(top: 40),
-              Center(
-                child: Text(
-                  "Welcome $name !",
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Column(children: [
-                    TextFormField(
-                      controller: namer,
-                      decoration: const InputDecoration(
-                        labelText: "Username",
-                        hintText: "Enter username",
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          name = value;
-                        });
-                      },
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return ("Username cannot be empty.");
-                        } else if (wrongUser) {
-                          return ("Username is not found.");
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: passer,
-                      decoration: InputDecoration(
-                          labelText: "Password",
-                          hintText: "Enter password",
-                          suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  hide = !hide;
-                                });
-                              },
-                              icon: Icon(hide
-                                  ? Icons.visibility_off
-                                  : Icons.visibility))),
-                      obscureText: hide,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return ("Password cannot be empty.");
-                        } else if (wrongPass) {
-                          return ("Your password doesn't match! ");
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        if (!kIsWeb) {
-                          _networkConnectivity!.initialise();
-                          isConnected =
-                              _networkConnectivity!.isConnected();
-                          if (isConnected == null ||
-                              isConnected == false) {
-                            setState(() {});
-                            return;
-                          }
-                        }
-                        name = namer.text.trim();
-                        String pass = passer.text.trim();
-                        getMailFromUsername(name).then((value) async {
-                          print(
-                              "$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
-                          showDialog(
-                              context: context,
-                              builder: ((context) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }));
-                          await Authentication()
-                              .setInfoForCurrentUser(name);
-                          moveToHome(
-                              context,
-                              await Authentication().signInUser(
-                                  email: loggerMail, password: pass));
-                          Navigator.of(context).pop();
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 500),
-                        width: changeButton ? 50 : 100,
-                        height: 50,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Colors.purple,
-                          borderRadius: BorderRadius.circular(
-                              changeButton ? 50 : 16),
+                key: _formKey,
+                child: ListView(
+                  controller: ScrollController(),
+                  children: [
+                    SizedBox(
+                      height: 200.0,
+                      child: Image.asset("assets/images/khaata-logo.png"),
+                    ).pOnly(top: 40),
+                    Center(
+                      child: Text(
+                        "Welcome $name !",
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
                         ),
-                        child: changeButton
-                            ? const Icon(
-                          Icons.done,
-                          color: Colors.white,
-                        )
-                            : const Text(
-                          "Login",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                      ),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Column(children: [
+                          TextFormField(
+                            controller: namer,
+                            decoration: const InputDecoration(
+                              labelText: "Username",
+                              hintText: "Enter username",
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                name = value;
+                              });
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return ("Username cannot be empty.");
+                              } else if (wrongUser) {
+                                return ("Username is not found.");
+                              }
+                              return null;
+                            },
                           ),
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                        onPressed: (() {
-                          Navigator.pushNamed(context, "/register");
-                        }),
-                        child: Text("Not registered? Register"))
-                  ]))
-            ],
-          ),
-        )
+                          TextFormField(
+                            controller: passer,
+                            decoration: InputDecoration(
+                                labelText: "Password",
+                                hintText: "Enter password",
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        hide = !hide;
+                                      });
+                                    },
+                                    icon: Icon(hide
+                                        ? Icons.visibility_off
+                                        : Icons.visibility))),
+                            obscureText: hide,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return ("Password cannot be empty.");
+                              } else if (wrongPass) {
+                                return ("Your password doesn't match! ");
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20.0,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              if (!kIsWeb) {
+                                _networkConnectivity!.initialise();
+                                isConnected =
+                                    _networkConnectivity!.isConnected();
+                                if (isConnected == null ||
+                                    isConnected == false) {
+                                  setState(() {});
+                                  return;
+                                }
+                              }
+                              name = namer.text.trim();
+                              String pass = passer.text.trim();
+                              getMailFromUsername(name).then((value) async {
+                                print(
+                                    "$name\n$pass\n$loggerMail\n"); // Just for us devs - hahaha (your data is safe with us, lol !)
+                                showDialog(
+                                    context: context,
+                                    builder: ((context) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }));
+                                await Authentication()
+                                    .setInfoForCurrentUser(name);
+                                moveToHome(
+                                    context,
+                                    await Authentication().signInUser(
+                                        email: loggerMail, password: pass));
+                                Navigator.of(context).pop();
+                              });
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 500),
+                              width: changeButton ? 50 : 100,
+                              height: 50,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.purple,
+                                borderRadius: BorderRadius.circular(
+                                    changeButton ? 50 : 16),
+                              ),
+                              child: changeButton
+                                  ? const Icon(
+                                      Icons.done,
+                                      color: Colors.white,
+                                    )
+                                  : const Text(
+                                      "Login",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                          TextButton(
+                              onPressed: (() {
+                                Navigator.pushNamed(context, "/register");
+                              }),
+                              child: Text("Not registered? Register"))
+                        ]))
+                  ],
+                ),
+              )
             : NotConnnectedWidget());
   }
 }
@@ -269,7 +269,7 @@ class NetworkConnectivity {
     } on SocketException catch (_) {
       isOnline = false;
     }
-    _controller.sink.add({result: isOnline});
+    //   _controller.sink.add({result: isOnline});
   }
 
   bool isConnected() {
