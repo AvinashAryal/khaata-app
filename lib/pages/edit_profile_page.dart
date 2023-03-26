@@ -145,8 +145,8 @@ class _AvatarState extends State<Avatar> {
                       .then((value) {
                     setState(() {
                       url = Authentication().currentUser?.photoURL as String;
-                      Userbase()
-                          .updateCurrentUserValue('avatarIndex', selectedImage + 1);
+                      Userbase().updateCurrentUserValue(
+                          'avatarIndex', selectedImage + 1);
                     });
                   }).catchError((error) {
                     print(error);
@@ -181,99 +181,104 @@ class _ChangePassWordButtonState extends State<ChangePassWordButton> {
               showDialog(
                   context: context,
                   builder: ((context) {
-                    return SingleChildScrollView(
-                        child: AlertDialog(
-                            title: Text("Change Password"),
-                            actions: [
-                          Form(
-                              key: _formKey,
-                              child: Column(children: [
-                                TextFormField(
-                                  controller: previous,
-                                  decoration: InputDecoration(
-                                      alignLabelWithHint: true,
-                                      labelText: "Old Password",
-                                      hintText: "Enter Old Password"),
-                                ).pOnly(left: 16, right: 16),
-                                TextFormField(
-                                  controller: next,
-                                  decoration: InputDecoration(
-                                      alignLabelWithHint: true,
-                                      labelText: "New Password",
-                                      hintText: "Enter New Password"),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return ("The password cannot be empty! ");
-                                    } else if (value.length <= 8) {
-                                      return ("Password is too short! ");
-                                    }
-                                    return null;
-                                  },
-                                ).pOnly(left: 16, right: 16),
-                                TextFormField(
+                    return Center(
+                      child: SingleChildScrollView(
+                          child: AlertDialog(
+                              title: Text("Change Password"),
+                              actions: [
+                            Form(
+                                key: _formKey,
+                                child: Column(children: [
+                                  TextFormField(
+                                    controller: previous,
                                     decoration: InputDecoration(
                                         alignLabelWithHint: true,
-                                        labelText: "Confirm New Password",
-                                        hintText: "Enter New Password Again"),
+                                        labelText: "Old Password",
+                                        hintText: "Enter Old Password"),
+                                  ).pOnly(left: 16, right: 16),
+                                  TextFormField(
+                                    controller: next,
+                                    decoration: InputDecoration(
+                                        alignLabelWithHint: true,
+                                        labelText: "New Password",
+                                        hintText: "Enter New Password"),
                                     validator: (value) {
                                       if (value!.isEmpty) {
                                         return ("The password cannot be empty! ");
-                                      } else if (value != next.text.trim()) {
-                                        return ("The passwords don't match! ");
-                                      } else {
-                                        again = next.text.trim();
-                                        return null;
+                                      } else if (value.length <= 8) {
+                                        return ("Password is too short! ");
                                       }
-                                    }).pOnly(left: 16, right: 16),
-                              ])),
-                          ButtonBar(
-                            children: [
-                              TextButton(
-                                child: Text("Cancel"),
-                                onPressed: () {},
-                              ),
-                              TextButton(
-                                  child: Text("OK",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  style: ButtonStyle(),
-                                  onPressed: () async {
-                                    String old = previous.text.trim();
-                                    String now = next.text.trim();
-                                    String hashNew = "";
-                                    old = Hash().generateHash(old);
-                                    hashNew = Hash().generateHash(now);
-
-                                    if (!_formKey.currentState!.validate()) {
-                                      return;
-                                    }
-                                    await Authentication()
-                                        .currentUser
-                                        ?.updatePassword(now);
-                                    Userbase()
-                                        .updateCurrentUserDetail("hash", hashNew);
+                                      return null;
+                                    },
+                                  ).pOnly(left: 16, right: 16),
+                                  TextFormField(
+                                      decoration: InputDecoration(
+                                          alignLabelWithHint: true,
+                                          labelText: "Confirm New Password",
+                                          hintText: "Enter New Password Again"),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return ("The password cannot be empty! ");
+                                        } else if (value != next.text.trim()) {
+                                          return ("The passwords don't match! ");
+                                        } else {
+                                          again = next.text.trim();
+                                          return null;
+                                        }
+                                      }).pOnly(left: 16, right: 16),
+                                ])),
+                            ButtonBar(
+                              children: [
+                                TextButton(
+                                  child: Text("Cancel"),
+                                  onPressed: () {
                                     Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                    child: Text("OK",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    style: ButtonStyle(),
+                                    onPressed: () async {
+                                      String old = previous.text.trim();
+                                      String now = next.text.trim();
+                                      String hashNew = "";
+                                      old = Hash().generateHash(old);
+                                      hashNew = Hash().generateHash(now);
 
-                                    // Let the user know that it actually changed - HAHAHA !
-                                    var successfulSnackBar = SnackBar(
-                                      content: "Password updated successfully! "
-                                          .text
-                                          .color(Colors.green)
-                                          .make(),
-                                      action: SnackBarAction(
-                                        label: "DISMISS",
-                                        onPressed: () {
-                                          ScaffoldMessenger.of(context)
-                                              .hideCurrentSnackBar();
-                                        },
-                                      ),
-                                    );
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(successfulSnackBar);
-                                  })
-                            ],
-                          ),
-                        ]));
+                                      if (!_formKey.currentState!.validate()) {
+                                        return;
+                                      }
+                                      await Authentication()
+                                          .currentUser
+                                          ?.updatePassword(now);
+                                      Userbase().updateCurrentUserDetail(
+                                          "hash", hashNew);
+                                      Navigator.of(context).pop();
+
+                                      // Let the user know that it actually changed - HAHAHA !
+                                      var successfulSnackBar = SnackBar(
+                                        content:
+                                            "Password updated successfully! "
+                                                .text
+                                                .color(Colors.green)
+                                                .make(),
+                                        action: SnackBarAction(
+                                          label: "DISMISS",
+                                          onPressed: () {
+                                            ScaffoldMessenger.of(context)
+                                                .hideCurrentSnackBar();
+                                          },
+                                        ),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(successfulSnackBar);
+                                    })
+                              ],
+                            ),
+                          ])),
+                    );
                   }));
             },
             child: "Change Password".text.semiBold.make())

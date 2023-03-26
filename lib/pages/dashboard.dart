@@ -177,6 +177,7 @@ class _RecentListState extends State<RecentList> {
         : ListView.builder(
             itemCount: lenders.length,
             itemBuilder: ((context, index) {
+              print(lenders);
               return Card(
                 child: ListTile(
                     leading:
@@ -193,12 +194,12 @@ class _RecentListState extends State<RecentList> {
                       "${borrowers[index].name}".text.lg.make()
                     ]),
                     subtitle:
-                        "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                        "${TransactionRecord().days[records[index].transactionDate.toDate().weekday - 1]}"
                                 " - ${records[index].transactionDate.toDate().toString().substring(0, 16)}"
                             .text
                             .sm
                             .make(),
-                    // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
+                    //   // instead of using toDate() which shows shitty seconds and milliseconds nobody cares about !
                     trailing: "${records[index].amount}".text.lg.bold.make()),
               );
             })).pOnly(top: 10);

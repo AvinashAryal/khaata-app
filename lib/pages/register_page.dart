@@ -222,7 +222,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ScaffoldMessenger.of(context)
                           .showSnackBar(successfulSnackBar);
                       Navigator.pushNamed(context, "/login");
-                      Navigator.pop(context, "/register");
                     },
                     child:
                         "Register".text.xl.make().pOnly(right: 12, left: 12)),

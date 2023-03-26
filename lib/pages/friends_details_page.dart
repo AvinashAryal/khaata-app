@@ -224,15 +224,10 @@ class _FriendDetailState extends State<FriendDetail> {
                   itemCount: friendAssocRecords.length + 1,
                   itemBuilder: (context, index) {
                     if (index == 0) {
-                      return Column(
-                        children: [
-                          MyPieChart(
-                                  association: true,
-                                  posBal: outBal,
-                                  negBal: inBal)
-                              .pOnly(bottom: 8),
-                        ],
-                      );
+                      print(friendAssocRecords.length);
+                      return MyPieChart(
+                              association: true, posBal: outBal, negBal: inBal)
+                          .pOnly(bottom: 8);
                     }
                     return Card(
                         elevation: 5,
@@ -261,7 +256,7 @@ class _FriendDetailState extends State<FriendDetail> {
                                           .make()
                                           .pOnly(left: 4),
                                     ]).pOnly(bottom: 8, top: 8),
-                                    "${TransactionRecord().days[friendAssocRecords[index - 1].transactionDate.toDate().weekday]}"
+                                    "${TransactionRecord().days[friendAssocRecords[index - 1].transactionDate.toDate().weekday - 1]}"
                                             " - ${friendAssocRecords[index - 1].transactionDate.toDate().toString().substring(0, 16)}"
                                         .text
                                         .sm

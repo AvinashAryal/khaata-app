@@ -16,19 +16,18 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-
-  List<Record> records = [] ;
-  List<UserData> borrowers = [] ;
-  List<UserData> lenders = [] ;
-  var trans = TransactionLoader() ;
+  List<Record> records = [];
+  List<UserData> borrowers = [];
+  List<UserData> lenders = [];
+  var trans = TransactionLoader();
   int currentPage = 2;
 
   @override
-  void initState(){
-    super.initState() ;
-    Future.delayed(Duration.zero,() async {
-      await trans.getDetailsOfParticipants(false).then((value){
-        if(mounted) {
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await trans.getDetailsOfParticipants(false).then((value) {
+        if (mounted) {
           super.setState(() {
             records = trans.getRecords;
             borrowers = trans.getBorrowers;
@@ -60,12 +59,9 @@ class _TransactionPageState extends State<TransactionPage> {
           */
         ],
         onDestinationSelected: (int index) {
-          if(index == 0)
-          {
+          if (index == 0) {
             Navigator.pushNamed(context, "/dashboard");
-          }
-          else if(index == 1)
-          {
+          } else if (index == 1) {
             Navigator.pushNamed(context, "/friends");
           }
         },
@@ -92,16 +88,19 @@ class _TransactionPageState extends State<TransactionPage> {
                                       .lg
                                       .make()
                                       .pOnly(right: 4),
-                                  lenders[index].id == Authentication().currentUser?.uid ?
-                                    Icon(Icons.arrow_forward, color: Colors.teal) :
-                                    Icon(Icons.arrow_forward, color: Colors.red),
+                                  lenders[index].id ==
+                                          Authentication().currentUser?.uid
+                                      ? Icon(Icons.arrow_forward,
+                                          color: Colors.teal)
+                                      : Icon(Icons.arrow_forward,
+                                          color: Colors.red),
                                   "${borrowers[index].name}"
                                       .text
                                       .lg
                                       .make()
                                       .pOnly(left: 4),
                                 ]).pOnly(bottom: 8, top: 8),
-                                "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                                "${TransactionRecord().days[records[index].transactionDate.toDate().weekday - 1]}"
                                         " - ${records[index].transactionDate.toDate().toString().substring(0, 16)}"
                                     .text
                                     .sm
