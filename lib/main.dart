@@ -13,6 +13,7 @@ import 'package:khaata_app/utils/themes.dart';
 // Importing Firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:khaata_app/widgets/add_new_friend_search_bar.dart';
+import 'package:khaata_app/widgets/billCreator.dart';
 import 'package:provider/provider.dart';
 
 /* Yeah - I'm gonna make the main function ~ asychronous !
@@ -86,7 +87,7 @@ class _MyAppState extends State<MyApp> {
         "/notifications": (context) => NotificationPage(),
         "/addfriend": (context) => AddFriendSearchBar(),
         "/editprofile": (context) => EditProfilePage(),
-        "/biller": (context) => BillerPage(),
+        "/biller": (context) => BillCreator(),
       },
     );
   }

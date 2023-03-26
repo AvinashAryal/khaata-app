@@ -54,6 +54,7 @@ class _NotificationPageState extends State<NotificationPage> {
               itemCount: notifications.length,
               itemBuilder: ((context, index) {
                 return Card(
+                  elevation: 5,
                   child: ListTile(
                       title: "${notifications[index].message}".text.make(),
                       leading:

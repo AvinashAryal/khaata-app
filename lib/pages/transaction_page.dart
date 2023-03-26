@@ -7,6 +7,7 @@ import '../backend/transactionUtility.dart';
 import '../backend/transactionsLoader.dart';
 import '../models/structure.dart';
 import '../models/transaction.dart';
+import 'package:khaata_app/widgets/billCreator.dart' ;
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({Key? key}) : super(key: key);
@@ -67,7 +68,16 @@ class _TransactionPageState extends State<TransactionPage> {
         },
         selectedIndex: currentPage,
       ),
-      appBar: AppBar(title: Text("Transactions")),
+      appBar: AppBar(
+          title: Text("Transactions"),
+          actions: [
+            IconButton(
+            onPressed: (() async{
+              Navigator.of(context).pushNamed('/biller') ;
+            }),
+            icon: Icon(Icons.calculate)),
+      ],
+      ),
       body: records.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
