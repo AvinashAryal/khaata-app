@@ -226,6 +226,27 @@ class _RegisterPageState extends State<RegisterPage> {
                             .showSnackBar(successfulSnackBar);
                       }
                       Navigator.pop(context, "/register");
+                      setState(() {
+                        addUser(
+                            name: name1,
+                            number: num1,
+                            email: mail,
+                            password: pass);
+                      });
+                      var successfulSnackBar = SnackBar(
+                        content: "Successfully Registered"
+                            .text
+                            .color(Colors.green)
+                            .make(),
+                        action: SnackBarAction(
+                          label: "DISMISS",
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                        ),
+                      );
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(successfulSnackBar);
                       Navigator.pushNamed(context, "/login");
                     },
                     child:

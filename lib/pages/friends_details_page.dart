@@ -224,15 +224,10 @@ class _FriendDetailState extends State<FriendDetail> {
                   itemCount: friendAssocRecords.length + 1,
                   itemBuilder: (context, index) {
                     if (index == 0) {
-                      return Column(
-                        children: [
-                          MyPieChart(
-                                  association: true,
-                                  posBal: outBal,
-                                  negBal: inBal)
-                              .pOnly(bottom: 8),
-                        ],
-                      );
+                      print(friendAssocRecords.length);
+                      return MyPieChart(
+                              association: true, posBal: outBal, negBal: inBal)
+                          .pOnly(bottom: 8);
                     }
                     return Card(
                         elevation: 5,
