@@ -113,10 +113,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return ("Username cannot be empty.");
+                      return ("Email address cannot be empty.");
                     }
                     else if (ifItExists) {
-                      return ("Username already exists! ");
+                      return ("Username associated to this email already exists! ");
                     }
                     else {
                       return null;
