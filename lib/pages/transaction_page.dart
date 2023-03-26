@@ -101,7 +101,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                       .make()
                                       .pOnly(left: 4),
                                 ]).pOnly(bottom: 8, top: 8),
-                                "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                                "${TransactionRecord().days[records[index].transactionDate.toDate().weekday-1]}"
                                         " - ${records[index].transactionDate.toDate().toString().substring(0, 16)}"
                                     .text
                                     .sm

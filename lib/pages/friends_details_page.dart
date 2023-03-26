@@ -261,7 +261,7 @@ class _FriendDetailState extends State<FriendDetail> {
                                           .make()
                                           .pOnly(left: 4),
                                     ]).pOnly(bottom: 8, top: 8),
-                                    "${TransactionRecord().days[friendAssocRecords[index - 1].transactionDate.toDate().weekday]}"
+                                    "${TransactionRecord().days[friendAssocRecords[index - 1].transactionDate.toDate().weekday-1]}"
                                             " - ${friendAssocRecords[index - 1].transactionDate.toDate().toString().substring(0, 16)}"
                                         .text
                                         .sm

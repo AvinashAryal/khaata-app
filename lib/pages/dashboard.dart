@@ -84,6 +84,7 @@ class Dashboard extends StatelessWidget {
           IconButton(
               onPressed: (() {
                 Navigator.pushNamed(context, "/notifications");
+                notifCounts = 0 ;
               }),
               icon: Stack(children: [
                 Icon(CupertinoIcons.bell),
@@ -151,11 +152,13 @@ class _RecentListState extends State<RecentList> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      setState(() {
-        Notifier().countSeenNotifications().then((value) {
-          notifCounts = value;
-        });
-      });
+      if(mounted){
+        setState(() {
+          Notifier().countSeenNotifications().then((value) {
+            notifCounts = value;
+          });
+         }) ;
+       }
       await trans.getDetailsOfParticipants(true).then((value) {
         if (mounted) {
           super.setState(() {
@@ -180,7 +183,7 @@ class _RecentListState extends State<RecentList> {
               return Card(
                 child: ListTile(
                     leading:
-                        "${TransactionRecord().months[records[index].transactionDate.toDate().month - 1]}"
+                        "${TransactionRecord().months[records[index].transactionDate.toDate().month-1]}"
                                 " ${records[index].transactionDate.toDate().day}"
                             .text
                             .lg
@@ -193,7 +196,7 @@ class _RecentListState extends State<RecentList> {
                       "${borrowers[index].name}".text.lg.make()
                     ]),
                     subtitle:
-                        "${TransactionRecord().days[records[index].transactionDate.toDate().weekday]}"
+                        "${TransactionRecord().days[records[index].transactionDate.toDate().weekday-1]}"
                                 " - ${records[index].transactionDate.toDate().toString().substring(0, 16)}"
                             .text
                             .sm

@@ -197,32 +197,36 @@ class _RegisterPageState extends State<RegisterPage> {
                           ifItExists = value1 ;
                         });
                       }) ;
+                      // Check validators
                       if (!_formKey.currentState!.validate()) {
-                        return;
+                          return;
                       }
-                      setState(() {
-                        addUser(
-                            name: name1,
-                            number: num1,
-                            email: mail,
-                            password: pass);
-                      });
-                      var successfulSnackBar = SnackBar(
-                        content: "Successfully Registered"
-                            .text
-                            .color(Colors.green)
-                            .make(),
-                        action: SnackBarAction(
-                          label: "DISMISS",
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          },
-                        ),
-                      );
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(successfulSnackBar);
-                      Navigator.pushNamed(context, "/login");
+                      if(!ifItExists) {
+                        setState(() {
+                          addUser(
+                              name: name1,
+                              number: num1,
+                              email: mail,
+                              password: pass);
+                        });
+                        var successfulSnackBar = SnackBar(
+                          content: "Successfully Registered"
+                              .text
+                              .color(Colors.green)
+                              .make(),
+                          action: SnackBarAction(
+                            label: "DISMISS",
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                          ),
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(successfulSnackBar);
+                      }
                       Navigator.pop(context, "/register");
+                      Navigator.pushNamed(context, "/login");
                     },
                     child:
                         "Register".text.xl.make().pOnly(right: 12, left: 12)),

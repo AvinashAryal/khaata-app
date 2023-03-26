@@ -9,7 +9,7 @@ import '../models/transaction.dart';
 class TransactionRecord{
   final _database = FirebaseFirestore.instance ;
   String collectionPath = "transaction-data" ; // Don't mess with this as well - HAHAHA !
-  final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] ;
+  final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] ;
   final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] ;
 
   // Create a new transaction and store it in the cloud (C)
