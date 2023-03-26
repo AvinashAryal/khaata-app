@@ -92,8 +92,8 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(successfulSnackBar);
-      await Navigator.pushNamed(context, "/home");
-      Navigator.pop(context, "/login");
+      await Navigator.pushNamed(context, "/dashboard");
+      //Navigator.pop(context, "/login");
       setState(() {
         changeButton = false;
       });

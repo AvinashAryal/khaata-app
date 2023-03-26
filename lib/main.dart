@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:khaata_app/backend/authentication.dart';
 import 'package:khaata_app/pages/biller.dart';
+import 'package:khaata_app/pages/dashboard.dart';
 import 'package:khaata_app/pages/edit_profile_page.dart';
+import 'package:khaata_app/pages/friends_page.dart';
 import 'package:khaata_app/pages/login_page.dart';
-import 'package:khaata_app/pages/home_page.dart';
 import 'package:khaata_app/pages/notification_page.dart';
 import 'package:khaata_app/pages/register_page.dart';
+import 'package:khaata_app/pages/transaction_page.dart';
 import 'package:khaata_app/utils/themes.dart';
 
 // Importing Firebase
@@ -73,9 +75,12 @@ class _MyAppState extends State<MyApp> {
           : ThemeMode.light,
       theme: MyTheme.LightTheme(context),
       darkTheme: MyTheme.DarkTheme(context),
-      initialRoute: logged ? "/home" : "/login",
+      initialRoute: logged ? "/dashboard" : "/login",
       routes: {
-        "/home": (context) => HomePage(),
+        "/": (context) => Dashboard(),
+        "/dashboard": (context) => Dashboard(),
+        "/friends": ((context) => FriendsPage()),
+        "/transactions": (context) => TransactionPage(),
         "/login": (context) => LoginPage(),
         "/register": (context) => RegisterPage(),
         "/notifications": (context) => NotificationPage(),

@@ -4,9 +4,8 @@ import 'package:khaata_app/backend/friendsLoader.dart';
 import 'package:khaata_app/backend/requestUtility.dart';
 import 'package:khaata_app/models/structure.dart';
 import 'package:khaata_app/pages/friends_details_page.dart';
-import 'package:khaata_app/pages/home_page.dart';
 import 'package:khaata_app/widgets/add_new_friend_search_bar.dart';
-import 'package:khaata_app/widgets/dashboard.dart';
+import 'package:khaata_app/pages/dashboard.dart';
 import 'package:khaata_app/widgets/drawer.dart';
 import 'package:khaata_app/widgets/friends_search_bar.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -24,6 +23,36 @@ class FriendsPage extends StatelessWidget {
     return DefaultTabController(
         length: 2,
         child: Scaffold(
+      bottomNavigationBar: NavigationBar(
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.home_rounded), label: "Home"),
+          NavigationDestination(
+              icon: Icon(
+                CupertinoIcons.person_2_fill,
+              ),
+              label: "Friends"),
+          NavigationDestination(
+              icon: Icon(CupertinoIcons.arrow_2_squarepath),
+              label: "Transactions"),
+          /* A prospect to acheive later - {Diwas}
+          NavigationDestination(
+              icon: Icon(Icons.account_balance_wallet),
+              label: "Biller")
+          */
+        ],
+        onDestinationSelected: (int index) {
+          if(index == 0)
+          {
+            Navigator.popAndPushNamed(context, "/dashboard");
+          }
+          else if(index == 2)
+          {
+            Navigator.popAndPushNamed(context, "/transactions");
+          }
+          
+        },
+        selectedIndex: 1,
+      ),
           drawer: MyDrawer(),
           floatingActionButton: AddFriendSearchBar(),
           appBar: AppBar(
